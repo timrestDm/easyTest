@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Вопросы' %}</title>
+{% endblock title%}
+
+{% block content %}
+    <div class="center">
+        {% include 'mainapp/includes/inc_question_list.html' %}
+    </div>
+{% endblock content %}
