@@ -128,3 +128,10 @@ body {
 .button_row:first-child {
     margin-bottom: 10px;
 }
+
+
+.user_log {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
