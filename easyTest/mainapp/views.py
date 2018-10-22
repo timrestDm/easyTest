@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic.base import RedirectView
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse_lazy
 # from mainapp.models import Question
 
 # Create your views here.
@@ -7,6 +10,22 @@ from django.views.generic import ListView, DetailView, TemplateView
 class MainView(TemplateView):
 	'''Класс отображает главную страницу'''
 	template_name = 'mainapp/index.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		print(self.request.user)
+		return context
+
+
+class UsersRedirectView(RedirectView):
+	'''Класс для автологина пользователей admin или test при нажатии на соответствующую ссылку'''
+	pattern_name = 'mainapp:main'	
+
+	def get_redirect_url(self, *args, **kwargs):
+		slug = self.kwargs['slug']
+		user = authenticate(username=slug, password='{}1234!'.format(slug))
+		login(self.request, user)
+		return super().get_redirect_url()
 
 
 '''

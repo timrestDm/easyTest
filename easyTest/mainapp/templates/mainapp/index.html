@@ -6,10 +6,16 @@
 {% endblock title%}
 
 {% block content %}
+    {% if user.is_authenticated %}
+    <div class="user_log">
+        <p>{% trans 'Вы вошли под именем: ' %}{{ user }}</p>
+    </div>
+    {% else %}
+    {% endif %}
     <div class="center">
         <div class="button_row">
-            <a href="#">{% trans 'Войти пользователем' %}</a>
-            <a href="#">{% trans 'Войти админом' %}</a>
+            <a href="{% url 'mainapp:redirect' 'test' %}">{% trans 'Войти пользователем' %}</a>
+            <a href="{% url 'mainapp:redirect' 'admin' %}">{% trans 'Войти админом' %}</a>
         </div>
         <div class="button_row">
             <a href="#">{% trans 'Создать тест' %}</a>
