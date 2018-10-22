@@ -11,10 +11,6 @@ class MainView(TemplateView):
 	'''Класс отображает главную страницу'''
 	template_name = 'mainapp/index.html'
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		return context
-
 
 class UsersRedirectView(RedirectView):
 	'''Класс для автологина пользователей admin или test при нажатии на соответствующую ссылку'''
