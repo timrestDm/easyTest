@@ -23,7 +23,7 @@ class UsersRedirectView(RedirectView):
 
 	def get_redirect_url(self, *args, **kwargs):
 		slug = self.kwargs['slug']
-		user = authenticate(username=slug, password='{}1234!'.format(slug))
+		user = authenticate(username=slug, password=slug)
 		login(self.request, user)
 		return super().get_redirect_url()
 
