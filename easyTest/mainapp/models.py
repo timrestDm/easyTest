@@ -18,7 +18,7 @@ from django.db import models
 #     question_text = models.CharField(_('qw_text'), max_length=500, blank=False)
 #     answers  = models.ForeignKey(Answer, on_delete=models.CASCADE)
 #     keyword = models.ManyToManyField(Keyword)
-
+#
 #     class Meta:
 #         verbose_name = _('Вопрос')
 #         verbose_name_plural = _('Вопросы')
