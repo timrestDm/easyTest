@@ -135,3 +135,23 @@ body {
     justify-content: center;
     padding-top: 10px;
 }
+
+.answers {
+    width: 40rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.page-item.done .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: mediumseagreen;
+  border-color: green;
+}
+
+.page-item.missed .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: grey;
+  border-color: green;
+}
