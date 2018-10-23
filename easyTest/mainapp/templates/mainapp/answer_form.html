@@ -1,0 +1,23 @@
+{% load static i18n %}
+
+<div class="answers">
+    <div class="card" style="width: 40rem;">
+        <ul class="list-group list-group-flush">
+            {% if object.answers %}
+                {% for obj in object_list %}
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios {% forloop.counter %}" value="option {% forloop.counter %}">
+                                <label class="form-check-label" for="exampleRadios {% forloop.counter %}">
+                                    {{ obj.title }}
+                                </label>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
