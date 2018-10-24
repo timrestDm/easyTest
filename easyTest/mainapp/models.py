@@ -1,25 +1,27 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+
 
 class CoreQuerySet(models.QuerySet):
-   """CoreQuerySet need for change initial QuerySet;
-    realization soft delete for QuerySet - filter().delete()"""
+    """CoreQuerySet need for change initial QuerySet;
+     realization soft delete for QuerySet - filter().delete()"""
 
-   def delete(self):
-       return super(CoreQuerySet, self).update(deleted=True)
+    def delete(self):
+        return super(CoreQuerySet, self).update(deleted=True)
 
-   def hard_delete(self):
-       return super(CoreQuerySet, self).delete()
+    def hard_delete(self):
+        return super(CoreQuerySet, self).delete()
 
 
 class CoreManager(models.Manager):
-   """change initial QuerySet and queryset for superuser in admin_panel"""
+    """change initial QuerySet and queryset for superuser in admin_panel"""
 
-   def get_queryset(self):
-       return CoreQuerySet(self.model).filter(active=True, deleted=False)
+    def get_queryset(self):
+        return CoreQuerySet(self.model).filter(active=True, deleted=False)
 
-   def get_all_queryset(self):
-       return CoreQuerySet(self.model)
+    def get_all_queryset(self):
+        return CoreQuerySet(self.model)
 
 
 class Core(models.Model):
@@ -56,34 +58,40 @@ class Core(models.Model):
         self.delete()
 
 
-# # Create your models here.
-# class Keyword(Core):
-#     """Тэги""" 
-#     title = models.CharField(_('kw-title'), max_length=60, unique = True,  blank=False)
-#     def str(self):
-#         return self.keyword_name
+class Meta:
+    abstract = True
 
-#     class Meta:
-#         verbose_name = _('Тэг')
-#         verbose_name_plural = _('Тэги')
+
+class Keyword(Core):
+    """Тэги"""
+    title = models.CharField(_('Название ключа'), max_length=60, unique=True, blank=False)
+
+    class Meta:
+        verbose_name = _('Тэг')
+        verbose_name_plural = _('Тэги')
 
 
 class Question(Core):
     """Вопрос """
-    # keyword = models.ManyToManyField(Keyword)
 
+    # keyword = models.ManyToManyField(Keyword)
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
 
 
+def __str__(self):
+    return f'{self.description}'
+
+
 class Answer(Core):
-    '''класс ответа''' 
+    """ класс ответа """
 
     class Meta:
         verbose_name = _('Ответ')
         verbose_name_plural = _('Ответы')
 
+    text = models.CharField(_('text'), max_length=250, blank=False)
     is_correct = models.BooleanField(_('is correct'), default=False)
     question = models.ForeignKey(Question, null=True, blank=True, related_name='answers', on_delete=models.CASCADE)
 
@@ -92,28 +100,66 @@ class Answer(Core):
 
 
 class TestCategory(Core):
-    '''docstring for TestCategory'''
+    """ docstring for TestCategory"""
+
+    cat = models.ForeignKey(self, null=True, blank=True, related_name='test_categories', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('Категория теста')
         verbose_name_plural = _('Категории тестов')
 
 
-
 class Test(Core):
-    '''docstring for Test'''
+    """ docstring for Test"""
 
     class Meta:
         verbose_name = _('Тест')
         verbose_name_plural = _('Тесты')
 
-    # owner = models.ForeignKey(User, null=False, blank=True, related_name='tests', on_delete=models.PROTECT)
-    questions = models.ForeignKey(Question, null=True, blank=True, related_name='tests', on_delete=models.PROTECT)
-    # keywords = models.ManyToManyField(Keyword, blank=True)
-
-
+    owner = models.ForeignKey(AbstractUser, null=False, blank=True, related_name='tests', on_delete=models.PROTECT)
     category = models.ForeignKey(TestCategory, null=True, blank=True, on_delete=models.SET_NULL)
+    keywords = models.ManyToManyField(Keyword, null=False, blank=True, related_name='tests', on_delete=models.PROTECT)
+    questions = models.ManyToManyField(Question, null=False, blank=True, related_name='tests', on_delete=models.PROTECT)
     max_questions = models.PositiveIntegerField(_('Count questions'), default=0, blank=True)
     required_correct_answers = models.PositiveIntegerField(_('Required correct answers'), default=0, blank=True)
 
+    TEST_TYPE_CHOICES = (
+        (0, 'teaching'),
+        (1, 'exam'),
+        )
+    test_type = models.CharField(max_length=2, choices=TEST_TYPE_CHOICES, default=0)
+    """ типы тестов - учебный и экзаменационный(на время и оценку) - это реализуем позже.
+    Необходимо будет также добавить время на прохождение теста, проценты правильных ответов для разных оценок."""
 
+
+class Result(Core):
+    """ класс результата """
+
+    class Meta:
+        verbose_name = _('Результат')
+        verbose_name_plural = _('Результаты')
+
+    owner = models.ForeignKey(AbstractUser, null=False, blank=True, related_name='results', on_delete=models.PROTECT)
+    test = models.ForeignKey(Test, null=True, blank=True, related_name='results', on_delete=models.CASCADE)
+    right_answers_count = models.PositiveIntegerField(_('right answers count'), default = 0, blank = True)
+    wrong_answers_count = models.PositiveIntegerField(_('wrong answers count'), default = 0, blank = True)
+    time = models.TimeField(_('time for test'), blank=True)
+    is_test_passed = models.BooleanField(_('is test passed'), default=False)
+
+
+class UserAnswer(Core):
+    """ класс ответа пользователя ответ пользователя создается, только когда он нажимает на кнопку ответить.
+    в него записывается ссылка на вопрос, правильный ответ из вопроса и ответ пользователя.
+    и это потом аккумулируется в результате теста. т.е.в результ считается только из ответов пользователя.
+    при изменении вопроса или теста, ничего пересчитываться не будет """
+
+    class Meta:
+        verbose_name = _('Ответ пользователя')
+        verbose_name_plural = _('Ответы пользователя')
+
+    owner = models.ForeignKey(AbstractUser, null=False, blank=True, on_delete=models.PROTECT)
+    question = models.ForeignKey(Question, null=False, blank=True, on_delete=models.CASCADE)
+    result = models.ForeignKey(Result, null=False, blank=True, related_name='user_answers', on_delete=models.CASCADE)
+    right_answer = models.CharField(_('Right answer'), blank = True, null = False)
+    user_answer = models.CharField(_('User answer'), blank = True, null = False)
+    is_correct = models.BooleanField(_('is user answer correct'), default=False)
