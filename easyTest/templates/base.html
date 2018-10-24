@@ -12,7 +12,7 @@
     {% endblock title %}
 
     {% block styles %}
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% endblock styles %}
 
@@ -21,34 +21,37 @@
 </head>
 
 <body>
-    <div class="header">
-        <div class="center_content_header">
-            <div class="logo">
-                <i class="fas fa-check-circle"></i>
-                <a href="{% url 'mainapp:main' %}">easytest</a>
-            </div>
-            <div class="menu">
-                <ul>
-                    <li>
-                        <a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a>
-                        <a href="#">{% trans 'ВОПРОСЫ' %}</a>
-                        <a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a>
-                        <a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a>
-                        <a href="#">{% trans 'ВОЙТИ' %}</a>
-                        <a href="#">{% trans 'КОНТАКТЫ' %}</a>
-                    </li>
-                </ul>
-            </div>
+<div class="header">
+    <div class="center_content_header">
+        <div class="logo">
+            <i class="fas fa-check-circle"></i>
+            <a href="{% url 'mainapp:main' %}">easytest</a>
+        </div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a href="#">
+                        {% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}
+                    </a>
+                    <a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a>
+                    <a href="#">{% trans 'ВОПРОСЫ' %}</a>
+                    <a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a>
+                    <a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a>
+                    <a href="#">{% trans 'ВОЙТИ' %}</a>
+                    <a href="#">{% trans 'КОНТАКТЫ' %}</a>
+                </li>
+            </ul>
         </div>
     </div>
+</div>
 
-    {% block content %}
+{% block content %}
     <!--       для того чтобы прижать футер к низу экрана, при контенте, занимающем меньше экрана, в стиле главного блока-контейнера требуется прописать flex: 1;-->
-    {% endblock content %}
+{% endblock content %}
 
-    <div class="footer">
-        <p>GeekUniversity Python 10/06/18</p>
-    </div>
+<div class="footer">
+    <p>GeekUniversity Python 10/06/18</p>
+</div>
 </body>
 
 </html>
