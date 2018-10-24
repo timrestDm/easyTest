@@ -67,6 +67,13 @@ class Keyword(Core):
         verbose_name_plural = _('Тэги')
 
 
+class QuestionManager(CoreManager):
+    """docstring for  QuestionManager"""
+
+    def get_test(self, pk):
+        return self.filter(tests__questions__pk=pk)
+
+
 class Question(Core):
     """Вопрос """
 
@@ -75,9 +82,11 @@ class Question(Core):
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
 
+    # test = models.ManyToManyField(Test, blank=True, related_name='questions')
+    objects = QuestionManager()
 
-def __str__(self):
-    return f'{self.description}'
+    def __str__(self):
+        return f'{self.description}'
 
 
 class Answer(Core):
@@ -87,7 +96,7 @@ class Answer(Core):
         verbose_name = _('Ответ')
         verbose_name_plural = _('Ответы')
 
-    text = models.CharField(_('text'), max_length=250, blank=False)
+    # text = models.CharField(_('text'), max_length=250, blank=False)
     is_correct = models.BooleanField(_('is correct'), default=False)
     question = models.ForeignKey(Question, null=True, blank=True, related_name='answers', on_delete=models.CASCADE)
 
@@ -141,6 +150,9 @@ class Result(Core):
     wrong_answers_count = models.PositiveIntegerField(_('wrong answers count'), default=0, blank=True)
     time = models.TimeField(_('time for test'), blank=True)
     is_test_passed = models.BooleanField(_('is test passed'), default=False)
+
+    def __str__(self):
+        return f'{self.owner.username}'
 
 
 class UserAnswer(Core):

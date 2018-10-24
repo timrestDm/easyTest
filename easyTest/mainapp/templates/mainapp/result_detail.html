@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Главная' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+
+        <p><b>Результаты, пользователя {{ object.owner.username }} по тесту {{ object.test.title }}:</b></p>
+        <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
+        <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
+        <p>Затраченное время: {{ object.time }}</p>
+
+        {% if is_test_passed %}
+            <p><b>Тест пройден</b></p>
+        {% else %}
+            <p><b>Тест не пройден</b></p>
+        {% endif %}
+
+        <a href="{% url 'mainapp:main'  %}">На главную</a>
+
+
+
+
+    </div>
+{% endblock content %}
+

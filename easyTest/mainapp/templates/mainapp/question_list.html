@@ -2,11 +2,30 @@
 {% load static i18n %}
 
 {% block title %}
-    <title>{% trans 'Вопросы' %}</title>
+    <title>{% trans 'Главная' %}</title>
 {% endblock title%}
 
 {% block content %}
+
     <div class="center">
-        {% include 'mainapp/includes/inc_question_list.html' %}
+        {% for object in object_list %}
+            <p><b>{{ object.tests.all.0.title }}</b></p>
+
+            <form action="" method="post">
+                <p><b>{{ object.description }}</b></p>
+                {% for answer in object.answers.all %}
+                    <p><input name="answer" type="radio" value="{{ answer.is_correct }}">{{ answer }}</p>
+                {% endfor %}
+            </form>
+
+            {% if page_obj.has_next %}
+                <a href="{{path}}?page={{ paginator.num_pages }}"><input type="submit" value="Далее"></a>
+            {% else %}
+                <a href="{% url 'mainapp:result' 1 %}"><input type="submit" value="Далее"></a>
+            {% endif %}
+        {% endfor %}
+
+
     </div>
 {% endblock content %}
+
