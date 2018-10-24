@@ -58,10 +58,6 @@ class Core(models.Model):
         self.delete()
 
 
-class Meta:
-    abstract = True
-
-
 class Keyword(Core):
     """Тэги"""
     title = models.CharField(_('Название ключа'), max_length=60, unique=True, blank=False)
