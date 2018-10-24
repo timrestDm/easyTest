@@ -1,6 +1,4 @@
 from django.db import models
-
-from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 class CoreQuerySet(models.QuerySet):
@@ -111,7 +109,7 @@ class Test(Core):
 
     # owner = models.ForeignKey(User, null=False, blank=True, related_name='tests', on_delete=models.PROTECT)
     questions = models.ForeignKey(Question, null=True, blank=True, related_name='tests', on_delete=models.PROTECT)
-    keywords = models.ManyToManyField(Keyword, blank=True)
+    # keywords = models.ManyToManyField(Keyword, blank=True)
 
 
     category = models.ForeignKey(TestCategory, null=True, blank=True, on_delete=models.SET_NULL)
