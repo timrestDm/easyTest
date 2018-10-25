@@ -2,30 +2,38 @@
 {% load static i18n %}
 
 {% block title %}
-    <title>{% trans 'Главная' %}</title>
+    <title>{% trans 'Тест' %}</title>
 {% endblock title%}
 
 {% block content %}
+    {% with current_kwargs=request.resolver_match.kwargs.pk  %}
 
-    <div class="center">
-        {% for object in object_list %}
-            <p><b>{{ object.tests.all.0.title }}</b></p>
+        <div class="center">
+            {% for object in object_list %}
+                <p><b>{{ object.tests.all.0.title }}</b></p>
 
-            <form action="" method="post">
-                <p><b>{{ object.description }}</b></p>
-                {% for answer in object.answers.all %}
-                    <p><input name="answer" type="radio" value="{{ answer.is_correct }}">{{ answer }}</p>
-                {% endfor %}
-            </form>
+                <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
+                    {% csrf_token %}
+                    <ul><b>{{ object.description }}</b></p>
+                        {% for answer in object.answers.all %}
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="answer" value="{{ answer.is_correct }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
+                            </div>
+                        {% endfor %}
+                    </ul>
 
-            {% if page_obj.has_next %}
-                <a href="{{path}}?page={{ paginator.num_pages }}"><input type="submit" value="Далее"></a>
-            {% else %}
-                <a href="{% url 'mainapp:result' 1 %}"><input type="submit" value="Далее"></a>
-            {% endif %}
-        {% endfor %}
+                    {% if page_obj.has_next %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ paginator.num_pages }}">
+                    {% else %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:result' %}">
+                    {% endif %}
+                    <input type="submit" class="btn btn-secondary" value="Далее">
+                </form>
 
+            {% endfor %}
+        </div>
 
-    </div>
+    {% endwith %}
 {% endblock content %}
 
