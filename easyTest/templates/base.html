@@ -29,17 +29,21 @@
         </div>
         <div class="menu">
             <ul>
-                <li>
-                    <a href="#">
+                {% if user.is_authenticated %}
+                    <li><a href="#">
                         {% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}
-                    </a>
-                    <a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a>
-                    <a href="#">{% trans 'ВОПРОСЫ' %}</a>
-                    <a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a>
-                    <a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a>
-                    <a href="#">{% trans 'ВОЙТИ' %}</a>
-                    <a href="#">{% trans 'КОНТАКТЫ' %}</a>
-                </li>
+                    </a></li>
+                {% elif user.is_staff %}
+                    <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
+                {% else %}
+                    <li><a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a></li>
+                    <li><a href="#">{% trans 'ВОПРОСЫ' %}</a></li>
+                    <li><a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a></li>
+                    <li><a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a></li>
+                    <li><a href="#">{% trans 'ВОЙТИ' %}</a></li>
+                    <li><a href="#">{% trans 'КОНТАКТЫ' %}</a></li>
+                {% endif %}
+
             </ul>
         </div>
     </div>
