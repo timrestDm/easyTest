@@ -151,3 +151,8 @@ body {
   background-color: grey;
   border-color: green;
 }
+
+
+.custom-control-label::before{
+    background-color: #fff;
+}
