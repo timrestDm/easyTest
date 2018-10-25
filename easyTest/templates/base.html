@@ -29,18 +29,21 @@
         </div>
         <div class="menu">
             <ul>
-                {% if user.is_authenticated %}
-                    <li><a href="#">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
-                    {% if user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
-                    {% endif %}
-                {% endif %}
                 <li><a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a></li>
                 <li><a href="#">{% trans 'ВОПРОСЫ' %}</a></li>
                 <li><a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a></li>
                 <li><a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a></li>
-                <li><a href="#">{% trans 'ВОЙТИ' %}</a></li>
                 <li><a href="#">{% trans 'КОНТАКТЫ' %}</a></li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>
+                {% else %}
+                     <li><a href="{% url 'auth:login' %}">{% trans 'Войти'|upper %}</a></li>
+                {% endif %}
 
 
             </ul>

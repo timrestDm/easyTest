@@ -1,0 +1,16 @@
+{% extends 'authapp/base.html' %}
+{% load staticfiles i18n %}
+
+{% block name_page %}
+    {% trans 'Register Profile' %}
+{% endblock %}
+{% block content %}
+    <form class="form-horizontal" action="{% url 'auth:register' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br>
+        <input class="form-control" type="submit" value="Sign in">
+    </form>
+    {% include 'authapp/includes/snip_button_home.html' %}
+
+{% endblock %}

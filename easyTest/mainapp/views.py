@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
@@ -6,6 +7,7 @@ from django.urls import reverse_lazy
 from .models import *
 from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
+
 
 class MainView(TemplateView):
     """Класс отображает главную страницу"""
@@ -23,9 +25,10 @@ class UsersRedirectView(RedirectView):
         return super().get_redirect_url()
 
 
-class QuestionList(ListView):
+class QuestionList(LoginRequiredMixin, ListView):
     """docstring for test"""
     model = Question
+    login_url = reverse_lazy('authapp:login')
     paginate_by = 1
 
     def get_queryset(self):
@@ -45,10 +48,11 @@ class ResultCreate(CreateView):
         return super().form_valid(form)
 
 
-class ResultDetail(DetailView):
+class ResultDetail(LoginRequiredMixin, DetailView):
     """docstring for ResultDetail"""
     model = Result
     slug_field = 'owner'
+    login_url = reverse_lazy('authapp:login')
 
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
