@@ -52,13 +52,13 @@ body {
     margin-right: 5px;
 }
 
-.menu {
+.menu ul {
     display: flex;
-    flex-direction: row;
+    list-style: none;
 }
 
-.menu ul {
-    list-style-type: none;
+.menu li {
+    padding: 0 5px;
 }
 
 .menu a {
@@ -66,11 +66,6 @@ body {
     color: #333333;
     font-weight: 900;
     font-size: 14px;
-    padding-right: 7px;
-}
-
-.menu a:last-child {
-    padding-right: 0px;
 }
 
 .menu a:hover {
