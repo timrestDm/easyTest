@@ -8,23 +8,24 @@
 {% block content %}
 
     <div class="center">
+        {% if object %}
+            <p><b>Тест "{{ object.test.title }}" завершен</b></p>
+            <p>Количество правильных ответов для успешного прохождения теста: {{ object.test.required_correct_answers }}</p>
+            <p><b>Ваш результат, {{ object.owner.username }}: </b></p>
+            {% if object.is_test_passed %}
+                <p><b>Тест пройден</b></p>
+            {% else %}
+                <p><b>Тест не пройден</b></p>
+            {% endif %}
 
-        <p><b>Результаты, пользователя {{ object.owner.username }} по тесту {{ object.test.title }}:</b></p>
-        <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
-        <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
-        <p>Затраченное время: {{ object.time }}</p>
+            <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
+            <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
+            <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>
 
-        {% if is_test_passed %}
-            <p><b>Тест пройден</b></p>
+            <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
         {% else %}
-            <p><b>Тест не пройден</b></p>
+            <p><b>Нет результатов по тесту</b></p>
         {% endif %}
-
-        <a href="{% url 'mainapp:main'  %}">На главную</a>
-
-
-
-
     </div>
 {% endblock content %}
 

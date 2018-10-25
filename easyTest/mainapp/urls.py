@@ -10,6 +10,8 @@ urlpatterns = [
     path('redirect/<slug:slug>/', mainapp.UsersRedirectView.as_view(), name='redirect'),
 
     path('test/<int:pk>', mainapp.QuestionList.as_view(), name='test'),
-    path('result/<int:pk>', mainapp.ResultDetail.as_view(), name='result'),
+    path('result/', mainapp.ResultDetail.as_view(), name='result'),
+    path('result/edit/<int:test>/', mainapp.ResultUpdate.as_view(), name='result_update'),
+
     # path('questions/', QuestionListView.as_view(), name='questions'),
     ]

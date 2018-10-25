@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
@@ -114,6 +115,13 @@ class TestCategory(Core):
         verbose_name_plural = _('Категории тестов')
 
 
+class TestManager(CoreManager):
+    """docstring for  QuestionManager"""
+
+    def get_required_correct_answers(self, pk):
+        return Test.objects.filter(pk=pk).last().required_correct_answers
+
+
 class Test(Core):
     """ docstring for Test"""
 
@@ -127,6 +135,7 @@ class Test(Core):
     questions = models.ManyToManyField(Question, blank=True, related_name='tests')
     max_questions = models.PositiveIntegerField(_('Count questions'), default=0, blank=True)
     required_correct_answers = models.PositiveIntegerField(_('Required correct answers'), default=0, blank=True)
+    objects = TestManager()
 
     TEST_TYPE_CHOICES = (
         (0, 'teaching'),
@@ -148,7 +157,7 @@ class Result(Core):
     test = models.ForeignKey(Test, null=True, blank=True, related_name='results', on_delete=models.CASCADE)
     right_answers_count = models.PositiveIntegerField(_('right answers count'), default=0, blank=True)
     wrong_answers_count = models.PositiveIntegerField(_('wrong answers count'), default=0, blank=True)
-    time = models.TimeField(_('time for test'), blank=True)
+    time = models.TimeField(_('time for test'), default=timezone.now, blank=True)
     is_test_passed = models.BooleanField(_('is test passed'), default=False)
 
     def __str__(self):
