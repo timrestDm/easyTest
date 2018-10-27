@@ -72,7 +72,7 @@ class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
     def get_test(self, pk):
-        return self.filter(tests__questions__pk=pk)
+        return self.filter(tests=pk)
 
 
 class Question(Core):
