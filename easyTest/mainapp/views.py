@@ -35,6 +35,11 @@ class QuestionList(LoginRequiredMixin, ListView):
         return self.model.objects.get_test(self.kwargs['pk'])
 
 
+class TestList(LoginRequiredMixin, ListView):
+    model = Test
+    login_url = reverse_lazy('authapp:login')
+
+
 class ResultCreate(CreateView):
     """docstring for ResultCreate"""
     fields = '__all__'
@@ -100,4 +105,5 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         response = super().form_valid(form)
         return response
+
 
