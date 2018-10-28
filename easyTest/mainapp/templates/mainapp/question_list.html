@@ -26,7 +26,7 @@
                     {% if page_obj.has_next %}
                         <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
                     {% else %}
-                        <input type="hidden" name="href" value="{% url 'mainapp:result' %}">
+                        <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
                     {% endif %}
                     <input type="submit" class="btn btn-secondary" value="Далее">
                 </form>

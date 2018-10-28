@@ -116,10 +116,10 @@ class TestCategory(Core):
 
 
 class TestManager(CoreManager):
-    """docstring for  QuestionManager"""
+    """docstring for  TestManager"""
 
     def get_required_correct_answers(self, pk):
-        return Test.objects.filter(pk=pk).last().required_correct_answers
+        return self.model.objects.get(pk=pk).required_correct_answers
 
 
 class Test(Core):
@@ -146,6 +146,13 @@ class Test(Core):
     Необходимо будет также добавить время на прохождение теста, проценты правильных ответов для разных оценок."""
 
 
+class ResultManager(CoreManager):
+    """docstring for  ResultManager"""
+
+    def get_test(self, pk):
+        return self.model.objects.filter(test_id=pk)
+
+
 class Result(Core):
     """ класс результата """
 
@@ -159,6 +166,7 @@ class Result(Core):
     wrong_answers_count = models.PositiveIntegerField(_('wrong answers count'), default=0, blank=True)
     time = models.TimeField(_('time for test'), default=timezone.now, blank=True)
     is_test_passed = models.BooleanField(_('is test passed'), default=False)
+    objects = ResultManager()
 
     def __str__(self):
         return f'{self.owner.username}'

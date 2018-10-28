@@ -49,6 +49,7 @@ class ResultCreate(CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
+        form.instance.active = True
         self.success_url = self.request.POST['href']
         return super().form_valid(form)
 
@@ -62,7 +63,8 @@ class ResultDetail(LoginRequiredMixin, DetailView):
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
         try:
-            response = super().get_object()
+            que = Result.objects.get_test(self.kwargs['test'])
+            response = super().get_object(queryset=que)
         except:
             response = None
         return response
@@ -83,6 +85,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         self.success_url = self.request.POST['href']
         form.instance.owner = self.request.user
         form.instance.test = form.fields['test'].to_python(self.kwargs['test'])
+        form.instance.active = True
 
         if self.success_url.endswith('page=2'):          # для обновления результатов при повторном прохождении теста
             form.instance.right_answers_count = 0
