@@ -27,9 +27,17 @@ class AnswerAdmin(admin.ModelAdmin):
 class TestAdmin(admin.ModelAdmin):
     fields = ('title', 'description', 'owner', 'questions', 'keywords',  'category', 'max_questions',
               'required_correct_answers', 'active', 'sort')
+    list_display = ('title', 'owner',  'category', 'max_questions', 'required_correct_answers', 'active', 'sort')
+    
 
 class ResultAdmin(admin.ModelAdmin):
     fields = ('owner', 'test', 'right_answers_count', 'wrong_answers_count', 'time',  'is_test_passed', 'active', 'sort')
+    list_display = ('owner', 'test', 'right_answers_count', 'wrong_answers_count',
+                    'get_time',  'is_test_passed', 'active', 'sort')
+
+    def get_time(self, obj):
+        return f'{obj.time}'.split('.')[0]
+    get_time.short_description = 'Time '
 
 
 
