@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Созданные тесты' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        <p class="test_welcome">{% trans 'Ваши тесты, пользователь '|upper %}{{ user.username|upper }}</p>
+        <div class="test_container">
+            {% include 'mainapp/includes/inc_my_tests_list.html' %}
+        </div>
+    </div>
+
+{% endblock content %}
