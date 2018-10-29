@@ -7,7 +7,6 @@
 
 {% block content %}
     {% with current_kwargs=request.resolver_match.kwargs.pk  %}
-
         <div class="center">
             {% for object in object_list %}
                 <p><b>{{ object.tests.all.0.title }}</b></p>

@@ -9,8 +9,8 @@ from .models import *
 
 class AnswerInline(admin.TabularInline):
     model = Answer
-
-
+    exclude = ('title',)
+    
 class QuestionAdmin(admin.ModelAdmin):
     fields = ('description', 'active', 'sort')
     inlines = [AnswerInline,]

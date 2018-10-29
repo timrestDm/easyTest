@@ -104,15 +104,15 @@ body {
     text-align: center; 
     text-decoration: none;
     color: #333333;
-    font-weight: 900;
     font-size: 14px;
     padding: 20px 40px;
-    border: 2px solid #333333;
+    border: 1px solid #333333;
     transition-duration: 0.5s;
     border-radius: 5px;
     width: 100px;
     height: 30px;
     box-sizing: content-box;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
 }
 
 .button_row a:hover {
@@ -155,4 +155,100 @@ body {
 
 .custom-control-label::before{
     background-color: #fff;
+}
+
+.test_create {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.test_create input, select, textarea {
+    margin-bottom: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.denied {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.denied p, a {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 450px;
+}
+
+.links a {
+    text-decoration: none;
+}
+
+.base_link {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    /*font-weight: 700;*/
+    font-size: 14px;
+    padding: 20px 40px;
+    border: 1px solid #333333;
+    transition-duration: 0.5s;
+    border-radius: 5px;
+    width: 50px;
+    height: 10px;
+    box-sizing: content-box;
+}
+
+.base_link:hover {
+    background-color: #333333;
+    color: aliceblue;
+}
+
+.test_welcome {
+    font-weight: 900;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.test_container div:first-child {
+    border-top: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+.iter_test {
+    display: flex;
+    flex-direction: row;
+    width: 570px;
+    height: 60px;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+.test_title {
+    width: 100px;
+    margin: 0px;
+    font-weight: 900;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.iter_test button {
+    padding: 7px 30px;
+    background-color: transparent;
+    text-align: center;
+    margin: auto;
+    line-height: 5px;
+}
+
+.iter_test a {
+    padding: 7px 30px;
+    text-decoration: none;
 }

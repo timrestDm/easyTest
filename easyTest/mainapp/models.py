@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
 
 class CoreQuerySet(models.QuerySet):
@@ -141,12 +142,15 @@ class Test(Core):
     objects = TestManager()
 
     TEST_TYPE_CHOICES = (
-        (0, 'teaching'),
-        (1, 'exam'),
+        ('th', 'teaching'),  # с цифрами (под индексом 0 в кортежах) форма создания теста не проходила, изменил на строку
+        ('ex', 'exam'),
         )
-    test_type = models.CharField(max_length=2, choices=TEST_TYPE_CHOICES, default=0)
+
+    test_type = models.CharField(max_length=2, choices=TEST_TYPE_CHOICES, default='th')
     """ типы тестов - учебный и экзаменационный(на время и оценку) - это реализуем позже.
     Необходимо будет также добавить время на прохождение теста, проценты правильных ответов для разных оценок."""
+    def get_absolute_url(self):
+        return reverse_lazy('mainapp:staff_list')
 
 
 class ResultManager(CoreManager):
