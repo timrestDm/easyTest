@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Отказано в доступе' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+    	<div class="denied">
+    		<p>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</p>
+    		<p>{% trans 'У вас нет прав на данную операцию'|upper %}</p>
+    		<p>{% trans 'Пожалуйста выберите дальнейшие действия'|upper %}</p>
+    		<div class="links">
+    			{% if user.is_authenticated %}
+    				<a class="base_link" href="{% url 'auth:logout' %}">{% trans 'Выйти' %}</a>
+    			{% else %}
+    				<a class="base_link" href="{% url 'auth:login' %}">{% trans 'Страница авторизации' %}</a>
+    			{% endif %}
+    			<a class="base_link" href="{% url 'mainapp:main' %}">{% trans 'На главную' %}</a>
+    			<a class="base_link" href="#">{% trans 'Тесты' %}</a>
+    		</div>
+    	</div>
+    </div>
+
+{% endblock content %}
