@@ -31,7 +31,7 @@
             <ul>
                 <li><a href="{%  url 'mainapp:main' %}">{% trans 'НА ГЛАВНУЮ' %}</a></li>
                 <li><a href="#">{% trans 'ВОПРОСЫ' %}</a></li>
-                <li><a href="#">{% trans 'СОЗДАТЬ ТЕСТ' %}</a></li>
+                <li><a href="{% url 'mainapp:create_test' %}">{% trans 'СОЗДАТЬ ТЕСТ' %}</a></li>
                 <li><a href="#">{% trans 'ПРОЙТИ ТЕСТ' %}</a></li>
                 <li><a href="#">{% trans 'КОНТАКТЫ' %}</a></li>
 
@@ -39,6 +39,7 @@
                     <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
+                        <li><a href="{% url 'mainapp:staff_list' %}">{% trans 'Мои тесты'|upper %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>
                 {% else %}

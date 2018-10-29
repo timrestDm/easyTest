@@ -1,12 +1,16 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
+from django.views.generic.edit import DeleteView
 from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
 from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
+from mainapp.forms import TestForm
 
 
 class MainView(TemplateView):
@@ -112,5 +116,46 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         response = super().form_valid(form)
         return response
+
+
+class MyTestsList(UserPassesTestMixin, ListView):
+    model = Test
+    template_name = 'mainapp/my_tests_list.html'
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(owner=self.request.user)
+
+
+class TestCreate(UserPassesTestMixin, CreateView):
+    model = Test
+    form_class = TestForm
+    raise_exception = True
+    # success_url = reverse_lazy('mainapp:main')
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+class TestDeleteView(UserPassesTestMixin, DeleteView):
+    model = Test
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_success_url(self):
+        if self.model.objects.filter(owner=self.request.user).count() == 1:
+            return reverse_lazy('mainapp:main')
+        else:
+            return reverse_lazy('mainapp:staff_list')
+
 
 
