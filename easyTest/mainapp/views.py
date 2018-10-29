@@ -24,6 +24,8 @@ class UsersRedirectView(RedirectView):
         login(self.request, user)
         return super().get_redirect_url()
 
+g_user_test_time_begin = {}
+
 
 class QuestionList(LoginRequiredMixin, ListView):
     """docstring for test"""
@@ -32,6 +34,8 @@ class QuestionList(LoginRequiredMixin, ListView):
     paginate_by = 1
 
     def get_queryset(self):
+        if self.request.get_full_path().find('page') == -1:
+            g_user_test_time_begin[self.request.user] = datetime.now()
         return Test.objects.get_questions(self.kwargs['pk'])
 
 
@@ -90,7 +94,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         if self.success_url.endswith('page=2'):          # для обновления результатов при повторном прохождении теста
             form.instance.right_answers_count = 0
             form.instance.wrong_answers_count = 0
-            form.instance.time = datetime.now()
+            form.instance.time = g_user_test_time_begin[self.request.user]
 
         if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
             hours, minutes, seconds = str(form.instance.time).split(':')
