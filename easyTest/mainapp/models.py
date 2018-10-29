@@ -71,8 +71,7 @@ class Keyword(Core):
 class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
-    def get_test(self, pk):
-        return self.filter(tests=pk)
+    pass
 
 
 class Question(Core):
@@ -119,7 +118,11 @@ class TestManager(CoreManager):
     """docstring for  TestManager"""
 
     def get_required_correct_answers(self, pk):
-        return self.model.objects.get(pk=pk).required_correct_answers
+        return self.get(pk=pk).required_correct_answers
+
+    def get_questions(self, pk):
+        test = self.get(pk=pk)
+        return test.questions.all()[:test.max_questions]
 
 
 class Test(Core):
@@ -150,7 +153,7 @@ class ResultManager(CoreManager):
     """docstring for  ResultManager"""
 
     def get_test(self, pk):
-        return self.model.objects.filter(test_id=pk)
+        return self.filter(test_id=pk)
 
 
 class Result(Core):

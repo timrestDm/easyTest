@@ -32,7 +32,7 @@ class QuestionList(LoginRequiredMixin, ListView):
     paginate_by = 1
 
     def get_queryset(self):
-        return self.model.objects.get_test(self.kwargs['pk'])
+        return Test.objects.get_questions(self.kwargs['pk'])
 
 
 class TestList(LoginRequiredMixin, ListView):
