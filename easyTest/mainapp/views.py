@@ -28,8 +28,8 @@ class UsersRedirectView(RedirectView):
         login(self.request, user)
         return super().get_redirect_url()
 
-g_user_test_time_begin = {}
 
+g_user_test_time_begin = {}
 
 class QuestionList(LoginRequiredMixin, ListView):
     """docstring for test"""
@@ -38,7 +38,7 @@ class QuestionList(LoginRequiredMixin, ListView):
     paginate_by = 1
 
     def get_queryset(self):
-        if self.request.get_full_path().find('page') == -1:
+        if 'page' not in self.request.get_full_path():
             g_user_test_time_begin[self.request.user] = datetime.now()
         return Test.objects.get_questions(self.kwargs['pk'])
 
