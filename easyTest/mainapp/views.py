@@ -105,8 +105,10 @@ class ResultUpdate(ResultDetail, UpdateView):
             seconds = int(seconds.split('.')[0])
             form.instance.time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
-        if self.request.POST.get('answer') and self.request.POST['answer'] == 'True':
-            form.instance.right_answers_count += 1
+        if self.request.POST.get('answer_id'):
+            answer = Answer.objects.get(pk=self.request.POST['answer_id'])
+            if answer.is_correct is True:
+                form.instance.right_answers_count += 1
         else:
             form.instance.wrong_answers_count += 1
 
@@ -143,6 +145,7 @@ class TestCreate(UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
 
 class TestDeleteView(UserPassesTestMixin, DeleteView):
     model = Test

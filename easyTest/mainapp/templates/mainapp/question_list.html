@@ -16,7 +16,7 @@
                     <ul><b>{{ object.description }}</b></p>
                         {% for answer in object.answers.all %}
                             <div class="custom-control custom-radio">
-                                <input type="radio" name="answer" value="{{ answer.is_correct }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
+                                <input type="radio" name="answer_id" value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
                                 <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
                             </div>
                         {% endfor %}
