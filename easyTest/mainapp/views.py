@@ -48,39 +48,37 @@ class TestList(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('authapp:login')
 
 
-class StaffTestList(UserPassesTestMixin, ListView):
-    model = Test
-    template_name = 'mainapp/tests_staff_list.html'
+class StaffPassesTestMixin(UserPassesTestMixin):
+    """Миксин делает проверку пользователя на принадлежность к персоналу""" 
     raise_exception = True
 
     def test_func(self):
         return self.request.user.is_staff
+
+
+class StaffTestList(StaffPassesTestMixin, ListView):
+    """Класс для просмотра всех созданных тестов пользователем"""
+    model = Test
+    template_name = 'mainapp/tests_staff_list.html'
 
     def get_queryset(self):
         return self.model.objects.get_tests(self.request)
 
 
-class TestCreate(UserPassesTestMixin, CreateView):
+class TestCreate(StaffPassesTestMixin, CreateView):
+    """Класс создания нового теста"""
     model = Test
     form_class = TestForm
-    raise_exception = True
-    # success_url = reverse_lazy('mainapp:main')
-
-    def test_func(self):
-        return self.request.user.is_staff
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
-class TestDeleteView(UserPassesTestMixin, DeleteView):
+class TestDeleteView(StaffPassesTestMixin, DeleteView):
+    """Класс удаления теста"""
     model = Test
-    raise_exception = True
-
-    def test_func(self):
-        return self.request.user.is_staff
-
+    
     def get_success_url(self):
         if self.model.objects.filter(owner=self.request.user).count() == 1:
             return reverse_lazy('mainapp:main')
