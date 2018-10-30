@@ -4,13 +4,6 @@
 {% block title %}
     <title>{% trans 'Вопросы' %}</title>
 {% endblock title%}
-{% block styles %}
-{{block.super}}
-<script>if ($('input[name=answer_id]:checked').length > 0) {
-    console.log('got it');
-}
-</script>
-{% endblock %}
 {% block content %}
 <!-- hhhhhhh -->
     <div class="center">
