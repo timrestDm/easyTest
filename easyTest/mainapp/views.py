@@ -15,6 +15,14 @@ from mainapp.forms import TestForm
 g_user_test_time_begin = {}       # глобальная переменная(пользователь-время) для фиксации начала теста
 
 
+class StaffPassesTestMixin(UserPassesTestMixin):
+    """Миксин делает проверку пользователя на принадлежность к персоналу""" 
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+
 class MainView(TemplateView):
     """Класс отображает главную страницу"""
     template_name = 'mainapp/index.html'
@@ -46,14 +54,6 @@ class QuestionList(LoginRequiredMixin, ListView):
 class TestList(LoginRequiredMixin, ListView):
     model = Test
     login_url = reverse_lazy('authapp:login')
-
-
-class StaffPassesTestMixin(UserPassesTestMixin):
-    """Миксин делает проверку пользователя на принадлежность к персоналу""" 
-    raise_exception = True
-
-    def test_func(self):
-        return self.request.user.is_staff
 
 
 class StaffTestList(StaffPassesTestMixin, ListView):
