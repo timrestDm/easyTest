@@ -35,9 +35,10 @@
 
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
+                    <li><a href="{% url 'mainapp:results' %}">{% trans 'Результаты'|upper %}</a></li>
                     {% if user.is_staff %}
-                        <li><a href="{% url 'mainapp:staff_list' %}">{% trans 'Мои тесты'|upper %}</a></li>
-                        <li><a href="{% url 'mainapp:create_test' %}">{% trans 'Создать тест'|upper %}</a></li>
+                        <li><a href="{% url 'mainapp:tests_staff' %}">{% trans 'Мои тесты'|upper %}</a></li>
+                        <li><a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест'|upper %}</a></li>
                         <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>

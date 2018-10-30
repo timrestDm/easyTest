@@ -252,3 +252,7 @@ body {
     padding: 7px 30px;
     text-decoration: none;
 }
+
+.table_result {
+    max-width: 800px;
+}
