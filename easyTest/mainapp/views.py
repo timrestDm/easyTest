@@ -12,6 +12,8 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
 
+g_user_test_time_begin = {}       # глобальная переменная(пользователь-время) для фиксации начала теста
+
 
 class MainView(TemplateView):
     """Класс отображает главную страницу"""
@@ -28,8 +30,6 @@ class UsersRedirectView(RedirectView):
         login(self.request, user)
         return super().get_redirect_url()
 
-
-g_user_test_time_begin = {}
 
 class QuestionList(LoginRequiredMixin, ListView):
     """docstring for test"""
@@ -48,6 +48,46 @@ class TestList(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('authapp:login')
 
 
+class StaffTestList(UserPassesTestMixin, ListView):
+    model = Test
+    template_name = 'mainapp/tests_staff_list.html'
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_queryset(self):
+        return self.model.objects.get_tests(self.request)
+
+
+class TestCreate(UserPassesTestMixin, CreateView):
+    model = Test
+    form_class = TestForm
+    raise_exception = True
+    # success_url = reverse_lazy('mainapp:main')
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class TestDeleteView(UserPassesTestMixin, DeleteView):
+    model = Test
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_success_url(self):
+        if self.model.objects.filter(owner=self.request.user).count() == 1:
+            return reverse_lazy('mainapp:main')
+        else:
+            return reverse_lazy('mainapp:tests_staff')
+
+
 class ResultCreate(CreateView):
     """docstring for ResultCreate"""
     fields = '__all__'
@@ -60,6 +100,14 @@ class ResultCreate(CreateView):
         form.instance.active = True
         self.success_url = self.request.POST['href']
         return super().form_valid(form)
+
+
+class ResultList(LoginRequiredMixin, ListView):
+    model = Result
+    login_url = reverse_lazy('authapp:login')
+
+    def get_queryset(self):
+        return self.model.objects.get_results(self.request)
 
 
 class ResultDetail(LoginRequiredMixin, DetailView):
@@ -118,47 +166,4 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         response = super().form_valid(form)
         return response
-
-
-class MyTestsList(UserPassesTestMixin, ListView):
-    model = Test
-    template_name = 'mainapp/my_tests_list.html'
-    raise_exception = True
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(owner=self.request.user)
-
-
-class TestCreate(UserPassesTestMixin, CreateView):
-    model = Test
-    form_class = TestForm
-    raise_exception = True
-    # success_url = reverse_lazy('mainapp:main')
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-
-class TestDeleteView(UserPassesTestMixin, DeleteView):
-    model = Test
-    raise_exception = True
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-    def get_success_url(self):
-        if self.model.objects.filter(owner=self.request.user).count() == 1:
-            return reverse_lazy('mainapp:main')
-        else:
-            return reverse_lazy('mainapp:staff_list')
-
-
 

@@ -125,6 +125,9 @@ class TestManager(CoreManager):
         test = self.get(pk=pk)
         return test.questions.all()[:test.max_questions]
 
+    def get_tests(self, request):
+        return self.filter(owner=request.user)
+
 
 class Test(Core):
     """ docstring for Test"""
@@ -149,8 +152,9 @@ class Test(Core):
     test_type = models.CharField(max_length=2, choices=TEST_TYPE_CHOICES, default='th')
     """ типы тестов - учебный и экзаменационный(на время и оценку) - это реализуем позже.
     Необходимо будет также добавить время на прохождение теста, проценты правильных ответов для разных оценок."""
+
     def get_absolute_url(self):
-        return reverse_lazy('mainapp:staff_list')
+        return reverse_lazy('mainapp:tests_staff')
 
 
 class ResultManager(CoreManager):
@@ -158,6 +162,9 @@ class ResultManager(CoreManager):
 
     def get_test(self, pk):
         return self.filter(test_id=pk)
+
+    def get_results(self, request):
+        return self.filter(owner=request.user)
 
 
 class Result(Core):

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Результаты' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        {% if object_list %}
+            <b>{% trans 'Выберите тест, чтобы посмотреть результаты подробнее:' %}</b></p>
+            <table class="table table_result">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>{% trans 'Тест' %}</th>
+                    <th>{% trans 'Результат' %}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'mainapp:result' object.test.pk %}">{{ object.test.title }}</a></td>
+                        <td>{% if object.is_test_passed %}{% trans 'Пройден' %}{% else %}{% trans 'Не пройден' %}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не прошли ни один тест' %}</p>
+            <a class="btn btn-secondary" href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
+        {% endif %}
+    </div>
+
+{% endblock content %}
