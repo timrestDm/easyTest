@@ -1,0 +1,64 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block title %}
+        <title>Base</title>
+    {% endblock title %}
+
+    {% block styles %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endblock styles %}
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="header">
+    <div class="center_content_header">
+        <div class="logo">
+            <i class="fas fa-check-circle"></i>
+            <a href="{% url 'mainapp:main' %}">easytest</a>
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="{% url 'mainapp:main' %}">{% trans 'На главную'|upper %}</a></li>
+                <li><a href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест'|upper %}</a></li>
+                <li><a href="#">{% trans 'КОНТАКТЫ' %}</a></li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
+                    <li><a href="{% url 'mainapp:results' %}">{% trans 'Результаты'|upper %}</a></li>
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'mainapp:tests_staff' %}">{% trans 'Мои тесты'|upper %}</a></li>
+                        <li><a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест'|upper %}</a></li>
+                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>
+                {% else %}
+                     <li><a href="{% url 'auth:login' %}">{% trans 'Войти'|upper %}</a></li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% block content %}
+    <!--       для того чтобы прижать футер к низу экрана, при контенте, занимающем меньше экрана, в стиле главного блока-контейнера требуется прописать flex: 1;-->
+{% endblock content %}
+
+<div class="footer">
+    <p>GeekUniversity Python 10/06/18</p>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Тесты' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        <ul><b>{% trans 'Выберите тест для прохождения' %}</b></p>
+            {% for object in object_list %}
+                <li><a href="{% url 'mainapp:test' object.pk %}">{{ object.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock content %}
+

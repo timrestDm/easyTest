@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Создание теста' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        <form class="test_create" action="#" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="#" value="{% trans 'Создать' %}">
+        </form>
+    </div>
+
+{% endblock content %}

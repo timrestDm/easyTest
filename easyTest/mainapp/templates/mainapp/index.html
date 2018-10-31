@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Главная' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        <div class="button_row">
+            <a href="{% url 'mainapp:redirect' 'test' %}">{% trans 'Войти пользователем' %}</a>
+            <a href="{% url 'mainapp:redirect' 'admin' %}">{% trans 'Войти админом' %}</a>
+        </div>
+        <div class="button_row">
+            <a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a>
+            <a href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
+        </div>
+    </div>
+
+{% endblock content %}
+

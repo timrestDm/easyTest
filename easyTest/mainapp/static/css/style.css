@@ -1,0 +1,258 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+    min-height: 100vh;
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+
+.header,
+.footer {
+    display: flex;
+    min-height: 80px;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+    justify-content: center;
+    align-items: center;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.center_content_header {
+    display: flex;
+    width: 1270px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    padding: 0;
+    font-size: 24px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+    letter-spacing: 0.5px;
+    line-height: normal;
+    color: #333333;
+}
+
+.logo a {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 900;
+}
+
+.header i {
+    color: #333333;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.menu ul {
+    display: flex;
+    list-style: none;
+}
+
+.menu li {
+    padding: 0 5px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    color: #5F5B5B;
+}
+
+.footer {
+    border-top: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+.footer p {
+    color: #333333;
+    font-weight: 900;
+    font-size: 18px;
+    padding-right: 7px;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_row {
+    display: flex;
+    justify-content: space-around;
+    width: 380px;
+}
+
+.button_row a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; 
+    text-decoration: none;
+    color: #333333;
+    font-size: 14px;
+    padding: 20px 40px;
+    border: 1px solid #333333;
+    transition-duration: 0.5s;
+    border-radius: 5px;
+    width: 100px;
+    height: 30px;
+    box-sizing: content-box;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.button_row a:hover {
+    background-color: #333333;
+    color: aliceblue;
+} 
+
+
+.button_row:first-child {
+    margin-bottom: 10px;
+}
+
+
+.user_log {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.answers {
+    width: 40rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.page-item.done .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: mediumseagreen;
+  border-color: green;
+}
+
+.page-item.missed .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: grey;
+  border-color: green;
+}
+
+
+.custom-control-label::before{
+    background-color: #fff;
+}
+
+.test_create {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.test_create input, select, textarea {
+    margin-bottom: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.denied {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.denied p, a {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 450px;
+}
+
+.links a {
+    text-decoration: none;
+}
+
+.base_link {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    /*font-weight: 700;*/
+    font-size: 14px;
+    padding: 20px 40px;
+    border: 1px solid #333333;
+    transition-duration: 0.5s;
+    border-radius: 5px;
+    width: 50px;
+    height: 10px;
+    box-sizing: content-box;
+}
+
+.base_link:hover {
+    background-color: #333333;
+    color: aliceblue;
+}
+
+.test_welcome {
+    font-weight: 900;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.test_container div:first-child {
+    border-top: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+.iter_test {
+    display: flex;
+    flex-direction: row;
+    width: 570px;
+    height: 60px;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+.test_title {
+    width: 100px;
+    margin: 0px;
+    font-weight: 900;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+}
+
+.iter_test button {
+    padding: 7px 30px;
+    background-color: transparent;
+    text-align: center;
+    margin: auto;
+    line-height: 5px;
+}
+
+.iter_test a {
+    padding: 7px 30px;
+    text-decoration: none;
+}
+
+.table_result {
+    max-width: 800px;
+}
