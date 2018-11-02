@@ -169,7 +169,7 @@ class ResultManager(CoreManager):
     """docstring for  ResultManager"""
 
     def get_test_queryset(self, request, pk):
-        """получаем тест пользователя queryset'ом для ResultCreate (hard_delete) и для ResultDetail"""
+        """получаем результат по тесту пользователя queryset'ом для ResultCreate (hard_delete) и для ResultDetail"""
         return self.filter(owner=request.user, test_id=pk)
 
     def get_results(self, request):
