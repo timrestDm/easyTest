@@ -6,23 +6,48 @@
 {% endblock title%}
 
 {% block content %}
-
-    <div class="center">
+    <div class="content">
         {% if object %}
-            <p><b>Тест "{{ object.test.title }}" завершен</b></p>
-            <p>Количество правильных ответов для успешного прохождения теста: {{ object.test.required_correct_answers }}</p>
-            <p><b>Ваш результат, {{ object.owner.username }}: </b></p>
+            <p><b>Тест "{{ object.test.title }}"</b></p>
+
             {% if object.is_test_passed %}
-                <p><b>Тест пройден</b></p>
+                <p class="font-weight-bold text-success">Тест пройден</p>
             {% else %}
-                <p><b>Тест не пройден</b></p>
+                <p class="font-weight-bold text-danger">Тест не пройден</p>
+                <p>Количество правильных ответов для успешного прохождения теста: {{ object.test.required_correct_answers }}</p>
+
             {% endif %}
 
-            <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
-            <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
-            <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>
+            <div class="bl_result_info">
+                <div class="result_info">
+                    <p class="font-weight-bold">Ваш результат, {{ object.owner.username|title }}: </p>
+                    <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
+                    <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
+                    <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>
+                </div>
 
-            <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
+                {% if object.wrong_answers_count %}
+                    <p class="answers_wrong">{% trans 'Неправильные ответы:' %}</p>
+                    {% for object in user_incorrect_answers %}
+                        <p class="question">{{ object.question }}</p>
+                        <p class="answer_info">Ваш ответ:</p>
+                        <p class="answer">{{ object.user_answer }}</p>
+
+                    {% endfor %}
+                {% endif %}
+
+                <div class="nav">
+                    {% if object.wrong_answers_count %}
+                        <form action="{% url 'mainapp:result_create' object.test.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" name="test_name" value="Пересдать тест" class="btn btn-secondary btn_repeat">
+                        </form>
+{#                        <a href="{% url 'mainapp:test' object.test.id %}" class="btn btn-secondary btn_repeat">Пересдать тест</a>#}
+                    {% endif %}
+                    <a href="{% url 'mainapp:results'  %}" class="btn btn-secondary">Результаты</a>
+                    <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
+                </div>
+            </div>
         {% else %}
             <p><b>Нет результатов по тесту</b></p>
         {% endif %}

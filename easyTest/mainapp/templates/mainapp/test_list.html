@@ -10,7 +10,12 @@
     <div class="center">
         <ul><b>{% trans 'Выберите тест для прохождения' %}</b></p>
             {% for object in object_list %}
-                <li><a href="{% url 'mainapp:test' object.pk %}">{{ object.title }}</a></li>
+                <li>
+                    <form action="{% url 'mainapp:result_create' object.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" name="test_name" value="{{ object.title }}" class="btn btn-link">
+                    </form>
+                </li>
             {% endfor %}
         </ul>
     </div>

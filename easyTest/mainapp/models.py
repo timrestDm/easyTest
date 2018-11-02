@@ -90,6 +90,13 @@ class Question(Core):
         return f'{self.description}'
 
 
+class AnswerManager(CoreManager):
+    """docstring for   AnswerManager"""
+
+    def get_correct_answer(self, question):
+        return self.get(question=question, is_correct=True)
+
+
 class Answer(Core):
     """ класс ответа """
 
@@ -100,6 +107,7 @@ class Answer(Core):
     # text = models.CharField(_('text'), max_length=250, blank=False)
     is_correct = models.BooleanField(_('is correct'), default=False)
     question = models.ForeignKey(Question, null=True, blank=True, related_name='answers', on_delete=models.CASCADE)
+    objects = AnswerManager()
 
     def __str__(self):
         return f'{self.description}'
@@ -160,8 +168,9 @@ class Test(Core):
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
 
-    def get_test(self, pk):
-        return self.filter(test_id=pk)
+    def get_test_queryset(self, request, pk):
+        """получаем тест пользователя queryset'ом для ResultCreate (hard_delete) и для ResultDetail"""
+        return self.filter(owner=request.user, test_id=pk)
 
     def get_results(self, request):
         return self.filter(owner=request.user)
@@ -183,7 +192,17 @@ class Result(Core):
     objects = ResultManager()
 
     def __str__(self):
-        return f'{self.owner.username}'
+        return f'{self.owner.username}_{self.test.title}'
+
+
+class UserAnswerManager(CoreManager):
+    """docstring for  UserAnswerManager"""
+
+    def get_incorrect_answers(self, request, obj):
+        return self.filter(owner=request.user, result=obj, is_correct=False)
+
+    def get_queryset_from_question(self, question):
+        return self.filter(question=question)
 
 
 class UserAnswer(Core):
@@ -202,3 +221,7 @@ class UserAnswer(Core):
     right_answer = models.TextField(_('Right answer'), blank=True, null=False)
     user_answer = models.TextField(_('User answer'), blank=True, null=False)
     is_correct = models.BooleanField(_('is user answer correct'), default=False)
+    objects = UserAnswerManager()
+
+    def __str__(self):
+        return f'{self.owner.username}_{self.result.test.title}__{self.question.description}'
