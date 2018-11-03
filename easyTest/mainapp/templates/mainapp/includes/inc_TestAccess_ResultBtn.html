@@ -1,0 +1,21 @@
+{% load static i18n %}
+
+{% if access_block %}
+    <div class="text-center font-weight-bold text-danger">
+        <p>Вы попытались изменить ответ. Так делать нельзя.</p>
+        <p>Теперь придется пройти тест заново.</p>
+    </div>
+{% endif %}
+
+<div class="bl_result_info">
+    <div class="nav">
+        {% if not access_block and wrong_answers %}
+            {% include 'mainapp/includes/inc_btn_test_repeat.html' with pk=pk %}
+        {% elif access_block %}
+            {% include 'mainapp/includes/inc_btn_test_repeat.html' with pk=pk %}
+        {% endif %}
+
+        <a href="{% url 'mainapp:results'  %}" class="btn btn-secondary">Результаты</a>
+        <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
+    </div>
+</div>

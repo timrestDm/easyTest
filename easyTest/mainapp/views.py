@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
 from datetime import datetime, timedelta
-from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
 
@@ -44,7 +43,15 @@ class QuestionList(LoginRequiredMixin, ListView):
     paginate_by = 1
 
     def get_queryset(self):
+        self.request.session['test_access_key'] += 1
         return Test.objects.get_questions(self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        if self.request.session['test_access_key'] > int(self.request.GET.get('page', 1)):
+            context['access_block'] = True
+        context.update(kwargs)
+        return super().get_context_data(**context)
 
 
 class TestList(LoginRequiredMixin, ListView):
@@ -92,11 +99,11 @@ class ResultCreate(CreateView):
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
-        Result.objects.get_test_queryset(self.request, self.kwargs['test']).hard_delete()
+        self.request.session['test_access_key'] = 0
+        Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
 
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
-        form.instance.active = True
         return super().form_valid(form)
 
 
@@ -116,15 +123,15 @@ class ResultDetail(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
-        try:
-            que = Result.objects.get_test_queryset(self.request, self.kwargs['test'])
-            response = super().get_object(queryset=que)
-        except:
-            response = None
+        que = Result.objects.get_result_test_queryset(self.request, self.kwargs['test'])
+        response = super().get_object(queryset=que)
         return response
 
     def get_context_data(self, **kwargs):
         context = {}
+        if self.request.session['test_access_key'] > len(Test.objects.get_questions(self.kwargs['test'])):
+            context['access_block'] = True
+
         if self.object:
             context['object'] = self.object
             context['user_incorrect_answers'] = UserAnswer.objects.get_incorrect_answers(self.request, self.object)
@@ -146,9 +153,12 @@ class ResultUpdate(ResultDetail, UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
-        form.instance.active = True
+
+        if form.instance.active:
+            self.request.session['test_access_key'] += 1
 
         if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
+            form.instance.active = True
             hours, minutes, seconds = str(form.instance.time).split(':')
             seconds = int(seconds.split('.')[0])
             form.instance.time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
@@ -156,7 +166,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         answer = Answer.objects.get(pk=self.request.POST['answer_id'])
         self.kwargs['answer'] = answer
         self.kwargs['question'] = answer.question
-        if answer.is_correct is True:
+        if answer.is_correct:
             form.instance.right_answers_count += 1
         else:
             form.instance.wrong_answers_count += 1
@@ -164,6 +174,10 @@ class ResultUpdate(ResultDetail, UpdateView):
         required_correct_answers = Test.objects.get_required_correct_answers(pk=self.kwargs['test'])
         if form.instance.right_answers_count == required_correct_answers:
             form.instance.is_test_passed = True
+
+        if self.request.session['test_access_key'] > len(Test.objects.get_questions(self.kwargs['test'])):
+            form.instance.active = False
+            form.instance.is_test_passed = False
 
         UserAnswerUpdate.as_view()(self.request, *self.args, **self.kwargs)
         response = super().form_valid(form)

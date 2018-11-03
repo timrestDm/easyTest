@@ -1,0 +1,4 @@
+<form action="{% url 'mainapp:result_create' pk %}" method="post">
+    {% csrf_token %}
+    <input type="submit" name="test_name" value="Пересдать тест" class="btn btn-secondary btn_repeat">
+</form>

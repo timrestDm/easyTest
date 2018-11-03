@@ -11,7 +11,7 @@
     {% if object_list %}
         <p class="test_welcome">{% trans 'Ваши тесты, пользователь '|upper %}{{ user.username|upper }}</p>
         <div class="test_container">
-            {% include 'mainapp/includes/inc_my_tests_list.html' %}
+            {% include 'mainapp/includes/inc_tests_staff_list.html' %}
         </div>
     {% else %}
         <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не создали ни одного теста '|upper %}</p>
