@@ -5,9 +5,10 @@ from mainapp.models import Test
 class TestForm(forms.ModelForm):
 	class Meta:
 		model = Test
-		fields = ('title', 'description', 'test_type')
+		fields = ('title', 'description', 'test_type', 'time')
 		labels = {
 			'title': _('Название теста'),
 			'description': _('Описание теста'),
 			'test_type': _('Тип теста'),
+			'max_test_time': _('Время теста'),
 		}

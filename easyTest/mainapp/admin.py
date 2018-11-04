@@ -41,8 +41,9 @@ class AnswerAdmin(admin.ModelAdmin):
 
 class TestAdmin(admin.ModelAdmin):
     fields = ('title', 'description', 'owner', 'questions', 'keywords',  'category', 'max_questions',
-              'required_correct_answers', 'active', 'sort')
-    list_display = ('title', 'owner',  'category', 'max_questions', 'required_correct_answers', 'active', 'sort')
+              'required_correct_answers', 'active', 'sort', 'time')
+    list_display = ('title', 'owner',  'category', 'max_questions', 'required_correct_answers', 'active', 'sort',
+                    'time')
     
 
 class ResultAdmin(EditDatabaseAdmin, admin.ModelAdmin):

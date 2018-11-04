@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -150,6 +151,7 @@ class Test(Core):
     questions = models.ManyToManyField(Question, blank=True, related_name='tests')
     max_questions = models.PositiveIntegerField(_('Count questions'), default=0, blank=True)
     required_correct_answers = models.PositiveIntegerField(_('Required correct answers'), default=0, blank=True)
+    time = models.TimeField(_('Max time for test'), default=datetime.time(0, 30), blank=True)
     objects = TestManager()
 
     TEST_TYPE_CHOICES = (
