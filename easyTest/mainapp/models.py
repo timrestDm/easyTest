@@ -206,8 +206,11 @@ class Result(Core):
 class UserAnswerManager(CoreManager):
     """docstring for  UserAnswerManager"""
 
-    def get_incorrect_answers(self, request, obj):
-        return self.filter(owner=request.user, result=obj, is_correct=False)
+    def get_incorrect_answers(self, request, obj_result):
+        return self.filter(owner=request.user, result=obj_result, is_correct=False)
+
+    def get_correct_answers(self, request, obj_result):
+        return self.filter(owner=request.user, result=obj_result, is_correct=True)
 
     def get_queryset_from_question(self, question):
         return self.filter(question=question)

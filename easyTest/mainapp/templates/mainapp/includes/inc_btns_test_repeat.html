@@ -1,0 +1,12 @@
+<div class="bl_result_info">
+    <div class="nav">
+        <form action="{% url 'mainapp:result_create' pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" name="test_name" value="Пересдать тест" class="btn btn-secondary btn_repeat">
+        </form>
+
+        <a href="{% url 'mainapp:results'  %}" class="btn btn-secondary">Результаты</a>
+        <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
+
+    </div>
+</div>

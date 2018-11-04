@@ -10,7 +10,6 @@
         {% if object %}
             <p><b>Тест "{{ object.test.title }}"</b></p>
 
-            {% if not access_block %}
                 {% if object.is_test_passed %}
                     <p class="font-weight-bold text-success">Тест пройден</p>
                 {% else %}
@@ -36,9 +35,8 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-            {% endif %}
 
-            {% include 'mainapp/includes/inc_TestAccess_ResultBtn.html' with pk=object.test.id wrong_answers=object.wrong_answers_count %}
+            {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=object.test.id %}
 
         {% else %}
             <p><b>Нет результатов по тесту</b></p>

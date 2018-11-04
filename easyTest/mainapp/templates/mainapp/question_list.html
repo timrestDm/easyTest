@@ -23,35 +23,29 @@ $('#submit_b').addClass('disabled').attr('disabled','disabled');
             {% for object in object_list %}
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
                 <p><b>Время для прохождения теста: {{ object.tests.all.0.time|date:"G:i:s" }}</b></p>
-                {% if not access_block %}
-                    <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
-                        {% csrf_token %}
 
-                        <ul><b>{{ object.description }}</b></p>
-                            {% for answer in object.answers.all %}
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" name="answer_id" onchange="$('#submit_b').removeAttr('disabled').removeClass('disabled');" value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
-                                    <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
-                                </div>
-                            {% endfor %}
-                        </ul>
+                <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
+                    {% csrf_token %}
+                    <ul><b>{{ object.description }}</b></p>
+                        {% for answer in object.answers.all %}
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="answer_id" onchange="$('#submit_b').removeAttr('disabled').removeClass('disabled');" value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
+                            </div>
+                        {% endfor %}
+                    </ul>
 
-                        {% if page_obj.has_next %}
-                            <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
-                        {% else %}
-                            <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
-                        {% endif %}
-                        <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
-                    </form>
-                {% else %}
+                    {% if page_obj.has_next %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
+                    {% else %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
+                    {% endif %}
+                    <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                </form>
 
-                    {% include 'mainapp/includes/inc_TestAccess_ResultBtn.html' with pk=current_kwargs %}
-                {% endif %}
             {% endfor %}
 
-
         </div>
-
     {% endwith %}
 {% endblock content %}
 

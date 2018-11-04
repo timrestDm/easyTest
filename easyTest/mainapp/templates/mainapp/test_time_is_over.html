@@ -7,19 +7,13 @@
 
 {% block content %}
 
-<div class="center">
+    <div class="center">
+        <div class="text-center font-weight-bold text-danger">
+            <p>Время прохождения теста вышло.</p>
+        </div>
 
-<div class="text-center font-weight-bold text-danger">
-    <p>Время прохождения теста вышло.</p>
-</div>
+        {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=request.resolver_match.kwargs.test %}
 
-<div class="bl_result_info">
-    <div class="nav">
-        {% include 'mainapp/includes/inc_btn_test_repeat.html' with pk=request.resolver_match.kwargs.test %}
-
-        <a href="{% url 'mainapp:results'  %}" class="btn btn-secondary">Результаты</a>
-        <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
     </div>
-</div>
-</div>
+
 {% endblock content %}

@@ -44,15 +44,8 @@ class QuestionList(LoginRequiredMixin, ListView):
     paginate_by = 1
 
     def get_queryset(self):
-        self.request.session['test_access_key'] += 1
         return Test.objects.get_questions(self.kwargs['pk'])
 
-    def get_context_data(self, **kwargs):
-        context = {}
-        if self.request.session['test_access_key'] > int(self.request.GET.get('page', 1)):
-            context['access_block'] = True
-        context.update(kwargs)
-        return super().get_context_data(**context)
 
 class TestTimeIsOver(LoginRequiredMixin, ListView):
     template_name = 'mainapp/test_time_is_over.html'
@@ -104,7 +97,6 @@ class ResultCreate(CreateView):
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
-        self.request.session['test_access_key'] = 0
         Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
 
         form.instance.owner = self.request.user
@@ -134,9 +126,6 @@ class ResultDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = {}
-        if self.request.session['test_access_key'] > len(Test.objects.get_questions(self.kwargs['test'])):
-            context['access_block'] = True
-
         if self.object:
             context['object'] = self.object
             context['user_incorrect_answers'] = UserAnswer.objects.get_incorrect_answers(self.request, self.object)
@@ -159,6 +148,9 @@ class ResultUpdate(ResultDetail, UpdateView):
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
 
+        if form.instance.active:
+            return super().form_valid(form)
+
         hours, minutes, seconds = str(form.instance.time).split(':')
         seconds = int(seconds.split('.')[0])
         time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
@@ -166,30 +158,25 @@ class ResultUpdate(ResultDetail, UpdateView):
         if time.time() > Test.objects.get_time(self.kwargs['test']):
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
-        if form.instance.active:
-            self.request.session['test_access_key'] += 1
-
-        if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
-            form.instance.active = True
-            form.instance.time = time
-
         answer = Answer.objects.get(pk=self.request.POST['answer_id'])
         self.kwargs['answer'] = answer
         self.kwargs['question'] = answer.question
-        if answer.is_correct:
-            form.instance.right_answers_count += 1
-        else:
-            form.instance.wrong_answers_count += 1
 
         required_correct_answers = Test.objects.get_required_correct_answers(pk=self.kwargs['test'])
         if form.instance.right_answers_count == required_correct_answers:
             form.instance.is_test_passed = True
 
-        if self.request.session['test_access_key'] > len(Test.objects.get_questions(self.kwargs['test'])):
-            form.instance.active = False
-            form.instance.is_test_passed = False
-
         UserAnswerUpdate.as_view()(self.request, *self.args, **self.kwargs)
+
+        if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
+            form.instance.active = True
+            form.instance.time = time
+            form.instance.right_answers_count = len(UserAnswer.objects.get_correct_answers(self.request, self.object))
+            form.instance.wrong_answers_count = len(UserAnswer.objects.get_incorrect_answers(self.request, self.object))
+        else:
+            form.instance.right_answers_count = 0
+            form.instance.wrong_answers_count = 0
+
         response = super().form_valid(form)
         return response
 
