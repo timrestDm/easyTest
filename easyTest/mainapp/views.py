@@ -10,6 +10,7 @@ from .models import *
 from datetime import datetime, timedelta
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
+from django.http import HttpResponseRedirect
 
 
 class StaffPassesTestMixin(UserPassesTestMixin):
@@ -52,6 +53,10 @@ class QuestionList(LoginRequiredMixin, ListView):
             context['access_block'] = True
         context.update(kwargs)
         return super().get_context_data(**context)
+
+class TestTimeIsOver(LoginRequiredMixin, ListView):
+    template_name = 'mainapp/test_time_is_over.html'
+    model = Question
 
 
 class TestList(LoginRequiredMixin, ListView):
@@ -153,6 +158,13 @@ class ResultUpdate(ResultDetail, UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
+
+        hours, minutes, seconds = str(form.instance.time).split(':')
+        seconds = int(seconds.split('.')[0])
+        time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+
+        if time.time() > Test.objects.filter(id=self.kwargs['test'])[0].time:
+            return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
         if form.instance.active:
             self.request.session['test_access_key'] += 1

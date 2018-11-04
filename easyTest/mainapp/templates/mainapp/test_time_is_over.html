@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Тест' %}</title>
+{% endblock title%}
+{% block styles %}
+{{block.super}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(function(){
+
+// jQuery methods go here...
+$('#submit_b').addClass('disabled').attr('disabled','disabled');
+
+
+});
+ </script>
+{% endblock %}
+{% block content %}
+
+<div class="center">
+
+<div class="text-center font-weight-bold text-danger">
+    <p>Время прохождения теста вышло.</p>
+</div>
+
+<div class="bl_result_info">
+    <div class="nav">
+        {% include 'mainapp/includes/inc_btn_test_repeat.html' with pk=request.resolver_match.kwargs.test %}
+
+        <a href="{% url 'mainapp:results'  %}" class="btn btn-secondary">Результаты</a>
+        <a href="{% url 'mainapp:main'  %}" class="btn btn-secondary">На главную</a>
+    </div>
+</div>
+</div>
+{% endblock content %}
