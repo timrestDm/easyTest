@@ -10,7 +10,6 @@ from .models import *
 from datetime import datetime, timedelta
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
-from django.http import HttpResponseRedirect
 
 
 class StaffPassesTestMixin(UserPassesTestMixin):
