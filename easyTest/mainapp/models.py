@@ -137,6 +137,9 @@ class TestManager(CoreManager):
     def get_tests(self, request):
         return self.filter(owner=request.user)
 
+    def get_time(self, pk):
+        return self.get(pk=pk).time
+
 
 class Test(Core):
     """ docstring for Test"""

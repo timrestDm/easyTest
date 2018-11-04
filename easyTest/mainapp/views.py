@@ -163,7 +163,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         seconds = int(seconds.split('.')[0])
         time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
-        if time.time() > Test.objects.filter(id=self.kwargs['test'])[0].time:
+        if time.time() > Test.objects.get_time(self.kwargs['test']):
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
         if form.instance.active:
@@ -171,9 +171,7 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
             form.instance.active = True
-            hours, minutes, seconds = str(form.instance.time).split(':')
-            seconds = int(seconds.split('.')[0])
-            form.instance.time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+            form.instance.time = time
 
         answer = Answer.objects.get(pk=self.request.POST['answer_id'])
         self.kwargs['answer'] = answer
