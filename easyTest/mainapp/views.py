@@ -135,7 +135,7 @@ class ResultDetail(LoginRequiredMixin, DetailView):
 
 class ResultUpdate(ResultDetail, UpdateView):
     """docstring for ResultUpdate"""
-    fields = ('right_answers_count', 'wrong_answers_count', 'is_test_passed')
+    fields = ('right_answers_count', 'wrong_answers_count',)
 
     def get_object(self):
         response = super().get_object()
@@ -162,10 +162,6 @@ class ResultUpdate(ResultDetail, UpdateView):
         self.kwargs['answer'] = answer
         self.kwargs['question'] = answer.question
 
-        required_correct_answers = Test.objects.get_required_correct_answers(pk=self.kwargs['test'])
-        if form.instance.right_answers_count == required_correct_answers:
-            form.instance.is_test_passed = True
-
         UserAnswerUpdate.as_view()(self.request, *self.args, **self.kwargs)
 
         if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
@@ -173,9 +169,10 @@ class ResultUpdate(ResultDetail, UpdateView):
             form.instance.time = time
             form.instance.right_answers_count = len(UserAnswer.objects.get_correct_answers(self.request, self.object))
             form.instance.wrong_answers_count = len(UserAnswer.objects.get_incorrect_answers(self.request, self.object))
-        else:
-            form.instance.right_answers_count = 0
-            form.instance.wrong_answers_count = 0
+
+            required_correct_answers = Test.objects.get_required_correct_answers(pk=self.kwargs['test'])
+            if form.instance.right_answers_count == required_correct_answers:
+                form.instance.is_test_passed = True
 
         response = super().form_valid(form)
         return response
