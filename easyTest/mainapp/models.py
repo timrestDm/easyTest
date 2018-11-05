@@ -94,8 +94,8 @@ class Question(Core):
 class AnswerManager(CoreManager):
     """docstring for   AnswerManager"""
 
-    def get_correct_answer(self, question):
-        return self.get(question=question, is_correct=True)
+    def get_correct_answer(self):
+        return self.get(is_correct=True)
 
 
 class Answer(Core):
@@ -127,18 +127,12 @@ class TestCategory(Core):
 class TestManager(CoreManager):
     """docstring for  TestManager"""
 
-    def get_required_correct_answers(self, pk):
-        return self.get(pk=pk).required_correct_answers
-
     def get_questions(self, pk):
         test = self.get(pk=pk)
         return test.questions.all()[:test.max_questions]
 
     def get_tests(self, request):
         return self.filter(owner=request.user)
-
-    def get_time(self, pk):
-        return self.get(pk=pk).time
 
 
 class Test(Core):
@@ -206,11 +200,11 @@ class Result(Core):
 class UserAnswerManager(CoreManager):
     """docstring for  UserAnswerManager"""
 
-    def get_incorrect_answers(self, request, obj_result):
-        return self.filter(owner=request.user, result=obj_result, is_correct=False)
+    def get_incorrect_answers(self):
+        return self.filter(is_correct=False)
 
-    def get_correct_answers(self, request, obj_result):
-        return self.filter(owner=request.user, result=obj_result, is_correct=True)
+    def get_correct_answers(self):
+        return self.filter(is_correct=True)
 
     def get_queryset_from_question(self, question):
         return self.filter(question=question)

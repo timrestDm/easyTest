@@ -127,7 +127,7 @@ class ResultDetail(LoginRequiredMixin, DetailView):
         context = {}
         if self.object:
             context['object'] = self.object
-            context['user_incorrect_answers'] = UserAnswer.objects.get_incorrect_answers(self.request, self.object)
+            context['user_incorrect_answers'] = self.object.user_answers.get_incorrect_answers()
         context.update(kwargs)
         return super().get_context_data(**context)
 
@@ -154,7 +154,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         seconds = int(seconds.split('.')[0])
         time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
-        if time.time() > Test.objects.get_time(self.kwargs['test']):
+        if time.time() > self.object.test.time:
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
         answer = Answer.objects.get(pk=self.request.POST['answer_id'])
@@ -163,14 +163,13 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         UserAnswerUpdate.as_view()(self.request, *self.args, **self.kwargs)
 
-        if self.success_url.startswith('/result'):                # Реализация подсчета времени теста
+        if self.success_url.startswith('/result'):
             form.instance.active = True
             form.instance.time = time
-            form.instance.right_answers_count = len(UserAnswer.objects.get_correct_answers(self.request, self.object))
-            form.instance.wrong_answers_count = len(UserAnswer.objects.get_incorrect_answers(self.request, self.object))
+            form.instance.right_answers_count = len(self.object.user_answers.get_correct_answers())
+            form.instance.wrong_answers_count = len(self.object.user_answers.get_incorrect_answers())
 
-            required_correct_answers = Test.objects.get_required_correct_answers(pk=self.kwargs['test'])
-            if form.instance.right_answers_count == required_correct_answers:
+            if form.instance.right_answers_count >= self.object.test.required_correct_answers:
                 form.instance.is_test_passed = True
 
         response = super().form_valid(form)
@@ -184,15 +183,10 @@ class UserAnswerCreate(CreateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
-        question = self.kwargs['question']
-        result = self.kwargs['result']
 
         form.instance.owner = self.request.user
-        form.instance.question = question
-        form.instance.result = result
-        form.instance.right_answer = str(Answer.objects.get_correct_answer(question))
-        form.instance.user_answer = str(self.kwargs['answer'])
-        form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
+        form.instance.question = self.kwargs['question']
+        form.instance.result = self.kwargs['result']
         form.instance.active = True
 
         return super().form_valid(form)
@@ -200,7 +194,7 @@ class UserAnswerCreate(CreateView):
 
 class UserAnswerUpdate(UpdateView):
     """docstring for UserAnswer Update"""
-    fields = ('result', 'right_answer', 'user_answer', 'is_correct')
+    fields = ('right_answer', 'user_answer', 'is_correct')
     model = UserAnswer
     slug_field = 'owner'
 
@@ -216,11 +210,8 @@ class UserAnswerUpdate(UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
-        question = self.kwargs['question']
-        result = self.kwargs['result']
 
-        form.instance.result = result
-        form.instance.right_answer = str(Answer.objects.get_correct_answer(question))
+        form.instance.right_answer = str(self.object.question.answers.get_correct_answer())
         form.instance.user_answer = str(self.kwargs['answer'])
         form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
         form.instance.active = True
