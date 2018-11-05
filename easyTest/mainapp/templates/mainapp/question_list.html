@@ -23,6 +23,7 @@ $('#submit_b').addClass('disabled').attr('disabled','disabled');
             {% for object in object_list %}
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
                 <p><b>Время для прохождения теста: {{ object.tests.all.0.time|date:"G:i:s" }}</b></p>
+                <p>{{ test_time}}</p>
 
                 <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
                     {% csrf_token %}

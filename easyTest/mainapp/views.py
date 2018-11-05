@@ -41,7 +41,12 @@ class QuestionList(LoginRequiredMixin, ListView):
     model = Question
     login_url = reverse_lazy('authapp:login')
     paginate_by = 1
-
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a session var
+        context['test_time'] = self.request.session['test_time']
+        return context    
     def get_queryset(self):
         return Test.objects.get_questions(self.kwargs['pk'])
 
@@ -93,6 +98,9 @@ class ResultCreate(CreateView):
     slug_url_kwarg = slug_field = 'test'
 
     def get_success_url(self):
+        finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
+        self.request.session['test_time'] = finish_time.timestamp()
+        
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
