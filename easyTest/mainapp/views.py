@@ -93,8 +93,6 @@ class ResultCreate(CreateView):
     slug_url_kwarg = slug_field = 'test'
 
     def get_success_url(self):
-        # finish_time = datetime.datetime.now() + datetime.timedelta(minutes = self.object.test.time.minute)
-        # self.request.session['test_time'] = finish_time.timestamp()
         self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
