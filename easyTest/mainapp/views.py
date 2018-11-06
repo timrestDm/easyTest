@@ -100,11 +100,12 @@ class ResultCreate(CreateView):
     def get_success_url(self):
         finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
         self.request.session['test_time'] = finish_time.timestamp()
-        
+
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
         Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
+        self.request.session['test_time_begin'] = datetime.now().timestamp()
 
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
@@ -158,11 +159,8 @@ class ResultUpdate(ResultDetail, UpdateView):
         if form.instance.active:
             return super().form_valid(form)
 
-        hours, minutes, seconds = str(form.instance.time).split(':')
-        seconds = int(seconds.split('.')[0])
-        time = datetime.now() - timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
-
-        if time.time() > self.object.test.time:
+        time_result = (datetime.utcnow() - timedelta(seconds=self.request.session['test_time_begin'])).time()
+        if time_result > self.object.test.time:
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
         answer = Answer.objects.get(pk=self.request.POST['answer_id'])
@@ -173,7 +171,7 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         if self.success_url.startswith('/result'):
             form.instance.active = True
-            form.instance.time = time
+            form.instance.time = time_result
             form.instance.right_answers_count = len(self.object.user_answers.get_correct_answers())
             form.instance.wrong_answers_count = len(self.object.user_answers.get_incorrect_answers())
 
