@@ -15,7 +15,7 @@ $(function testFunction() {
             $("#timer").text(minutes + ":" + seconds);
         } else if (minutes > 0  && seconds == '00') {
             minutes = minutes - 1;
-            seconds = 60;
+            seconds = 59;
             $("#timer").text(minutes + ":" + seconds);
         } else if (minutes > 0  && seconds > 0) {
             seconds = seconds - 1;
