@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
 
@@ -95,7 +95,7 @@ class ResultCreate(CreateView):
     def get_success_url(self):
         # finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
         # self.request.session['test_time'] = finish_time.timestamp()
-        self.request.session['test_time'] = time.strftime(self.object.test.time, '%M:%S')
+        self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
