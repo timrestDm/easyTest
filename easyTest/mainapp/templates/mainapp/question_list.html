@@ -4,27 +4,23 @@
 {% block title %}
     <title>{% trans 'Тест' %}</title>
 {% endblock title%}
+
 {% block styles %}
 {{block.super}}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-$(function(){
-
-// jQuery methods go here...
-$('#submit_b').addClass('disabled').attr('disabled','disabled');
-
-
-});
- </script>
 {% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/mainapp.js' %}"></script>
+{% endblock javascript %}
+
 {% block content %}
     {% with current_kwargs=request.resolver_match.kwargs.pk  %}
         <div class="center">
             {% for object in object_list %}
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
                 <p><b>Время для прохождения теста: {{ object.tests.all.0.time|date:"G:i:s" }}</b></p>
-                <p>{{ test_time}}</p>
-
+                
                 <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
                     {% csrf_token %}
                     <ul><b>{{ object.description }}</b></p>
@@ -41,9 +37,11 @@ $('#submit_b').addClass('disabled').attr('disabled','disabled');
                     {% else %}
                         <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
                     {% endif %}
+                    <input type="hidden" id="left_time" name="left_time" value="">
                     <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
                 </form>
 
+                <p id="timer">{{ request.session.test_time }}</p>
             {% endfor %}
 
         </div>
