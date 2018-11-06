@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
-from datetime import datetime, timedelta
+import datetime
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
 
@@ -93,14 +93,14 @@ class ResultCreate(CreateView):
     slug_url_kwarg = slug_field = 'test'
 
     def get_success_url(self):
-        # finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
+        # finish_time = datetime.datetime.now() + datetime.timedelta(minutes = self.object.test.time.minute)
         # self.request.session['test_time'] = finish_time.timestamp()
         self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
         Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
-        self.request.session['test_time_begin'] = datetime.now().timestamp()
+        self.request.session['test_time_begin'] = datetime.datetime.now().timestamp()
         
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
@@ -155,7 +155,7 @@ class ResultUpdate(ResultDetail, UpdateView):
         if form.instance.active:
             return super().form_valid(form)
 
-        time_result = (datetime.utcnow() - timedelta(seconds=self.request.session['test_time_begin'])).time()
+        time_result = (datetime.datetime.utcnow() - datetime.timedelta(seconds=self.request.session['test_time_begin'])).time()
         if time_result > self.object.test.time:
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
