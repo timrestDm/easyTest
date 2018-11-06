@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm
 
@@ -41,12 +41,7 @@ class QuestionList(LoginRequiredMixin, ListView):
     model = Question
     login_url = reverse_lazy('authapp:login')
     paginate_by = 1
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a session var
-        context['test_time'] = self.request.session['test_time']
-        return context    
+  
     def get_queryset(self):
         return Test.objects.get_questions(self.kwargs['pk'])
 
@@ -98,15 +93,15 @@ class ResultCreate(CreateView):
     slug_url_kwarg = slug_field = 'test'
 
     def get_success_url(self):
-        finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
-        self.request.session['test_time'] = finish_time.timestamp()
-
+        # finish_time = datetime.now() + timedelta(minutes = self.object.test.time.minute)
+        # self.request.session['test_time'] = finish_time.timestamp()
+        self.request.session['test_time'] = time.strftime(self.object.test.time, '%M:%S')
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
         Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
         self.request.session['test_time_begin'] = datetime.now().timestamp()
-
+        
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
         return super().form_valid(form)
@@ -155,6 +150,7 @@ class ResultUpdate(ResultDetail, UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
+        self.request.session['test_time'] = self.request.POST['left_time']
 
         if form.instance.active:
             return super().form_valid(form)
