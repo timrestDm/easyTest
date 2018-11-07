@@ -93,7 +93,6 @@ class ResultCreate(CreateView):
     slug_url_kwarg = slug_field = 'test'
 
     def get_success_url(self):
-        self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
@@ -102,7 +101,10 @@ class ResultCreate(CreateView):
         
         form.instance.owner = self.request.user
         form.instance.test = form.fields[self.slug_field].to_python(self.kwargs[self.slug_url_kwarg])
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
+        return response
 
 
 class ResultList(LoginRequiredMixin, ListView):
