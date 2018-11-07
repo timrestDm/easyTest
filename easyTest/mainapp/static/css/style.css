@@ -166,11 +166,40 @@ body {
     background-color: #fff;
 }
 
+.quest {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer_box {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+    width: 250px;
+}
+
+.timer_pages {
+    display: flex;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+    justify-content: center;
+}
+
+.sub input, .timer_pages, #timer {
+    width: 80px;
+    height: 40px;
+    text-align: center;
+}
+
 #timer {
-    margin-top: 20px;
     font-weight: 900;
-    font-size: 22px;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+    padding: 7px;
+    border-radius: 5px;
+    background-color: white;
 }
 
 .test_create {

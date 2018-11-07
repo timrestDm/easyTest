@@ -19,11 +19,9 @@
         <div class="center">
             {% for object in object_list %}
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
-                <p><b>Время для прохождения теста: {{ object.tests.all.0.time|date:"G:i:s" }}</b></p>
-                
                 <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
                     {% csrf_token %}
-                    <ul><b>{{ object.description }}</b></p>
+                    <ul class="quest"><b>{{ object.description }}</b></p>
                         {% for answer in object.answers.all %}
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="answer_id" onchange="$('#submit_b').removeAttr('disabled').removeClass('disabled');" value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
@@ -38,10 +36,15 @@
                         <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
                     {% endif %}
                     <input type="hidden" id="left_time" name="left_time" value="">
-                    <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                    <div class="timer_box">
+                        <p id="timer">{{ request.session.test_time }}</p>
+                        <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>
+                        <div class="sub">
+                            <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                        </div>
+                    </div>
                 </form>
 
-                <p id="timer">{{ request.session.test_time }}</p>
             {% endfor %}
 
         </div>
