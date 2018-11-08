@@ -58,7 +58,7 @@ class ResultAdmin(EditDatabaseAdmin, admin.ModelAdmin):
 
 class UserAnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'active')
-    list_display = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'active', 'deleted')
+    list_display = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'sort', 'active', 'deleted')
 
 
 admin.site.register(Question, QuestionAdmin)

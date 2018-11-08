@@ -129,7 +129,7 @@ class TestManager(CoreManager):
 
     def get_questions(self, pk):
         test = self.get(pk=pk)
-        return test.questions.all()[:test.max_questions]
+        return test.questions.all().order_by('-user_answers__active', 'user_answers__sort', )[:test.max_questions]
 
     def get_tests(self, request):
         return self.filter(owner=request.user)
@@ -200,6 +200,9 @@ class Result(Core):
 class UserAnswerManager(CoreManager):
     """docstring for  UserAnswerManager"""
 
+    def get_queryset(self):
+        return self.get_all_queryset()
+
     def get_incorrect_answers(self):
         return self.filter(is_correct=False)
 
@@ -221,7 +224,7 @@ class UserAnswer(Core):
         verbose_name_plural = _('Ответы пользователя')
 
     owner = models.ForeignKey(User, null=False, blank=True, on_delete=models.PROTECT)
-    question = models.ForeignKey(Question, null=False, blank=True, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, null=False, blank=True, related_name='user_answers', on_delete=models.CASCADE)
     result = models.ForeignKey(Result, null=False, blank=True, related_name='user_answers', on_delete=models.CASCADE)
     right_answer = models.TextField(_('Right answer'), blank=True, null=False)
     user_answer = models.TextField(_('User answer'), blank=True, null=False)

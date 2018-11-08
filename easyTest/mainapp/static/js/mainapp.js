@@ -25,11 +25,15 @@ $(function testFunction() {
 });
 
 $(function passTimeToSession() {
-    $("#submit_b").click(function () {
+    $(":submit").click(function () {
         $("#left_time").attr('value', $("#timer").text());
     });
 });
 
+function input_answer() {
+    $('#submit_b').removeAttr('disabled').removeClass('disabled');
+    $('#submit_skip').addClass('disabled').attr('disabled','disabled');
+};
 
 
     

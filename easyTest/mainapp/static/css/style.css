@@ -166,11 +166,8 @@ body {
     background-color: #fff;
 }
 
-.quest {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.answer_list {
+    margin: 70px 0px;
 }
 
 .timer_box {

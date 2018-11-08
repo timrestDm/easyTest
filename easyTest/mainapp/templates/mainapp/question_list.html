@@ -21,21 +21,30 @@
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
                 <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
                     {% csrf_token %}
-                    <ul class="quest"><b>{{ object.description }}</b></p>
-                        {% for answer in object.answers.all %}
-                            <div class="custom-control custom-radio">
-                                <input type="radio" name="answer_id" onchange="$('#submit_b').removeAttr('disabled').removeClass('disabled');" value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
-                                <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
-                            </div>
-                        {% endfor %}
-                    </ul>
+                    <div class="answer_list center"><b>{{ object.description }}</b></p>
+                        <div>
+                            {% for answer in object.answers.all %}
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="answer_id"
+                                           onchange="input_answer(this);return false;"
+                                           value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
+                                    <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="question_id" value="{{ object.pk }}">
+                    <input type="hidden" id="left_time" name="left_time" value="">
 
                     {% if page_obj.has_next %}
                         <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
+                        <input type="hidden" name="href_current" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.number }}">
+                        <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
                     {% else %}
                         <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
                     {% endif %}
-                    <input type="hidden" id="left_time" name="left_time" value="">
+
                     <div class="timer_box">
                         <p id="timer">{{ request.session.test_time }}</p>
                         <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>

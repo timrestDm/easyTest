@@ -104,6 +104,12 @@ class ResultCreate(CreateView):
         response = super().form_valid(form)
 
         self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
+        self.kwargs['pk'] = self.kwargs['test']
+        for question in QuestionList(request=self.request, args=self.args, kwargs=self.kwargs).get_queryset():
+            self.kwargs['question'] = question
+            self.kwargs['result'] = self.object
+            UserAnswerCreate.as_view()(self.request, *self.args, **self.kwargs)
+
         return response
 
 
@@ -159,9 +165,14 @@ class ResultUpdate(ResultDetail, UpdateView):
         if time_result > self.object.test.time:
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
-        answer = Answer.objects.get(pk=self.request.POST['answer_id'])
+        if self.request.POST.get('answer_id'):
+            answer = Answer.objects.get(pk=self.request.POST['answer_id'])
+        else:
+            answer = ''
+            self.success_url = self.request.POST['href_current']
+
         self.kwargs['answer'] = answer
-        self.kwargs['question'] = answer.question
+        self.kwargs['question'] = Question.objects.get(pk=self.request.POST['question_id'])
 
         UserAnswerUpdate.as_view()(self.request, *self.args, **self.kwargs)
 
@@ -184,12 +195,11 @@ class UserAnswerCreate(CreateView):
     model = UserAnswer
 
     def form_valid(self, form):
-        self.success_url = self.request.POST['href']
+        self.success_url = self.request.POST.get('href', '/')
 
         form.instance.owner = self.request.user
         form.instance.question = self.kwargs['question']
         form.instance.result = self.kwargs['result']
-        form.instance.active = True
 
         return super().form_valid(form)
 
@@ -216,7 +226,10 @@ class UserAnswerUpdate(UpdateView):
         form.instance.right_answer = str(self.object.question.answers.get_correct_answer())
         form.instance.user_answer = str(self.kwargs['answer'])
         form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
-        form.instance.active = True
+        form.instance.active = True if self.kwargs['answer'] else False
+
+        if not form.instance.user_answer:
+            form.instance.sort += 1
 
         return super().form_valid(form)
 
