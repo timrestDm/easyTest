@@ -41,9 +41,9 @@ class QuestionList(LoginRequiredMixin, ListView):
     model = Question
     login_url = reverse_lazy('authapp:login')
     paginate_by = 1
-  
+
     def get_queryset(self):
-        return Test.objects.get_questions(self.kwargs['pk'])
+        return self.model.objects.get_test_questions(self.request, self.kwargs['pk'])
 
 
 class TestTimeIsOver(LoginRequiredMixin, ListView):

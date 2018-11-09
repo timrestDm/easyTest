@@ -73,7 +73,13 @@ class Keyword(Core):
 class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
-    pass
+    def get_test_questions(self, request, pk):
+        response = self.filter(tests=pk)
+        response_user_answers = response.filter(tests=pk, user_answers__owner=request.user)
+        if response_user_answers:
+            response = response_user_answers.order_by('-user_answers__active', 'user_answers__sort',  '?')
+        max_questions = Test.objects.get(pk=pk).max_questions
+        return response[:max_questions]
 
 
 class Question(Core):
@@ -126,10 +132,6 @@ class TestCategory(Core):
 
 class TestManager(CoreManager):
     """docstring for  TestManager"""
-
-    def get_questions(self, pk):
-        test = self.get(pk=pk)
-        return test.questions.all().order_by('-user_answers__active', 'user_answers__sort', )[:test.max_questions]
 
     def get_tests(self, request):
         return self.filter(owner=request.user)
