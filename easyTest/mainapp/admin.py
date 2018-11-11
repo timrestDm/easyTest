@@ -35,8 +35,8 @@ class AnswerAdmin(admin.ModelAdmin):
     fields = ('description', 'question', 'is_correct', 'active', 'sort')
 
 
-# class TestCategoryAdmin(admin.ModelAdmin):
-#     fields = ('title', 'description', 'active', 'sort')
+class TestCategoryAdmin(admin.ModelAdmin):
+    fields = ('title', 'description', 'active', 'sort', 'cat')
 
 
 class TestAdmin(admin.ModelAdmin):
@@ -66,4 +66,4 @@ admin.site.register(Answer, AnswerAdmin)
 admin.site.register(Test, TestAdmin)
 admin.site.register(Result, ResultAdmin)
 admin.site.register(UserAnswer, UserAnswerAdmin)
-# admin.site.register(TestCategory,TestCategoryAdmin)
+admin.site.register(TestCategory, TestCategoryAdmin)

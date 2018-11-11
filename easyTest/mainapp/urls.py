@@ -21,6 +21,8 @@ urlpatterns = [
     path('result/create/<int:test>/', mainapp.ResultCreate.as_view(), name='result_create'),
     path('result/edit/<int:test>/', mainapp.ResultUpdate.as_view(), name='result_update'),
 
+    path('category/create/', mainapp.TestCategoryCreate.as_view(), name='category_create'),
+
     path('test_time_is_over/<int:test>', mainapp.TestTimeIsOver.as_view(), name='test_time_is_over')
 
     # path('questions/', QuestionListView.as_view(), name='questions'),

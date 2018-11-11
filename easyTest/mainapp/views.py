@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from .models import *
 import datetime
 from django.core.exceptions import PermissionDenied
-from mainapp.forms import TestForm
+from mainapp.forms import TestForm, TestCategoryForm
 
 
 class StaffPassesTestMixin(UserPassesTestMixin):
@@ -84,6 +84,14 @@ class TestDeleteView(StaffPassesTestMixin, DeleteView):
             return reverse_lazy('mainapp:main')
         else:
             return reverse_lazy('mainapp:tests_staff')
+
+
+class TestCategoryCreate(StaffPassesTestMixin, CreateView):
+    model = TestCategory
+    form_class = TestCategoryForm
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:main')
 
 
 class ResultCreate(CreateView):
