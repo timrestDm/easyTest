@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Создание вопроса' %}</title>
+{% endblock title%}
+
+{% block javascript %}
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'js/mainapp.js' %}"></script>
+{% endblock javascript %}
+
+{% block content %}
+
+    <div class="center">
+    	<div class="welcome_admin">
+	    	<p>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</p>
+	    	<p>{% trans 'Здесь вы можете создать вопросы и присвоить им ответы'|upper %}</p>
+    	</div>
+        <form class="question_create" action="#" method="post">
+            {% csrf_token %}
+            <div class="question_create_form">
+            	{{ form }}
+            </div>
+	        <div class="answers_create" method="post">
+	        	{{ answers.management_form }}
+	        	{% for form in answers|slice:':3' %}
+	        		<div class="answer_create">
+	        			{{ form }}
+	        		</div>
+	        	{% endfor %}
+	        </div>
+	        <div class="more_answers">
+				<p>{% trans 'Добавить больше ответов' %}</p>
+			</div>
+	        <div class="answers_create hidden_answers_forms" method="post">
+	        	{% for form in answers|slice:'3:' %}
+	        		<div class="answer_create">
+	        			{{ form }}
+	        		</div>
+	        	{% endfor %}
+	        </div>
+	        <div class="sub">
+	            <input type="submit" class="btn btn-secondary" value="Создать">
+	        </div>
+        </form>
+    </div>
+
+{% endblock content %}
