@@ -5,12 +5,15 @@ from mainapp.models import Test, TestCategory, Question, Answer
 class TestForm(forms.ModelForm):
 	class Meta:
 		model = Test
-		fields = ('title', 'description', 'test_type', 'time')
+		fields = ('title', 'description', 'test_type', 'time' , 'required_correct_answers', 'max_questions', 'questions')
 		labels = {
 			'title': _('Название теста'),
 			'description': _('Описание теста'),
 			'test_type': _('Тип теста'),
 			'time': _('Время теста'),
+			'required_correct_answers': _('Правильных ответов для сдачи'),
+			'max_questions': _('Максимальное количество вопросов в тесте'),
+			'questions': _('Вопросы'),
 		}
 
 class TestCategoryForm(forms.ModelForm):

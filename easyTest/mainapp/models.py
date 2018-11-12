@@ -84,7 +84,11 @@ class QuestionManager(CoreManager):
 
 class Question(Core):
     """Вопрос """
-
+    # TEST_TYPE_CHOICES = (
+    #     ('onechoice', 'один вариант ответа'),
+    #     ('multichoice', 'несколько вариантов ответа'),
+    #     ('ordering', 'расположение ответов по порядку'),
+    # )
     # keyword = models.ManyToManyField(Keyword)
     class Meta:
         verbose_name = _('Вопрос')
@@ -148,7 +152,7 @@ class Test(Core):
     category = models.ForeignKey(TestCategory, null=True, blank=True, on_delete=models.SET_NULL)
     keywords = models.ManyToManyField(Keyword, blank=True, related_name='tests')
     questions = models.ManyToManyField(Question, blank=True, related_name='tests')
-    max_questions = models.PositiveIntegerField(_('Count questions'), default=0, blank=True)
+    max_questions = models.PositiveIntegerField(_('Count questions'), default=1, blank=True)
     required_correct_answers = models.PositiveIntegerField(_('Required correct answers'), default=0, blank=True)
     time = models.TimeField(_('Max time for test'), default=datetime.time(0, 30), blank=True)
     objects = TestManager()
