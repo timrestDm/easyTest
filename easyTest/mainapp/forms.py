@@ -12,7 +12,7 @@ class TestForm(forms.ModelForm):
 			'test_type': _('Тип теста'),
 			'time': _('Время теста'),
 			'required_correct_answers': _('Правильных ответов для сдачи'),
-			'max_questions': _('Максимальное количество вопросов в тесте'),
+			'max_questions': _('Макс. количество вопросов в тесте'),
 			'questions': _('Вопросы'),
 		}
 
