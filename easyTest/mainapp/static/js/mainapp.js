@@ -35,5 +35,13 @@ function input_answer() {
     $('#submit_skip').addClass('disabled').attr('disabled','disabled');
 };
 
+$(function() {
+    $('.hidden_answers_forms').hide();
+});
 
+$(function() {
+    $('.more_answers p').click(function() {
+        $('.hidden_answers_forms').slideToggle(500);
+    });
+});
     

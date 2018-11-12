@@ -10,6 +10,7 @@ urlpatterns = [
     path('redirect/<slug:slug>/', mainapp.UsersRedirectView.as_view(), name='redirect'),
 
     path('test/create/', mainapp.TestCreate.as_view(), name='test_create'),
+    path('question_create', mainapp.QuestionCreate.as_view(), name='question_create'),
     path('test/<int:pk>', mainapp.QuestionList.as_view(), name='test'),
     path('test/<int:pk>/delete/', mainapp.TestDeleteView.as_view(), name='test_delete'),
 
