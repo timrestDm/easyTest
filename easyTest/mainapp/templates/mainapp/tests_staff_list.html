@@ -10,7 +10,7 @@
     <div class="center">
     {% if object_list %}
         <p class="test_welcome">{% trans 'Ваши тесты, пользователь '|upper %}{{ user.username|upper }}</p>
-        <div class="test_container">
+        <div class="list_container">
             {% include 'mainapp/includes/inc_tests_staff_list.html' %}
         </div>
     {% else %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+    <title>{% trans 'Созданные категории' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+    <div class="center">
+        <div class="list_container">
+            {% for object in object_list %}
+	            <div class="iter_list">
+		            <p class="list_title">{{ object.title }}</p>
+		            <form method="post" action="{% url 'mainapp:testcategory_delete' object.pk %}">
+			            {% csrf_token %}
+    		            <button class="base_link" type="submit">
+    			            {% trans 'Удалить' %}
+    		            </button>
+		            </form>
+	            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %}

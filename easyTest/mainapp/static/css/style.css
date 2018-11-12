@@ -199,14 +199,14 @@ body {
     background-color: white;
 }
 
-.test_create {
+.form_create {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.test_create input, select, textarea {
+.form_create input, select, textarea {
     margin-bottom: 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -261,11 +261,11 @@ body {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
 }
 
-.test_container div:first-child {
+.list_container div:first-child {
     border-top: 1px solid rgba(51, 51, 51, 0.1);
 }
 
-.iter_test {
+.iter_list {
     display: flex;
     flex-direction: row;
     width: 570px;
@@ -275,14 +275,14 @@ body {
     border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
-.test_title {
+.test_list {
     width: 100px;
     margin: 0px;
     font-weight: 900;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
 }
 
-.iter_test button {
+.iter_list button {
     padding: 7px 30px;
     background-color: transparent;
     text-align: center;
@@ -290,7 +290,7 @@ body {
     line-height: 5px;
 }
 
-.iter_test a {
+.iter_list a {
     padding: 7px 30px;
     text-decoration: none;
 }

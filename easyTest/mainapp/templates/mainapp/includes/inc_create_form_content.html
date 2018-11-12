@@ -1,7 +1,7 @@
 {% load static i18n %}
 
     <div class="center">
-        <form class="test_create" action="#" method="post">
+        <form class="form_create" action="#" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" name="#" value="{% trans 'Создать' %}">
