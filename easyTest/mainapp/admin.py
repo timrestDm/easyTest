@@ -37,6 +37,7 @@ class AnswerAdmin(admin.ModelAdmin):
 
 class TestCategoryAdmin(admin.ModelAdmin):
     fields = ('title', 'description', 'active', 'sort', 'cat')
+    list_display = ('title', 'description', 'active', 'sort', 'cat', 'deleted')
 
 
 class TestAdmin(admin.ModelAdmin):

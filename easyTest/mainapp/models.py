@@ -54,7 +54,7 @@ class Core(models.Model):
         return self._meta.verbose_name_plural
 
     def delete(self):
-        self.active = False
+        self.deleted = True
         self.save()
 
     def hard_delete(self):
@@ -128,6 +128,7 @@ class TestCategory(Core):
     """ docstring for TestCategory"""
 
     cat = models.ForeignKey('self', null=True, blank=True, related_name='test_categories', on_delete=models.CASCADE)
+    objects = CoreManager()
 
     class Meta:
         verbose_name = _('Категория теста')

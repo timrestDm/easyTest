@@ -124,9 +124,6 @@ class TestCategoryList(StaffPassesTestMixin, ListView):
     model = TestCategory
     template_name = 'mainapp/testscategory_list.html'
 
-    def get_queryset(self):
-        return self.model.objects.get_queryset()
-
 
 class TestCategoryDelete(StaffPassesTestMixin, DeleteView):
     """Класс удаления теста"""
