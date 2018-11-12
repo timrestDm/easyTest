@@ -374,7 +374,9 @@ body {
     flex-direction: column;
 }
 
-.question_create label, p {
+.question_create label,
+.question_create p,
+.welcome_admin p {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
     color: #333333;
     font-weight: 900;
