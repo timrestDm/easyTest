@@ -48,6 +48,7 @@
                     {% if user.is_staff %}
                         <li><a href="{% url 'mainapp:tests_staff' %}">{% trans 'Мои тесты'|upper %}</a></li>
                         <li><a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест'|upper %}</a></li>
+                        <li><a href="{% url 'mainapp:question_create' %}">{% trans 'Создать вопрос'|upper %}</a></li>
                         <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>
