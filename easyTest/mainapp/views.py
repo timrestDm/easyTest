@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from .models import *
 import datetime
 from django.core.exceptions import PermissionDenied
-from mainapp.forms import TestForm, TestCategoryForm
+from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet
 
 
 class StaffPassesTestMixin(UserPassesTestMixin):
@@ -44,6 +44,31 @@ class QuestionList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.get_test_questions(self.request, self.kwargs['pk'])
+
+
+class QuestionCreate(StaffPassesTestMixin, CreateView):
+    """Класс создания вопроса с ответами"""
+    model = Question
+    form_class = QuestionForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['answers'] = AnswerFormSet(self.request.POST)
+        else:
+            context['answers'] = AnswerFormSet()
+        return context
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['answers']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:main')
 
 
 class TestTimeIsOver(LoginRequiredMixin, ListView):
