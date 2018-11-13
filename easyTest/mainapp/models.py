@@ -216,8 +216,8 @@ class UserAnswerManager(CoreManager):
     def get_correct_answers(self):
         return self.filter(is_correct=True)
 
-    def get_queryset_from_question(self, question):
-        return self.filter(question=question)
+    def get_queryset_from_question(self, question, test):
+        return self.filter(question=question, result__test=test)
 
 
 class UserAnswer(Core):

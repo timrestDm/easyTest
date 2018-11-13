@@ -257,7 +257,7 @@ class UserAnswerUpdate(UpdateView):
 
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
-        que = UserAnswer.objects.get_queryset_from_question(self.kwargs['question'])
+        que = UserAnswer.objects.get_queryset_from_question(self.kwargs['question'], self.kwargs['test'])
         try:
             response = super().get_object(queryset=que)
         except:
