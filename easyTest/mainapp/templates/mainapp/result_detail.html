@@ -6,7 +6,6 @@
 {% endblock title%}
 
 {% block content %}
-    <div class="content">
         {% if object %}
             <p><b>Тест "{{ object.test.title }}"</b></p>
 
@@ -41,6 +40,5 @@
         {% else %}
             <p><b>Нет результатов по тесту</b></p>
         {% endif %}
-    </div>
 {% endblock content %}
 

@@ -16,7 +16,7 @@
 
 {% block content %}
     {% with current_kwargs=request.resolver_match.kwargs.pk  %}
-        <div class="center">
+        <div class="center_full">
             {% for object in object_list %}
                 <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
                 <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">

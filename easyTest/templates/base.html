@@ -60,11 +60,10 @@
 
     </div>
 </div>
-
-{% block content %}
-    <!--       для того чтобы прижать футер к низу экрана, при контенте, занимающем меньше экрана, в стиле главного блока-контейнера требуется прописать flex: 1;-->
-{% endblock content %}
-
+<div class="content">
+    {% block content %}
+    {% endblock content %}
+</div>
 <div class="footer">
     <p>GeekUniversity Python 10/06/18</p>
 </div>

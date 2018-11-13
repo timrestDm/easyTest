@@ -7,7 +7,6 @@
 
 {% block content %}
 
-    <div class="content">
         {% if object_list %}
             <b>{% trans 'Выберите тест, чтобы посмотреть результаты подробнее:' %}</b></p>
             <table class="table table_result">
@@ -37,6 +36,5 @@
             <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не прошли ни один тест' %}</p>
             <a class="btn btn-secondary" href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
         {% endif %}
-    </div>
 
 {% endblock content %}
