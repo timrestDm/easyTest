@@ -53,19 +53,13 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['answers'] = AnswerFormSet(self.request.POST)
-        else:
-            context['answers'] = AnswerFormSet()
+        context['answers'] = AnswerFormSet()
         return context
 
     def form_valid(self, form):
-        formset = self.get_context_data()['answers']
-        self.object = form.save()
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
-        return super().form_valid(form)
+        formset = AnswerFormSet(self.request.POST)
+        formset.instance = form.save()
+        return super().form_valid(formset)
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
