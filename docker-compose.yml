@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes:
+       - ./easyTest:/code/easyTest
+       - /dev/log:/dev/log
+    working_dir: /code/easyTest
+    command: python3 manage.py runserver 0.0.0.0:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=easyTest.settings_dev
+  db:
+    image: postgres:9.6
