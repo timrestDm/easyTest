@@ -88,15 +88,19 @@ body {
 }
 
 .center,
-.content{
+.content,
+.center_full{
     display: flex;
     flex-direction: column;
-    flex: 1;
     justify-content: center;
     align-items: center;
 }
+.center_full{
+    flex: 1;
+}
 
 .content {
+    flex: 1;
     justify-content: flex-start;
 }
 
@@ -375,13 +379,25 @@ body {
 }
 
 .question_create label,
-.question_create p,
-.welcome_admin p {
+.question_create h2,
+.welcome_admin h2,
+.error_messages h3,
+.more_answers p{
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
     color: #333333;
     font-weight: 900;
     font-size: 14px;
     text-transform: uppercase;
+}
+
+.error_messages{
+    color: red;
+    margin: 30px 0px;
+}
+
+.error_messages h3{
+    color: red;
+    text-align: center;
 }
 
 .question_create input[type="submit"] {

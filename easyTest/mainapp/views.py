@@ -54,10 +54,27 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['answers'] = AnswerFormSet()
+        context['error_messages'] = self.kwargs.get('error_messages')
+        if context['error_messages']:
+            context['answers'] = AnswerFormSet(self.request.POST)
         return context
 
     def form_valid(self, form):
         formset = AnswerFormSet(self.request.POST)
+
+        valid_field_1 = form.cleaned_data.get('description')
+        valid_field_2 = [True for item in formset.cleaned_data if item.get('description')]
+        valid_field_3 = [True for item in formset.cleaned_data if item.get('description') and item.get('is_correct')]
+        self.kwargs['error_messages'] = []
+        if not valid_field_1:
+            self.kwargs['error_messages'].append('Не введен вопрос.')
+        if not valid_field_2:
+            self.kwargs['error_messages'].append('Ни одного ответа не задано.')
+        if not valid_field_3:
+            self.kwargs['error_messages'].append('Не выбран правильный ответ.')
+        if self.kwargs.get('error_messages'):
+            return self.form_invalid(form)
+
         formset.instance = form.save()
         return super().form_valid(formset)
 

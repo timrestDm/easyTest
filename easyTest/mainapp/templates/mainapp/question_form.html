@@ -6,43 +6,53 @@
 {% endblock title%}
 
 {% block javascript %}
-	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-	<script src="{% static 'js/mainapp.js' %}"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/mainapp.js' %}"></script>
 {% endblock javascript %}
 
 {% block content %}
 
-    <div class="center">
-    	<div class="welcome_admin">
-	    	<p>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</p>
-	    	<p>{% trans 'Здесь вы можете создать вопросы и присвоить им ответы'|upper %}</p>
-    	</div>
+    <div class="center_full">
+        <div class="welcome_admin">
+            <h2>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</h2>
+            <h2>{% trans 'Здесь вы можете создать вопросы и присвоить им ответы'|upper %}</h2>
+        </div>
+
+        {% if error_messages %}
+            <div class="error_messages">
+                <h3>{% trans 'Внимание!'|upper %}</h3>
+                {%  for msg in error_messages %}
+                    <p>- {{ msg }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <form class="question_create" action="#" method="post">
             {% csrf_token %}
             <div class="question_create_form">
-            	{{ form }}
+                {{ form }}
             </div>
-	        <div class="answers_create" method="post">
-	        	{{ answers.management_form }}
-	        	{% for form in answers|slice:':3' %}
-	        		<div class="answer_create">
-	        			{{ form }}
-	        		</div>
-	        	{% endfor %}
-	        </div>
-	        <div class="more_answers">
-				<p>{% trans 'Добавить больше ответов' %}</p>
-			</div>
-	        <div class="answers_create hidden_answers_forms" method="post">
-	        	{% for form in answers|slice:'3:' %}
-	        		<div class="answer_create">
-	        			{{ form }}
-	        		</div>
-	        	{% endfor %}
-	        </div>
-	        <div class="sub">
-	            <input type="submit" class="btn btn-secondary" value="Создать">
-	        </div>
+            <div class="answers_create">
+                {{ answers.management_form }}
+                {% for form in answers|slice:':3' %}
+                    <div class="answer_create">
+                        {{ form }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="more_answers">
+                <p>{% trans 'Добавить больше ответов' %}</p>
+            </div>
+            <div class="answers_create hidden_answers_forms">
+                {% for form in answers|slice:'3:' %}
+                    <div class="answer_create">
+                        {{ form }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="sub">
+                <input type="submit" class="btn btn-secondary" value="Создать">
+            </div>
         </form>
     </div>
 
