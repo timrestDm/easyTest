@@ -110,6 +110,13 @@ class TestCreate(StaffPassesTestMixin, CreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+class TestEditView(StaffPassesTestMixin, UpdateView):
+    """Класс изменения теста"""
+    form_class = TestForm
+    model = Test
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:tests_staff')
 
 class TestDeleteView(StaffPassesTestMixin, DeleteView):
     """Класс удаления теста"""

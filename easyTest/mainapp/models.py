@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.core.exceptions import ValidationError
 
 
 class CoreQuerySet(models.QuerySet):
@@ -170,6 +171,12 @@ class Test(Core):
     def get_absolute_url(self):
         return reverse_lazy('mainapp:tests_staff')
 
+    def clean(self):
+    # Don't allow draft entries to have a pub_date.
+        if self.title == '':
+            raise ValidationError({'title': _('Название теста не должно быть пустым.')})
+        if self.time is None or self.time == 0:
+            raise ValidationError({'title': _('Необходимо указать время теста.')})
 
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
