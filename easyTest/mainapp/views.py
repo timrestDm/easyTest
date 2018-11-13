@@ -62,15 +62,15 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
     def form_valid(self, form):
         formset = AnswerFormSet(self.request.POST)
 
-        valid_field_1 = form.cleaned_data.get('description')
-        valid_field_2 = [True for item in formset.cleaned_data if item.get('description')]
-        valid_field_3 = [True for item in formset.cleaned_data if item.get('description') and item.get('is_correct')]
+        valid_question = form.cleaned_data.get('description')
+        valid_answer = [True for i in formset.cleaned_data if i.get('description')]
+        valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
         self.kwargs['error_messages'] = []
-        if not valid_field_1:
+        if not valid_question:
             self.kwargs['error_messages'].append('Не введен вопрос.')
-        if not valid_field_2:
+        if not valid_answer:
             self.kwargs['error_messages'].append('Ни одного ответа не задано.')
-        if not valid_field_3:
+        if not valid_is_correct:
             self.kwargs['error_messages'].append('Не выбран правильный ответ.')
         if self.kwargs.get('error_messages'):
             return self.form_invalid(form)
