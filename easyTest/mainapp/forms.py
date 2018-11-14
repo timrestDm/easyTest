@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from mainapp.models import Test, TestCategory, Question, Answer
+from django.core.exceptions import ValidationError
 
 
 class TestForm(forms.ModelForm):
@@ -16,6 +17,13 @@ class TestForm(forms.ModelForm):
             'max_questions': _('Макс. количество вопросов в тесте'),
             'questions': _('Вопросы'),
         }
+
+    def clean(self):
+        """ Check for questions in Test """
+        questions = self.cleaned_data.get('questions')
+        if not questions:
+            raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
+        return self.cleaned_data
 
 
 class TestCategoryForm(forms.ModelForm):
