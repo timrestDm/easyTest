@@ -26,30 +26,32 @@ class AnswerInline(admin.TabularInline):
     exclude = ('title',)
 
 
-class QuestionAdmin(admin.ModelAdmin):
-    fields = ('description', 'active', 'sort')
+class QuestionAdmin(EditDatabaseAdmin, admin.ModelAdmin):
+    fields = ('description', 'active', 'sort', 'deleted')
     inlines = [AnswerInline,]
+    list_display = ('title', 'description', 'active', 'sort', 'deleted')
 
 
-class AnswerAdmin(admin.ModelAdmin):
-    fields = ('description', 'question', 'is_correct', 'active', 'sort')
+class AnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
+    fields = ('description', 'question', 'is_correct', 'active', 'sort', 'deleted')
+    list_display = ('title', 'description', 'active', 'sort', 'deleted')
 
 
-class TestCategoryAdmin(admin.ModelAdmin):
+class TestCategoryAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('title', 'description', 'active', 'sort', 'cat')
     list_display = ('title', 'description', 'active', 'sort', 'cat', 'deleted')
 
 
-class TestAdmin(admin.ModelAdmin):
+class TestAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('title', 'description', 'owner', 'questions', 'keywords',  'category', 'max_questions',
               'required_correct_answers', 'active', 'sort', 'time')
     list_display = ('title', 'owner',  'category', 'max_questions', 'required_correct_answers', 'active', 'sort',
-                    'time')
+                    'time', 'deleted')
     
 
 class ResultAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('owner', 'test', 'right_answers_count', 'wrong_answers_count', 'time',  'is_test_passed', 'active', 'sort')
-    list_display = ('owner', 'test', 'right_answers_count', 'wrong_answers_count',
+    list_display = ('id','owner', 'test', 'right_answers_count', 'wrong_answers_count',
                     'get_time',  'is_test_passed', 'active', 'sort', 'deleted')
 
     def get_time(self, obj):
