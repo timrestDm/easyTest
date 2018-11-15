@@ -45,6 +45,11 @@ class QuestionList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.model.objects.get_test_questions(self.request, self.kwargs['pk'])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['test_title'] = self.model.objects.get_test_title(self.kwargs['pk'])
+        return context
+
 
 class QuestionCreate(StaffPassesTestMixin, CreateView):
     """Класс создания вопроса с ответами"""

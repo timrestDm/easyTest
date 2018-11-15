@@ -76,11 +76,13 @@ class QuestionManager(CoreManager):
 
     def get_test_questions(self, request, pk):
         test = Test.objects.get(pk=pk)
-        result_pk = test.results.get(owner=request.user).pk
-        response = test.questions.filter(user_answers__owner=request.user, user_answers__result=result_pk)
+        response = test.questions.filter(user_answers__owner=request.user, user_answers__result__test=pk)
         response = response.order_by('-user_answers__active', 'user_answers__sort', '?')
         max_questions = test.max_questions
         return response[:max_questions]
+
+    def get_test_title(self, pk):
+        return Test.objects.get(pk=pk).title
 
 
 class Question(Core):
