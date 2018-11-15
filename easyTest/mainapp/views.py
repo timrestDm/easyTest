@@ -167,8 +167,7 @@ class ResultCreate(CreateView):
         response = super().form_valid(form)
 
         self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
-        self.kwargs['pk'] = self.kwargs['test']
-        for question in QuestionList(request=self.request, args=self.args, kwargs=self.kwargs).get_queryset():
+        for question in self.object.test.questions.all():
             self.kwargs['question'] = question
             self.kwargs['result'] = self.object
             UserAnswerCreate.as_view()(self.request, *self.args, **self.kwargs)

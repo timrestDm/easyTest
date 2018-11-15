@@ -75,11 +75,11 @@ class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
     def get_test_questions(self, request, pk):
-        response = self.filter(tests=pk)
-        response_user_answers = response.filter(tests=pk, user_answers__owner=request.user)
-        if response_user_answers:
-            response = response_user_answers.order_by('-user_answers__active', 'user_answers__sort',  '?')
-        max_questions = Test.objects.get(pk=pk).max_questions
+        test = Test.objects.get(pk=pk)
+        result_pk = test.results.get(owner=request.user).pk
+        response = test.questions.filter(user_answers__owner=request.user, user_answers__result=result_pk)
+        response = response.order_by('-user_answers__active', 'user_answers__sort', '?')
+        max_questions = test.max_questions
         return response[:max_questions]
 
 
