@@ -7,32 +7,71 @@
 
 {% block styles %}
 {{block.super}}
+<!-- Тестовый блок!! Потом убрать в общий файл стилей -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <style>
+  #sortable1, #sortable2 {
+    border: 1px solid #eee;
+    width: 142px;
+    min-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+    float: left;
+    margin-right: 10px;
+  }
+  #sortable1 li, #sortable2 li {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 120px;
+  }
+  </style>
 {% endblock %}
 
 {% block javascript %}
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/mainapp.js' %}"></script>
+    <!-- Ниже идет Тестовый блок!! Потом выкачать в статику-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+            $( function() {
+                if($("#sortable1").length >= 1) {
+              $( "#sortable1, #sortable2" ).sortable({
+                connectWith: ".connectedSortable"
+              }).disableSelection();
+            console.log('up')
+            input_answer() ;
+            }
+            } );
+    </script>
 {% endblock javascript %}
 
-{% block content %}
-    {% with current_kwargs=request.resolver_match.kwargs.pk  %}
-        <div class="center_full">
-            {% for object in object_list %}
-                <p><b>Тест "{{ test_title }}"</b></p>
-                <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
-                    {% csrf_token %}
-                    <div class="answer_list center"><b>{{ object.description }}</b></p>
-                        <div>
-                            {% for answer in object.answers.all %}
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" name="answer_id"
-                                           onchange="input_answer(this);return false;"
-                                           value="{{ answer.pk }}" id="customRadio{{  forloop.counter }}" class="custom-control-input">
-                                    <label class="custom-control-label" for="customRadio{{  forloop.counter }}">{{ answer }}</label>
+            {% block content %}
+            {% with current_kwargs=request.resolver_match.kwargs.pk  %}
+                <div class="center">
+                    {% for object in object_list %}
+                        <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
+                        <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
+                            {% csrf_token %}
+                            <div class="answer_list center"><b>{{ object.description }}</b></p>
+                                <div>
+                                    {% if object.q_type == 0 %} 
+                                        {% for answer in object.answers.all %}                                                                   
+                                            {% include "./includes/q_type0_snipet.html" %}  
+                                        {% endfor %}                                 
+                                    {% elif object.q_type == 1 %}
+                                        {% for answer in object.answers.all %} 
+                                            {% include "./includes/q_type1_snipet.html" %}
+                                        {% endfor %} 
+                                    
+                                    {% elif object.q_type == 2 %} 
+                                        {% include "./includes/q_type2_snipet.html" %}
+                                    {% endif %}
+                                    
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </div>
+                            </div>
 
                     <input type="hidden" name="question_id" value="{{ object.pk }}">
                     <input type="hidden" id="left_time" name="left_time" value="">

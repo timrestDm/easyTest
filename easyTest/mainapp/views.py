@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Case, When
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
@@ -233,7 +234,10 @@ class ResultUpdate(ResultDetail, UpdateView):
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
         if self.request.POST.get('answer_id'):
-            answer = Answer.objects.get(pk=self.request.POST['answer_id'])
+            pk_list = self.request.POST.getlist('answer_id')
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+            answer= Answer.objects.filter(pk__in=pk_list).order_by(preserved)   
+            print(answer, len(answer))        
         else:
             answer = ''
             self.success_url = self.request.POST['href_current']
@@ -277,6 +281,10 @@ class UserAnswerUpdate(UpdateView):
     model = UserAnswer
     slug_field = 'owner'
 
+    def Stringificator(self, x_queryset):
+        query_string = '-'.join([str(i) for i in x_queryset.values_list('description', flat=True)])
+        return query_string
+
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
         que = UserAnswer.objects.get_queryset_from_question(self.kwargs['question'], self.kwargs['test'])
@@ -289,10 +297,26 @@ class UserAnswerUpdate(UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
+        if self.object.question.q_type <2:
+            right_answers = self.object.question.answers.get_correct_answer()
+            try : 
+                len(right_answers)
+            except TypeError:
+                right_answers= [].append(right_answers)
 
-        form.instance.right_answer = str(self.object.question.answers.get_correct_answer())
-        form.instance.user_answer = str(self.kwargs['answer'])
-        form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
+            print('right a ', right_answers, type(right_answers))
+            form.instance.is_correct = True if len(self.kwargs['answer'])== len(right_answers) else False
+            for each in self.kwargs['answer']: 
+                if each.is_correct == False or each not in right_answers:
+                    form.instance.is_correct = False
+            print(form.instance.is_correct)
+            # form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
+        elif self.object.question.q_type == 2:
+            right_answers =  self.object.question.answers.get_enumerated_answers()
+            form.instance.is_correct = True if list(self.kwargs['answer']) == list(right_answers) else False
+
+        form.instance.right_answer = self.Stringificator(self.object.question.answers.get_correct_answer())
+        form.instance.user_answer = self.Stringificator(self.kwargs['answer'])
         form.instance.active = True if self.kwargs['answer'] else False
 
         if not form.instance.user_answer:

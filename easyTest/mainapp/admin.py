@@ -27,13 +27,13 @@ class AnswerInline(admin.TabularInline):
 
 
 class QuestionAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('description', 'active', 'sort', 'deleted')
+    fields = ('description', 'active', 'sort', 'deleted', 'q_type')
     inlines = [AnswerInline,]
     list_display = ('title', 'description', 'active', 'sort', 'deleted')
 
 
 class AnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('description', 'question', 'is_correct', 'active', 'sort', 'deleted')
+    fields = ('description', 'question', 'is_correct','order_number', 'active', 'sort', 'deleted')
     list_display = ('title', 'description', 'active', 'sort', 'deleted')
 
 

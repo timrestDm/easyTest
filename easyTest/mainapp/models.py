@@ -6,7 +6,11 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.core.exceptions import ValidationError
 
-
+QUESTION_TYPE =  (
+    (0, 'Выбор'),
+     (1, 'Мультивыбор'),
+     (2, 'Порядок'),
+     )
 class CoreQuerySet(models.QuerySet):
     """CoreQuerySet need for change initial QuerySet;
      realization soft delete for QuerySet - filter().delete()"""
@@ -96,7 +100,7 @@ class Question(Core):
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
-
+    q_type  = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE,  default=0, blank=False)
     # test = models.ManyToManyField(Test, blank=True, related_name='questions')
     objects = QuestionManager()
 
@@ -106,10 +110,12 @@ class Question(Core):
 
 class AnswerManager(CoreManager):
     """docstring for   AnswerManager"""
-
+    def get_queryset(self):
+        return self.get_all_queryset().order_by('?')
     def get_correct_answer(self):
-        return self.get(is_correct=True)
-
+        return self.filter(is_correct=True)
+    def get_enumerated_answers(self):
+        return self.all().order_by('order_number')
 
 class Answer(Core):
     """ класс ответа """
@@ -119,6 +125,7 @@ class Answer(Core):
         verbose_name_plural = _('Ответы')
 
     # text = models.CharField(_('text'), max_length=250, blank=False)
+    order_number = models.PositiveIntegerField(_('order'),  default=0, blank=False)
     is_correct = models.BooleanField(_('is correct'), default=False)
     question = models.ForeignKey(Question, null=True, blank=True, related_name='answers', on_delete=models.CASCADE)
     objects = AnswerManager()
