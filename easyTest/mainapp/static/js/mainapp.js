@@ -41,7 +41,10 @@ $(function() {
 
 $(function() {
     $('.more_answers p').click(function() {
-        $('.hidden_answers_forms').slideToggle(500);
+        $('.hidden_answers_forms').toggle();
     });
 });
     
+$(function() {
+    $('#id_q_type').after("<p>Либо загрузить JSON файл</p>");
+});

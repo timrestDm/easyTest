@@ -27,16 +27,17 @@
             </div>
         {% endif %}
 
-        <form class="question_create" action="#" method="post">
+        <form class="question_create" action="#" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="question_create_form">
+                <p>{% trans 'Вы можете либо ввести вопрос и <br> выбрать дополнительные параметры' %}</p>
                 {{ form }}
             </div>
             <div class="answers_create">
                 {{ answers.management_form }}
                 {% for form in answers|slice:':3' %}
                     <div class="answer_create">
-                        {{ form }}
+                        {{ form.as_ul }}
                     </div>
                 {% endfor %}
             </div>
@@ -46,7 +47,7 @@
             <div class="answers_create hidden_answers_forms">
                 {% for form in answers|slice:'3:' %}
                     <div class="answer_create">
-                        {{ form }}
+                        {{ form.as_ul }}
                     </div>
                 {% endfor %}
             </div>

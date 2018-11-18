@@ -376,6 +376,14 @@ body {
 .question_create_form {
     display: flex;
     flex-direction: column;
+    padding-bottom: 20px;
+}
+
+.question_create_form p {
+    color: #4B0082;
+    align-self: center;
+    padding: 5px;
+    text-decoration: underline;
 }
 
 .question_create label,
@@ -402,6 +410,7 @@ body {
 
 .question_create input[type="submit"] {
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 100px;
     align-items: center;
     padding: 0px;
@@ -416,9 +425,8 @@ body {
 
 .answers_create {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     border-top: 1px solid rgba(51, 51, 51, 0.1);
-    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
 .more_answers {
@@ -435,13 +443,30 @@ body {
 .answer_create {
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
+    list-style-type: none;
     margin-top: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
-.answer_create:last-child {
-    margin-right: 0px;
+.answer_create li {
+    display: flex;
+    flex-direction: column;
+}
+
+.answer_create li:first-child ~ *  {
+    flex-direction: row;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.answer_create li:first-child ~ * label {
+    padding-right: 10px;
+    margin-bottom: 0px;
+}
+
+.answer_create input[type="number"] {
+    width: 40px;
+    text-align: center;
 }
 
 .question_create button {
