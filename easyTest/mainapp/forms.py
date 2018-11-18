@@ -40,25 +40,29 @@ class TestCategoryForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ('description',)
+        fields = ('description', 'q_type')
         labels = {
             'description': _('Вопрос'),
+            'q_type': _('Тип вопроса'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст вопроса')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст вопроса')}),
         }
+
+    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
 
 
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ('description', 'is_correct')
+        fields = ('description', 'is_correct', 'order_number')
         labels = {
             'description': _('Ответ'),
             'is_correct': _('Верный'),
+            'order_number': _('Порядковый номер'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст ответа')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст ответа')}),
         }
 
 
