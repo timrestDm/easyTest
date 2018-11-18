@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import transaction
 from django.db.models import Case, When
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
@@ -9,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
 import datetime
+import json
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet
 
@@ -67,22 +69,39 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         formset = AnswerFormSet(self.request.POST)
+        file = self.request.FILES.get('file')
 
-        valid_question = form.cleaned_data.get('description')
-        valid_answer = [True for i in formset.cleaned_data if i.get('description')]
-        valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
-        self.kwargs['error_messages'] = []
-        if not valid_question:
-            self.kwargs['error_messages'].append('Не введен вопрос.')
-        if not valid_answer:
-            self.kwargs['error_messages'].append('Ни одного ответа не задано.')
-        if not valid_is_correct:
-            self.kwargs['error_messages'].append('Не выбран правильный ответ.')
-        if self.kwargs.get('error_messages'):
-            return self.form_invalid(form)
+        if file:
+            questions = json.load(file)
+            answer_model = self.model.answers.rel.related_model
 
-        formset.instance = form.save()
-        return super().form_valid(formset)
+            with transaction.atomic():
+                for question in questions:
+                    answers = questions[question].pop('answers', None)
+                    instance = self.model.objects.create(**questions[question])
+                    if answers:
+                        for answer in answers:
+                            answer_model.objects.create(**answer, question=instance)
+                            
+            return HttpResponseRedirect(self.get_success_url())
+
+        else:
+            valid_question = form.cleaned_data.get('description')
+            valid_answer = [True for i in formset.cleaned_data if i.get('description')]
+            valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
+            self.kwargs['error_messages'] = []
+
+            if not valid_question:
+                self.kwargs['error_messages'].append('Не введен вопрос.')
+            if not valid_answer:
+                self.kwargs['error_messages'].append('Ни одного ответа не задано.')
+            if not valid_is_correct:
+                self.kwargs['error_messages'].append('Не выбран правильный ответ.')
+            if self.kwargs.get('error_messages'):
+                return self.form_invalid(form)
+
+            formset.instance = form.save()
+            return super().form_valid(formset)
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
