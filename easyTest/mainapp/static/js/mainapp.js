@@ -46,5 +46,9 @@ $(function() {
 });
     
 $(function() {
-    $('#id_q_type').after("<p>Либо загрузить JSON файл</p>");
+    $('.question_create_form label[for="id_description"]').before("<p>либо создайте вопрос, внося данные <br>в поля ввода и выбирая параметры</p>");
+});
+
+$(function() {
+    $('label[for="id_title"]').before("<p>либо создайте тест, внося данные <br>в поля ввода и выбирая параметры</p>");
 });

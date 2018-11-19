@@ -1,9 +1,19 @@
 {% load static i18n %}
 
     <div class="center_full">
-        <form class="form_create" action="#" method="post">
+
+        <div class="welcome_admin">
+            <h2>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</h2>
+            <h2>{% trans 'Здесь вы можете создать тест' %}</h2>
+        </div>
+
+        <form class="form_create" action="#" method="post" enctype="multipart/form-data">
+			<p>{% trans 'Загрузите JSON файл' %}</p>
             {% csrf_token %}
             {{ form }}
-            <input type="submit" name="#" value="{% trans 'Сохранить' %}">
+            <div class="sub">
+                <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+            </div>
         </form>
+        
     </div>
