@@ -44,6 +44,7 @@
 
                             {% elif object.q_type == 2 %}
                                 <div class="row row_width_400">
+                                    <input type="hidden" name="skip_question" value="True">
                                     <div class="col-sm-6" >
                                         <ul id="sortable1" class="connectedSortable col d-flex flex-column">
                                             {% for answer in object.answers.all %}

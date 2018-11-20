@@ -54,11 +54,18 @@ $(function() {
 } );
 $(document).ready(function(){
     $( "#sortable2" ).mouseover(function() {
-        var numItems = $("#sortable2 .ui-state-highlight").length;
-        console.log(numItems)
-        if(numItems > 0) {
-            $("#submit_b").removeAttr("disabled").removeClass("disabled"); // Не DRY ! строчка дублирует функционал input_answer() Вероятно нужно вынести в отдельную функцию   
-    };
+        var numItems_1 = $("#sortable1 .ui-state-highlight").length;
+        var numItems_2 = $("#sortable2 .ui-state-highlight").length;
+        console.log(numItems_2)
+        if(numItems_2 > 0 && numItems_1 == 0) {
+            $("#submit_b").removeAttr("disabled").removeClass("disabled"); // Не DRY ! строчка дублирует функционал input_answer() Вероятно нужно вынести в отдельную функцию
+            $('#submit_skip').addClass('disabled').attr('disabled','disabled');
+            $('input[name="skip_question"]').val('False');
+        } else {
+            $("#submit_b").addClass('disabled').attr('disabled','disabled'); // Не DRY ! строчка дублирует функционал input_answer() Вероятно нужно вынести в отдельную функцию
+            $('#submit_skip').removeAttr("disabled").removeClass("disabled");
+            $('input[name="skip_question"]').val('True');
+        };
     } );  
 } );  
     
