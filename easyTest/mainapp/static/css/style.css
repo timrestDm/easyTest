@@ -444,6 +444,9 @@ body {
     margin-right: 0px;
 }
 
+.answer_box {
+    margin-bottom: 40px;
+}
 .question_create button {
     width: 150px;
     height: 40px;
@@ -454,5 +457,31 @@ body {
 .errorlist {
     color: red;
 }
+#sortable1, #sortable2 {
+    border: 1px solid rgba(51, 51, 51, 0.4);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+/*     width: 80%; */
+    min-height: 200px;
+    list-style-type: none;
+    margin: 5px 5px 5px 5px;
+    justify-content: center;
+    padding: 10px;
+  }
+#sortable1 li, #sortable2 li {
+    margin: 5px 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+    border-radius: 5px;
+/*     width: 120px; */
+    background: rgba(240, 248, 255, 0.8);
+    border: 1px solid rgba(51, 51, 51, 0.4);
+    color: #333333;
+  }
+.row_width_400 {
+    min-width: 400px;
+}
 
+.green_background {
+    background-color: rgba(6, 63, 6, 0.486);
+}
 

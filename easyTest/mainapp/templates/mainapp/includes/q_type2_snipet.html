@@ -1,10 +1,20 @@
-<p>Расставте вопросы в нужном порядке, начиная сверху</p>
-<ul id="sortable1" class="connectedSortable justify-content-center align-items-center">
-        {% for answer in object.answers.all %}
-            <li class="ui-state-highlight">{{answer.description }}<input type="hidden" id="slider_input" onchange="input_answer(this);" name="answer_id" value="{{ answer.pk }}" /></li>
-        {% endfor %} 
-    </ul>
-     
-    <!-- <ul id="sortable2" class="connectedSortable">
 
-    </ul> -->
+
+    <div class="row row_width_400">
+        <div class="col-sm-6" >
+          <ul id="sortable1" class="connectedSortable col d-flex flex-column">
+  
+            {% for answer in object.answers.all %}
+                <li class="ui-state-highlight">{{answer.description }}<input type="hidden" id="slider_input"  name="answer_id" value="{{ answer.pk }}" /></li>
+            {% endfor %} 
+          </ul>
+        </div>
+        <div class="col-sm-6 " >
+          <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
+                {% csrf_token %} 
+            <ul id="sortable2" class="connectedSortable w-90 d-flex flex-column green_background">
+
+            </ul>
+        </div>
+  
+      </div>

@@ -6,11 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.core.exceptions import ValidationError
 
-QUESTION_TYPE =  (
-    (0, 'Выбор'),
-     (1, 'Мультивыбор'),
-     (2, 'Порядок'),
-     )
+
 class CoreQuerySet(models.QuerySet):
     """CoreQuerySet need for change initial QuerySet;
      realization soft delete for QuerySet - filter().delete()"""
@@ -40,7 +36,6 @@ class Core(models.Model):
     sort = models.IntegerField(_('sort'), default=0, null=True, blank=True)
     active = models.BooleanField(_('active'), default=True)
     deleted = models.BooleanField(_('deleted'), default=False)
-
     all_objects = models.Manager()
     objects = CoreManager()
 
@@ -91,15 +86,16 @@ class QuestionManager(CoreManager):
 
 class Question(Core):
     """Вопрос """
-    # TEST_TYPE_CHOICES = (
-    #     ('onechoice', 'один вариант ответа'),
-    #     ('multichoice', 'несколько вариантов ответа'),
-    #     ('ordering', 'расположение ответов по порядку'),
-    # )
-    # keyword = models.ManyToManyField(Keyword)
+    QUESTION_TYPE =  (
+        (0, 'Выбор'),
+        (1, 'Мультивыбор'),
+        (2, 'Порядок'),
+        )
+
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
+    
     q_type  = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE,  default=0, blank=False)
     # test = models.ManyToManyField(Test, blank=True, related_name='questions')
     objects = QuestionManager()

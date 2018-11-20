@@ -44,4 +44,20 @@ $(function() {
         $('.hidden_answers_forms').slideToggle(500);
     });
 });
-    
+
+$(function() {
+    if($("#sortable1").length >= 1) {
+        $( "#sortable1, #sortable2" ).sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+}
+} );
+$(document).ready(function(){
+    $( "#sortable2" ).mouseover(function() {
+        var numItems = $("#sortable2 .ui-state-highlight").length;
+        console.log(numItems)
+        if(numItems > 0) {
+            $("#submit_b").removeAttr("disabled").removeClass("disabled"); // Не DRY ! строчка дублирует функционал input_answer() Вероятно нужно вынести в отдельную функцию   
+    };
+    } );  
+} );  

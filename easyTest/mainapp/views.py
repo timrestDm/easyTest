@@ -235,6 +235,7 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         if self.request.POST.get('answer_id'):
             pk_list = self.request.POST.getlist('answer_id')
+            print('print pk',pk_list)
             preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
             answer= Answer.objects.filter(pk__in=pk_list).order_by(preserved)   
             print(answer, len(answer))        
@@ -282,7 +283,12 @@ class UserAnswerUpdate(UpdateView):
     slug_field = 'owner'
 
     def Stringificator(self, x_queryset):
-        query_string = '-'.join([str(i) for i in x_queryset.values_list('description', flat=True)])
+        print('zero a', x_queryset, type(x_queryset))
+        try:
+            query_string = '-'.join([str(i) for i in x_queryset.values_list('description', flat=True)])
+        except AttributeError:
+            return  x_queryset
+
         return query_string
 
     def get_object(self):

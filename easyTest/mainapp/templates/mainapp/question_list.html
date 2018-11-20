@@ -7,56 +7,30 @@
 
 {% block styles %}
 {{block.super}}
-<!-- Тестовый блок!! Потом убрать в общий файл стилей -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
 
-  <style>
-  #sortable1, #sortable2 {
-    border: 1px solid #eee;
-    width: 142px;
-    min-height: 20px;
-    list-style-type: none;
-    margin: 0;
-    padding: 5px 0 0 0;
-    float: left;
-    margin-right: 10px;
-  }
-  #sortable1 li, #sortable2 li {
-    margin: 0 5px 5px 5px;
-    padding: 5px;
-    font-size: 1.2em;
-    width: 120px;
-  }
-  </style>
+
 {% endblock %}
 
 {% block javascript %}
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/mainapp.js' %}"></script>
-    <!-- Ниже идет Тестовый блок!! Потом выкачать в статику-->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-            $( function() {
-                if($("#sortable1").length >= 1) {
-              $( "#sortable1, #sortable2" ).sortable({
-                connectWith: ".connectedSortable"
-              }).disableSelection();
-            console.log('up')
-            input_answer() ;
-            }
-            } );
-    </script>
+    <script src="{% static 'js/jquery-ui.js' %}" ></script>
+    <script src="{% static 'js/touch_punch.js' %}"></script>
+
 {% endblock javascript %}
 
             {% block content %}
             {% with current_kwargs=request.resolver_match.kwargs.pk  %}
                 <div class="center">
                     {% for object in object_list %}
-                        <p><b>Тест "{{ object.tests.all.0.title }}"</b></p>
+                        <p><b>Тест "{{ test_title }}"</b></p>
+                        {% if object.q_type <= 1 %} 
                         <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
                             {% csrf_token %}
+                        {% endif %}
                             <div class="answer_list center"><b>{{ object.description }}</b></p>
-                                <div>
+                                <div class="answer_box">
                                     {% if object.q_type == 0 %} 
                                         {% for answer in object.answers.all %}                                                                   
                                             {% include "./includes/q_type0_snipet.html" %}  
@@ -71,26 +45,28 @@
                                     {% endif %}
                                     
                                 </div>
+                                <input type="hidden" name="question_id" value="{{ object.pk }}">
+                                <input type="hidden" id="left_time" name="left_time" value="">
+            
+                                {% if page_obj.has_next %}
+                                    <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
+                                    <input type="hidden" name="href_current" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.number }}">
+                                    <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
+                                {% else %}
+                                    <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
+                                {% endif %}
+            
+                                <div class="timer_box">
+                                    <p id="timer">{{ request.session.test_time }}</p>
+                                    <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>
+                                    <div class="sub">
+                                        <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                                    </div>
+                                </div>                           
+                           
                             </div>
 
-                    <input type="hidden" name="question_id" value="{{ object.pk }}">
-                    <input type="hidden" id="left_time" name="left_time" value="">
 
-                    {% if page_obj.has_next %}
-                        <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
-                        <input type="hidden" name="href_current" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.number }}">
-                        <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
-                    {% else %}
-                        <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
-                    {% endif %}
-
-                    <div class="timer_box">
-                        <p id="timer">{{ request.session.test_time }}</p>
-                        <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>
-                        <div class="sub">
-                            <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
-                        </div>
-                    </div>
                 </form>
 
             {% endfor %}
