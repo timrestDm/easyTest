@@ -69,3 +69,9 @@ $(function() {
 $(function() {
     $('label[for="id_title"]').before("<p>либо создайте тест, внося данные <br>в поля ввода и выбирая параметры</p>");
 });
+
+$(function() {
+    var height = $('#sortable1').height();
+    $('#sortable1').height(height);
+    $('#sortable2').height(height);
+});
