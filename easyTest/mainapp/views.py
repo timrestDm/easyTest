@@ -132,8 +132,33 @@ class TestCreate(StaffPassesTestMixin, CreateView):
     form_class = TestForm
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
+        file = self.request.FILES.get('file')
+
+        if file:
+            tests = json.load(file)
+            question_model = self.model.questions.rel.model
+            answer_model = question_model.answers.rel.related_model
+
+            with transaction.atomic():
+                for test in tests:
+                    questions = tests[test].pop('questions', None)
+                    instance = self.model.objects.create(**tests[test], owner=self.request.user)
+                    questions_list = []
+                    for question in questions:
+                        answers = question.pop('answers', None)
+                        obj = question_model.objects.create(**question)
+                        if answers:
+                            for answer in answers:
+                                answer_model.objects.create(**answer, question=obj)
+                        questions_list.append(obj)
+                    instance.questions.add(*questions_list)
+                            
+            return HttpResponseRedirect(self.model.get_absolute_url(self))
+
+        else:
+            form.instance.owner = self.request.user
+            return super().form_valid(form)
+
 
 class TestEditView(StaffPassesTestMixin, UpdateView):
     """Класс изменения теста"""
@@ -142,6 +167,7 @@ class TestEditView(StaffPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('mainapp:tests_staff')
+
 
 class TestDeleteView(StaffPassesTestMixin, DeleteView):
     """Класс удаления теста"""
@@ -160,6 +186,7 @@ class TestCategoryCreate(StaffPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('mainapp:testcategory_list')
+
 
 class TestCategoryEditView(StaffPassesTestMixin, UpdateView):
     """Класс изменения категории"""

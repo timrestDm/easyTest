@@ -182,18 +182,6 @@ class Test(Core):
     def get_absolute_url(self):
         return reverse_lazy('mainapp:tests_staff')
 
-    def clean(self):
-        if self.title == '':
-            raise ValidationError({'title': _('Название теста не должно быть пустым.')})
-        if self.time is None or self.time == 0:
-            raise ValidationError({'time': _('Необходимо указать время теста.')})
-        if self.required_correct_answers is None or self.required_correct_answers < 1:
-            raise ValidationError({'required_correct_answers': _('Необходимо указать корректное кол-во правильных ответов для сдачи.')})
-        if self.max_questions is None or self.max_questions < 1:
-            raise ValidationError({'max_questions': _('Необходимо указать корректное максимальное кол-во ответов.')})
-        # if not self.questions:
-        #     raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
-
 
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
