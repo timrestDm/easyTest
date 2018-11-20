@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 class TestForm(forms.ModelForm):
     class Meta:
         model = Test
-        fields = ('title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
+        fields = ('file', 'title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
         labels = {
             'title': _('Название теста'),
             'description': _('Описание теста'),
@@ -17,6 +17,8 @@ class TestForm(forms.ModelForm):
             'max_questions': _('Макс. количество вопросов в тесте'),
             'questions': _('Вопросы'),
         }
+
+    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
 
     def clean(self):
         """ Check for questions in Test """
@@ -40,25 +42,29 @@ class TestCategoryForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ('description',)
+        fields = ('file', 'description', 'q_type')
         labels = {
             'description': _('Вопрос'),
+            'q_type': _('Тип вопроса'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст вопроса')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст вопроса')}),
         }
+
+    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
 
 
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
-        fields = ('description', 'is_correct')
+        fields = ('description', 'is_correct', 'order_number')
         labels = {
             'description': _('Ответ'),
             'is_correct': _('Верный'),
+            'order_number': _('Порядковый номер'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст ответа')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст ответа')}),
         }
 
 

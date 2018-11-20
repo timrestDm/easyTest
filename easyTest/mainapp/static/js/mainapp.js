@@ -41,7 +41,7 @@ $(function() {
 
 $(function() {
     $('.more_answers p').click(function() {
-        $('.hidden_answers_forms').slideToggle(500);
+        $('.hidden_answers_forms').toggle();
     });
 });
 
@@ -61,3 +61,11 @@ $(document).ready(function(){
     };
     } );  
 } );  
+    
+$(function() {
+    $('.question_create_form label[for="id_description"]').before("<p>либо создайте вопрос, внося данные <br>в поля ввода и выбирая параметры</p>");
+});
+
+$(function() {
+    $('label[for="id_title"]').before("<p>либо создайте тест, внося данные <br>в поля ввода и выбирая параметры</p>");
+});

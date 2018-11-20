@@ -5,6 +5,11 @@
     <title>{% trans 'Создание теста' %}</title>
 {% endblock title%}
 
+{% block javascript %}
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/mainapp.js' %}"></script>
+{% endblock javascript %}
+
 {% block content %}
 
 {% include 'mainapp/includes/inc_create_form_content.html' %}

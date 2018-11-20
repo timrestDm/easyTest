@@ -195,6 +195,10 @@ body {
     text-align: center;
 }
 
+.sub {
+    text-align: center;
+}
+
 #timer {
     font-weight: 900;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
@@ -206,14 +210,35 @@ body {
 .form_create {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
 .form_create input, select, textarea {
     margin-bottom: 20px;
     border-radius: 5px;
+    resize: none;
     cursor: pointer;
+}
+
+.form_create p {
+    color: #4B0082;
+    align-self: center;
+    padding: 5px;
+    text-decoration: underline;
+}
+
+.form_create input[type="text"],
+.form_create input[type="number"] {
+    border: 1px solid rgba(51, 51, 51, 0.5);
+}
+
+.form_create label {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+    color: #333333;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
 }
 
 .denied {
@@ -376,6 +401,14 @@ body {
 .question_create_form {
     display: flex;
     flex-direction: column;
+    padding-bottom: 20px;
+}
+
+.question_create_form p {
+    color: #4B0082;
+    align-self: center;
+    padding: 5px;
+    text-decoration: underline;
 }
 
 .question_create label,
@@ -400,25 +433,32 @@ body {
     text-align: center;
 }
 
-.question_create input[type="submit"] {
+.question_create input[type="submit"],
+.form_create input[type="submit"] {
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 100px;
     align-items: center;
     padding: 0px;
 }
+
+.question_create input[type="file"] {
+    margin-bottom: 20px;
+}
+
 
 .question_create textarea {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
+    resize: none;
 }
 
 .answers_create {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     border-top: 1px solid rgba(51, 51, 51, 0.1);
-    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
 .more_answers {
@@ -435,13 +475,30 @@ body {
 .answer_create {
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
+    list-style-type: none;
     margin-top: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
-.answer_create:last-child {
-    margin-right: 0px;
+.answer_create li {
+    display: flex;
+    flex-direction: column;
+}
+
+.answer_create li:first-child ~ *  {
+    flex-direction: row;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.answer_create li:first-child ~ * label {
+    padding-right: 10px;
+    margin-bottom: 0px;
+}
+
+.answer_create input[type="number"] {
+    width: 40px;
+    text-align: center;
 }
 
 .answer_box {
