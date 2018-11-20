@@ -8,6 +8,21 @@
 
 {% block content %}
 
-{% include 'mainapp/includes/inc_create_form_content.html' %}
+    <div class="center_full">
+
+        <div class="welcome_admin">
+            <h2>{% trans 'Дорогой пользователь'|upper %}, {{ user.username|upper }}</h2>
+            <h2>{% trans 'Здесь вы можете создать категорию' %}</h2>
+        </div>
+
+        <form class="form_create" action="#" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <div class="sub">
+                <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+            </div>
+        </form>
+
+    </div>
 
 {% endblock content %}

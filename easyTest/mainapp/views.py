@@ -161,15 +161,23 @@ class TestCategoryCreate(StaffPassesTestMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('mainapp:testcategory_list')
 
+class TestCategoryEditView(StaffPassesTestMixin, UpdateView):
+    """Класс изменения категории"""
+    model = TestCategory
+    form_class = TestCategoryForm
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:testcategory_list')
+
 
 class TestCategoryList(StaffPassesTestMixin, ListView):
-    """Класс для просмотра всех созданных тестов пользователем"""
+    """Класс для просмотра всех созданных категорий тестов пользователем"""
     model = TestCategory
     template_name = 'mainapp/testscategory_list.html'
 
 
 class TestCategoryDelete(StaffPassesTestMixin, DeleteView):
-    """Класс удаления теста"""
+    """Класс удаления категории теста"""
     model = TestCategory
     success_url = reverse_lazy('mainapp:main')
 

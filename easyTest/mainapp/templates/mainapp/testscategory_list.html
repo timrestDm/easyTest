@@ -12,6 +12,7 @@
             {% for object in object_list %}
 	            <div class="iter_list">
 		            <p class="list_title">{{ object.title }}</p>
+					<a href="{% url 'mainapp:category_edit' object.pk %}" class="base_link">{% trans 'Изменить' %}</a>
 		            <form method="post" action="{% url 'mainapp:testcategory_delete' object.pk %}">
 			            {% csrf_token %}
     		            <button class="base_link" type="submit">
