@@ -86,19 +86,21 @@ class QuestionManager(CoreManager):
 
 class Question(Core):
     """Вопрос """
-    QUESTION_TYPE =  (
-        (0, 'Выбор'),
-        (1, 'Мультивыбор'),
-        (2, 'Порядок'),
-        )
 
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
     
-    q_type  = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE,  default=0, blank=False)
     # test = models.ManyToManyField(Test, blank=True, related_name='questions')
     objects = QuestionManager()
+
+    QUESTION_TYPE = (
+        (0, 'Выбор'),
+        (1, 'Мультивыбор'),
+        (2, 'Порядок'),
+        )
+
+    q_type = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE, default=0, blank=False)
 
     def __str__(self):
         return f'{self.description}'
@@ -106,12 +108,16 @@ class Question(Core):
 
 class AnswerManager(CoreManager):
     """docstring for   AnswerManager"""
+
     def get_queryset(self):
         return self.get_all_queryset().order_by('?')
+
     def get_correct_answer(self):
         return self.filter(is_correct=True)
+
     def get_enumerated_answers(self):
         return self.all().order_by('order_number')
+
 
 class Answer(Core):
     """ класс ответа """
@@ -187,6 +193,7 @@ class Test(Core):
             raise ValidationError({'max_questions': _('Необходимо указать корректное максимальное кол-во ответов.')})
         # if not self.questions:
         #     raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
+
 
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
