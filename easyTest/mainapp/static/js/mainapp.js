@@ -82,3 +82,31 @@ $(function() {
     $('#sortable1').height(height);
     $('#sortable2').height(height);
 });
+
+$(function() {
+    var bl_order_num = $('.answers_create input[type="number"]').closest('li');
+
+    document.getElementById('id_q_type').setAttribute("onChange", "Selected(this)");
+    for (var i = 0; i < bl_order_num.length; i++) {
+                bl_order_num[i].style.display='none';
+            }
+});
+
+function Selected(target) {
+        var label = target.value;
+        var bl_is_correct = $('.answers_create input[type="checkbox"]').closest('li');
+        var bl_order_num = $('.answers_create input[type="number"]').closest('li');
+
+        if (label != 2) {
+            for (var i = 0; i < bl_is_correct.length; i++) {
+                bl_is_correct[i].style.display='flex';
+                bl_order_num[i].style.display='none';
+            }
+        } else {
+            for (var i = 0; i < bl_is_correct.length; i++) {
+                bl_is_correct[i].style.display='none';
+                bl_order_num[i].style.display='flex';
+            }
+        }
+
+}
