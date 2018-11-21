@@ -505,6 +505,12 @@ body {
 .answer_create input[type="number"] {
     width: 40px;
     text-align: center;
+    height: 27px;
+}
+
+.answer_create input[type="checkbox"] {
+    height: 27px;
+    width: 18px;
 }
 
 .answer_box {
@@ -549,5 +555,3 @@ body {
 .row_width_400 {
     min-width: 400px;
 }
-
-
