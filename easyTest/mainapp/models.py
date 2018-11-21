@@ -96,12 +96,11 @@ class Question(Core):
     objects = QuestionManager()
 
     QUESTION_TYPE = (
-        (0, 'Выбор'),
-        (1, 'Мультивыбор'),
-        (2, 'Порядок'),
+        ('select', 'Выбор правильного(-ых) ответа(-ов)'),
+        ('sort', 'Ответы по порядку'),
         )
 
-    q_type = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE, default=0, blank=False)
+    q_type = models.CharField(_('question type'), max_length=10, choices=QUESTION_TYPE, default='select')
 
     def __str__(self):
         return f'{self.description}'
