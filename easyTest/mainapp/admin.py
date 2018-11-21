@@ -27,14 +27,14 @@ class AnswerInline(admin.TabularInline):
 
 
 class QuestionAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('description', 'active', 'sort', 'deleted', 'q_type')
+    fields = ('description', 'q_type', 'active', 'sort', 'deleted')
     inlines = [AnswerInline,]
-    list_display = ('title', 'description', 'active', 'sort', 'deleted')
+    list_display = ('description', 'q_type', 'active', 'sort', 'deleted')
 
 
 class AnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('description', 'question', 'is_correct','order_number', 'active', 'sort', 'deleted')
-    list_display = ('title', 'description', 'active', 'sort', 'deleted')
+    fields = ('description', 'question', 'is_correct', 'order_number', 'active', 'sort', 'deleted')
+    list_display = ('description', 'question', 'is_correct', 'order_number', 'active', 'sort', 'deleted')
 
 
 class TestCategoryAdmin(EditDatabaseAdmin, admin.ModelAdmin):
@@ -51,8 +51,8 @@ class TestAdmin(EditDatabaseAdmin, admin.ModelAdmin):
 
 class ResultAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('owner', 'test', 'right_answers_count', 'wrong_answers_count', 'time',  'is_test_passed', 'active', 'sort')
-    list_display = ('id','owner', 'test', 'right_answers_count', 'wrong_answers_count',
-                    'get_time',  'is_test_passed', 'active', 'sort', 'deleted')
+    list_display = ('owner', 'test', 'right_answers_count', 'wrong_answers_count',
+                    'get_time', 'is_test_passed', 'active', 'sort', 'deleted')
 
     def get_time(self, obj):
         return f'{obj.time}'.split('.')[0]

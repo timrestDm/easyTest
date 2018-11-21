@@ -87,7 +87,11 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
         else:
             valid_question = form.cleaned_data.get('description')
             valid_answer = [True for i in formset.cleaned_data if i.get('description')]
-            valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
+            if form.instance.q_type != 2:
+                valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
+            else:
+                order_numbers = [i['order_number'] for i in formset.cleaned_data if i.get('order_number') is not None]
+                valid_is_correct = True if len(valid_answer) == len(set(order_numbers)) else False
             self.kwargs['error_messages'] = []
 
             if not valid_question:
@@ -95,7 +99,10 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
             if not valid_answer:
                 self.kwargs['error_messages'].append('Ни одного ответа не задано.')
             if not valid_is_correct:
-                self.kwargs['error_messages'].append('Не выбран правильный ответ.')
+                if type(valid_is_correct) == list:
+                    self.kwargs['error_messages'].append('Не выбран правильный ответ.')
+                else:
+                    self.kwargs['error_messages'].append('Не определен порядок ответов.')
             if self.kwargs.get('error_messages'):
                 return self.form_invalid(form)
 
@@ -332,13 +339,11 @@ class UserAnswerUpdate(UpdateView):
     model = UserAnswer
     slug_field = 'owner'
 
-    def stringificator(self, x_queryset):
-        print('zero a', x_queryset, type(x_queryset))
-        try:
-            query_string = '-'.join([str(i) for i in x_queryset.values_list('description', flat=True)])
-        except AttributeError:
-            return  x_queryset
-
+    def stringificator(self, x_queryset, question_type):
+        query_string = ''
+        if x_queryset:
+            separator = ' - ' if question_type == 2 else '; '
+            query_string = separator.join([i for i in x_queryset.values_list('description', flat=True)])
         return query_string
 
     def get_object(self):
@@ -353,20 +358,20 @@ class UserAnswerUpdate(UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
+        question_type = self.object.question.q_type
 
-        if self.object.question.q_type < 2:
+        if question_type < 2:
             right_answers = self.object.question.answers.get_correct_answer()
             form.instance.is_correct = True if len(self.kwargs['answer']) == len(right_answers) else False
             for each in self.kwargs['answer']:
                 if each.is_correct is False or each not in right_answers:
                     form.instance.is_correct = False
-
-        elif self.object.question.q_type == 2:
+        elif question_type == 2:
             right_answers = self.object.question.answers.get_enumerated_answers()
             form.instance.is_correct = True if list(self.kwargs['answer']) == list(right_answers) else False
 
-        form.instance.right_answer = self.stringificator(right_answers)
-        form.instance.user_answer = self.stringificator(self.kwargs['answer'])
+        form.instance.right_answer = self.stringificator(right_answers, question_type)
+        form.instance.user_answer = self.stringificator(self.kwargs['answer'], question_type)
         form.instance.active = True if self.kwargs['answer'] else False
 
         if not form.instance.user_answer:
