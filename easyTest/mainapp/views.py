@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.db import transaction
-from django.db.models import Case, When
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
@@ -289,8 +288,7 @@ class ResultUpdate(ResultDetail, UpdateView):
 
         if self.request.POST.get('answer_id') and self.request.POST.get('skip_question', 'False') == 'False':
             pk_list = self.request.POST.getlist('answer_id')
-            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-            answer = Answer.objects.filter(pk__in=pk_list).order_by(preserved)
+            answer = Answer.objects.get_by_user_ordering(pk_list)
         else:
             answer = ''
             self.success_url = self.request.POST['href_current']

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.db.models import Case, When
 from django.core.exceptions import ValidationError
 
 
@@ -117,6 +118,10 @@ class AnswerManager(CoreManager):
 
     def get_enumerated_answers(self):
         return self.all().order_by('order_number')
+
+    def get_by_user_ordering(self, pk_list):
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+        return self.filter(pk__in=pk_list).order_by(preserved)
 
 
 class Answer(Core):
