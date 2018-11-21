@@ -87,9 +87,9 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
         else:
             valid_question = form.cleaned_data.get('description')
             valid_answer = [True for i in formset.cleaned_data if i.get('description')]
-            if form.instance.q_type != 2:
+            if form.instance.q_type == 'select':
                 valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
-            else:
+            elif form.instance.q_type == 'sort':
                 order_numbers = [i['order_number'] for i in formset.cleaned_data if i.get('order_number') is not None]
                 valid_is_correct = True if len(valid_answer) == len(set(order_numbers)) else False
             self.kwargs['error_messages'] = []
@@ -342,7 +342,7 @@ class UserAnswerUpdate(UpdateView):
     def stringificator(self, x_queryset, question_type):
         query_string = ''
         if x_queryset:
-            separator = ' - ' if question_type == 2 else '; '
+            separator = ' - ' if question_type == 'sort' else '; '
             query_string = separator.join([i for i in x_queryset.values_list('description', flat=True)])
         return query_string
 
@@ -360,13 +360,13 @@ class UserAnswerUpdate(UpdateView):
         self.success_url = self.request.POST['href']
         question_type = self.object.question.q_type
 
-        if question_type < 2:
+        if question_type == 'select':
             right_answers = self.object.question.answers.get_correct_answer()
             form.instance.is_correct = True if len(self.kwargs['answer']) == len(right_answers) else False
             for each in self.kwargs['answer']:
                 if each.is_correct is False or each not in right_answers:
                     form.instance.is_correct = False
-        elif question_type == 2:
+        elif question_type == 'sort':
             right_answers = self.object.question.answers.get_enumerated_answers()
             form.instance.is_correct = True if list(self.kwargs['answer']) == list(right_answers) else False
 

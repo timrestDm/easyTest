@@ -31,18 +31,20 @@
                         {% csrf_token %}
 
                         <div class="answer_box">
-                            {% if object.q_type == 0 or object.q_type == 1 %}
-                                {% for answer in object.answers.all %}
-                                    <div class="custom-control {% if object.q_type == 0 %}custom-Radio{% else %}custom-checkbox{% endif %}">
-                                        <input type="{% if object.q_type == 0 %}Radio{% else %}checkbox{% endif %}"
-                                               onchange="input_answer(this);return false;"
-                                               name="answer_id"
-                                               value="{{ answer.pk }}" id="select_{{ forloop.counter }}" class="custom-control-input">
-                                        <label class="custom-control-label" for="select_{{ forloop.counter }}">{{ answer }}</label>
-                                    </div>
-                                {% endfor %}
+                            {% if object.q_type == 'select' %}
+                                {% with object.answers.get_correct_answer.count as count_correct %}
+                                    {% for answer in object.answers.all %}
+                                        <div class="custom-control {% if count_correct == 1 %}custom-Radio{% else %}custom-checkbox{% endif %}">
+                                            <input type="{% if count_correct == 1 %}Radio{% else %}checkbox{% endif %}"
+                                                   onchange="input_answer(this);return false;"
+                                                   name="answer_id"
+                                                   value="{{ answer.pk }}" id="select_{{ forloop.counter }}" class="custom-control-input">
+                                            <label class="custom-control-label" for="select_{{ forloop.counter }}">{{ answer }}</label>
+                                        </div>
+                                    {% endfor %}
+                                {% endwith %}
 
-                            {% elif object.q_type == 2 %}
+                            {% elif object.q_type == 'sort' %}
                                 <div class="row row_width_400">
                                     <input type="hidden" name="skip_question" value="True">
                                     <div class="col-sm-6" >

@@ -97,12 +97,12 @@ function Selected(target) {
         var bl_is_correct = $('.answers_create input[type="checkbox"]').closest('li');
         var bl_order_num = $('.answers_create input[type="number"]').closest('li');
 
-        if (label != 2) {
+        if (label == 'select') {
             for (var i = 0; i < bl_is_correct.length; i++) {
                 bl_is_correct[i].style.display='flex';
                 bl_order_num[i].style.display='none';
             }
-        } else {
+        } else if (label == 'sort') {
             for (var i = 0; i < bl_is_correct.length; i++) {
                 bl_is_correct[i].style.display='none';
                 bl_order_num[i].style.display='flex';
