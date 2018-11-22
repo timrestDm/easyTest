@@ -4,13 +4,10 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.db.models import Case, When
 from django.core.exceptions import ValidationError
 
-QUESTION_TYPE =  (
-    (0, 'Выбор'),
-     (1, 'Мультивыбор'),
-     (2, 'Порядок'),
-     )
+
 class CoreQuerySet(models.QuerySet):
     """CoreQuerySet need for change initial QuerySet;
      realization soft delete for QuerySet - filter().delete()"""
@@ -40,7 +37,6 @@ class Core(models.Model):
     sort = models.IntegerField(_('sort'), default=0, null=True, blank=True)
     active = models.BooleanField(_('active'), default=True)
     deleted = models.BooleanField(_('deleted'), default=False)
-
     all_objects = models.Manager()
     objects = CoreManager()
 
@@ -91,18 +87,20 @@ class QuestionManager(CoreManager):
 
 class Question(Core):
     """Вопрос """
-    # TEST_TYPE_CHOICES = (
-    #     ('onechoice', 'один вариант ответа'),
-    #     ('multichoice', 'несколько вариантов ответа'),
-    #     ('ordering', 'расположение ответов по порядку'),
-    # )
-    # keyword = models.ManyToManyField(Keyword)
+
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
-    q_type  = models.PositiveIntegerField(_('question type'), choices=QUESTION_TYPE,  default=0, blank=False)
+    
     # test = models.ManyToManyField(Test, blank=True, related_name='questions')
     objects = QuestionManager()
+
+    QUESTION_TYPE = (
+        ('select', 'Выбор правильного(-ых) ответа(-ов)'),
+        ('sort', 'Ответы по порядку'),
+        )
+
+    q_type = models.CharField(_('question type'), max_length=10, choices=QUESTION_TYPE, default='select')
 
     def __str__(self):
         return f'{self.description}'
@@ -110,12 +108,20 @@ class Question(Core):
 
 class AnswerManager(CoreManager):
     """docstring for   AnswerManager"""
+
     def get_queryset(self):
         return self.get_all_queryset().order_by('?')
+
     def get_correct_answer(self):
         return self.filter(is_correct=True)
+
     def get_enumerated_answers(self):
         return self.all().order_by('order_number')
+
+    def get_by_user_ordering(self, pk_list):
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+        return self.filter(pk__in=pk_list).order_by(preserved)
+
 
 class Answer(Core):
     """ класс ответа """
@@ -180,17 +186,6 @@ class Test(Core):
     def get_absolute_url(self):
         return reverse_lazy('mainapp:tests_staff')
 
-    def clean(self):
-        if self.title == '':
-            raise ValidationError({'title': _('Название теста не должно быть пустым.')})
-        if self.time is None or self.time == 0:
-            raise ValidationError({'time': _('Необходимо указать время теста.')})
-        if self.required_correct_answers is None or self.required_correct_answers < 1:
-            raise ValidationError({'required_correct_answers': _('Необходимо указать корректное кол-во правильных ответов для сдачи.')})
-        if self.max_questions is None or self.max_questions < 1:
-            raise ValidationError({'max_questions': _('Необходимо указать корректное максимальное кол-во ответов.')})
-        # if not self.questions:
-        #     raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
 
 
 class ResultManager(CoreManager):

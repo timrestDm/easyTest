@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Case, When
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
 import datetime
+import json
 from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet, GroupForm, StudentForm, StudentEditForm
 
@@ -67,22 +68,46 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         formset = AnswerFormSet(self.request.POST)
+        file = self.request.FILES.get('file')
 
-        valid_question = form.cleaned_data.get('description')
-        valid_answer = [True for i in formset.cleaned_data if i.get('description')]
-        valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
-        self.kwargs['error_messages'] = []
-        if not valid_question:
-            self.kwargs['error_messages'].append('Не введен вопрос.')
-        if not valid_answer:
-            self.kwargs['error_messages'].append('Ни одного ответа не задано.')
-        if not valid_is_correct:
-            self.kwargs['error_messages'].append('Не выбран правильный ответ.')
-        if self.kwargs.get('error_messages'):
-            return self.form_invalid(form)
+        if file:
+            questions = json.load(file)
+            answer_model = self.model.answers.rel.related_model
 
-        formset.instance = form.save()
-        return super().form_valid(formset)
+            with transaction.atomic():
+                for question in questions:
+                    answers = questions[question].pop('answers', None)
+                    instance = self.model.objects.create(**questions[question])
+                    if answers:
+                        for answer in answers:
+                            answer_model.objects.create(**answer, question=instance)
+                            
+            return HttpResponseRedirect(self.get_success_url())
+
+        else:
+            valid_question = form.cleaned_data.get('description')
+            valid_answer = [True for i in formset.cleaned_data if i.get('description')]
+            if form.instance.q_type == 'select':
+                valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
+            elif form.instance.q_type == 'sort':
+                order_numbers = [i['order_number'] for i in formset.cleaned_data if i.get('order_number') is not None]
+                valid_is_correct = True if len(valid_answer) == len(set(order_numbers)) else False
+            self.kwargs['error_messages'] = []
+
+            if not valid_question:
+                self.kwargs['error_messages'].append('Не введен вопрос.')
+            if not valid_answer:
+                self.kwargs['error_messages'].append('Ни одного ответа не задано.')
+            if not valid_is_correct:
+                if type(valid_is_correct) == list:
+                    self.kwargs['error_messages'].append('Не выбран правильный ответ.')
+                else:
+                    self.kwargs['error_messages'].append('Не определен порядок ответов.')
+            if self.kwargs.get('error_messages'):
+                return self.form_invalid(form)
+
+            formset.instance = form.save()
+            return super().form_valid(formset)
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
@@ -114,8 +139,32 @@ class TestCreate(StaffPassesTestMixin, CreateView):
 
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
+        file = self.request.FILES.get('file')
+
+        if file:
+            tests = json.load(file)
+            question_model = self.model.questions.rel.model
+            answer_model = question_model.answers.rel.related_model
+
+            with transaction.atomic():
+                for test in tests:
+                    questions = tests[test].pop('questions', None)
+                    instance = self.model.objects.create(**tests[test], owner=self.request.user)
+                    questions_list = []
+                    for question in questions:
+                        answers = question.pop('answers', None)
+                        obj = question_model.objects.create(**question)
+                        if answers:
+                            for answer in answers:
+                                answer_model.objects.create(**answer, question=obj)
+                        questions_list.append(obj)
+                    instance.questions.add(*questions_list)
+                            
+            return HttpResponseRedirect(self.model.get_absolute_url(self))
+
+        else:
+            form.instance.owner = self.request.user
+            return super().form_valid(form)
 
 
 class TestEdit(StaffPassesTestMixin, UpdateView):
@@ -149,14 +198,23 @@ class TestCategoryCreate(StaffPassesTestMixin, CreateView):
         return reverse_lazy('mainapp:testcategory_list')
 
 
+class TestCategoryEditView(StaffPassesTestMixin, UpdateView):
+    """Класс изменения категории"""
+    model = TestCategory
+    form_class = TestCategoryForm
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:testcategory_list')
+
+
 class TestCategoryList(StaffPassesTestMixin, ListView):
-    """Класс для просмотра всех созданных тестов пользователем"""
+    """Класс для просмотра всех созданных категорий тестов пользователем"""
     model = TestCategory
     template_name = 'mainapp/testscategory_list.html'
 
 
 class TestCategoryDelete(StaffPassesTestMixin, DeleteView):
-    """Класс удаления теста"""
+    """Класс удаления категории теста"""
     model = TestCategory
     success_url = reverse_lazy('mainapp:main')
 
@@ -239,11 +297,9 @@ class ResultUpdate(ResultDetail, UpdateView):
         if time_result > self.object.test.time:
             return HttpResponseRedirect(reverse_lazy('mainapp:test_time_is_over', kwargs={'test': self.kwargs['test']}))
 
-        if self.request.POST.get('answer_id'):
+        if self.request.POST.get('answer_id') and self.request.POST.get('skip_question', 'False') == 'False':
             pk_list = self.request.POST.getlist('answer_id')
-            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-            answer= Answer.objects.filter(pk__in=pk_list).order_by(preserved)   
-            print(answer, len(answer))        
+            answer = Answer.objects.get_by_user_ordering(pk_list)
         else:
             answer = ''
             self.success_url = self.request.POST['href_current']
@@ -287,8 +343,11 @@ class UserAnswerUpdate(UpdateView):
     model = UserAnswer
     slug_field = 'owner'
 
-    def Stringificator(self, x_queryset):
-        query_string = '-'.join([str(i) for i in x_queryset.values_list('description', flat=True)])
+    def stringificator(self, x_queryset, question_type):
+        query_string = ''
+        if x_queryset:
+            separator = ' - ' if question_type == 'sort' else '; '
+            query_string = separator.join([i for i in x_queryset.values_list('description', flat=True)])
         return query_string
 
     def get_object(self):
@@ -303,26 +362,20 @@ class UserAnswerUpdate(UpdateView):
 
     def form_valid(self, form):
         self.success_url = self.request.POST['href']
-        if self.object.question.q_type <2:
-            right_answers = self.object.question.answers.get_correct_answer()
-            try : 
-                len(right_answers)
-            except TypeError:
-                right_answers= [].append(right_answers)
+        question_type = self.object.question.q_type
 
-            print('right a ', right_answers, type(right_answers))
-            form.instance.is_correct = True if len(self.kwargs['answer'])== len(right_answers) else False
-            for each in self.kwargs['answer']: 
-                if each.is_correct == False or each not in right_answers:
+        if question_type == 'select':
+            right_answers = self.object.question.answers.get_correct_answer()
+            form.instance.is_correct = True if len(self.kwargs['answer']) == len(right_answers) else False
+            for each in self.kwargs['answer']:
+                if each.is_correct is False or each not in right_answers:
                     form.instance.is_correct = False
-            print(form.instance.is_correct)
-            # form.instance.is_correct = True if form.instance.right_answer == form.instance.user_answer else False
-        elif self.object.question.q_type == 2:
-            right_answers =  self.object.question.answers.get_enumerated_answers()
+        elif question_type == 'sort':
+            right_answers = self.object.question.answers.get_enumerated_answers()
             form.instance.is_correct = True if list(self.kwargs['answer']) == list(right_answers) else False
 
-        form.instance.right_answer = self.Stringificator(self.object.question.answers.get_correct_answer())
-        form.instance.user_answer = self.Stringificator(self.kwargs['answer'])
+        form.instance.right_answer = self.stringificator(right_answers, question_type)
+        form.instance.user_answer = self.stringificator(self.kwargs['answer'], question_type)
         form.instance.active = True if self.kwargs['answer'] else False
 
         if not form.instance.user_answer:

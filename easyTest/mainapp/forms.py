@@ -6,9 +6,11 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class TestForm(forms.ModelForm):
+    '''Класс формы создания теста'''
+
     class Meta:
         model = Test
-        fields = ('title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
+        fields = ('file', 'title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
         labels = {
             'title': _('Название теста'),
             'description': _('Описание теста'),
@@ -19,15 +21,36 @@ class TestForm(forms.ModelForm):
             'questions': _('Вопросы'),
         }
 
+    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
+
     def clean(self):
         """ Check for questions in Test """
-        questions = self.cleaned_data.get('questions')
-        if not questions:
+        cleaned_data = super().clean()
+        file = cleaned_data.get('file')
+
+        if file:
+            if file.name.split('.')[-1] == 'json':
+                return self.cleaned_data
+            else:
+                raise ValidationError({'file':_('Загрузите файл в верном формате.')})
+
+        if cleaned_data.get('title') == '':
+            raise ValidationError({'title': _('Название теста не должно быть пустым.')})
+        if cleaned_data.get('time') is None or cleaned_data.get('time') == 0:
+            raise ValidationError({'time': _('Необходимо указать время теста.')})
+        if cleaned_data.get('required_correct_answers') is None or cleaned_data.get('required_correct_answers') < 1:
+            raise ValidationError({'required_correct_answers': _('Необходимо указать корректное кол-во правильных ответов для сдачи.')})
+        if cleaned_data.get('max_questions') is None or cleaned_data.get('max_questions') < 1:
+            raise ValidationError({'max_questions': _('Необходимо указать корректное максимальное кол-во ответов.')})
+        if not cleaned_data.get('questions'):
             raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
+
         return self.cleaned_data
 
 
 class TestCategoryForm(forms.ModelForm):
+    '''Класс формы создания категории'''
+
     class Meta:
         model = TestCategory
         fields = ('title', 'description', 'cat')
@@ -39,27 +62,35 @@ class TestCategoryForm(forms.ModelForm):
 
 
 class QuestionForm(forms.ModelForm):
+    '''Класс формы создания вопроса'''
+
     class Meta:
         model = Question
-        fields = ('description',)
+        fields = ('file', 'description', 'q_type')
         labels = {
             'description': _('Вопрос'),
+            'q_type': _('Тип вопроса'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст вопроса')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст вопроса')}),
         }
+
+    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
 
 
 class AnswerForm(forms.ModelForm):
+    '''Класс формы создания ответа'''
+
     class Meta:
         model = Answer
-        fields = ('description', 'is_correct')
+        fields = ('description', 'is_correct', 'order_number')
         labels = {
             'description': _('Ответ'),
             'is_correct': _('Верный'),
+            'order_number': _('Порядковый номер'),
         }
         widgets = {
-            'description': forms.Textarea(attrs={'cols': 50, 'rows': 2, 'placeholder': _('Введите текст ответа')}),
+            'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст ответа')}),
         }
 
 

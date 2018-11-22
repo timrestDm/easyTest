@@ -24,6 +24,7 @@ urlpatterns = [
     path('result/edit/<int:test>/', mainapp.ResultUpdate.as_view(), name='result_update'),
 
     path('category/create/', mainapp.TestCategoryCreate.as_view(), name='category_create'),
+    path('category/edit/<int:pk>', mainapp.TestCategoryEditView.as_view(), name='category_edit'),
     path('category/<int:pk>/delete/', mainapp.TestCategoryDelete.as_view(), name='testcategory_delete'),
     path('category/list/', mainapp.TestCategoryList.as_view(), name='testcategory_list'),
 
