@@ -192,6 +192,7 @@ class Test(Core):
         # if not self.questions:
         #     raise ValidationError({'questions': _('Необходимо указать хоть один вопрос для теста.')})
 
+
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
 
@@ -261,3 +262,24 @@ class UserAnswer(Core):
 
     def __str__(self):
         return f'{self.owner.username}_{self.result.test.title}__{self.question.description}'
+
+
+class Group(Core):
+    """docstring for  Group"""
+
+    class Meta:
+        verbose_name = _('Группа')
+        verbose_name_plural = _('Группы')
+
+    parent_group = models.ForeignKey('self', null=True, blank=True, related_name='child_groups', on_delete=models.CASCADE)
+    objects = CoreManager()
+
+
+class Student(User):
+    """docstring for  Student"""
+
+    class Meta:
+        verbose_name = _('Студент')
+        verbose_name_plural = _('Студенты')
+
+    group = models.ForeignKey(Group, null=True, blank=True, related_name='students', on_delete=models.CASCADE)

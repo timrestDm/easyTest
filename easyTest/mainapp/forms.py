@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from mainapp.models import Test, TestCategory, Question, Answer
+from mainapp.models import Test, TestCategory, Question, Answer, Group, Student
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class TestForm(forms.ModelForm):
@@ -63,3 +64,49 @@ class AnswerForm(forms.ModelForm):
 
 
 AnswerFormSet = forms.inlineformset_factory(Question, Answer, form=AnswerForm, can_delete=False, extra=6)
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ('title', 'description', 'parent_group',)
+        labels = {
+            'title': _('Название группы'),
+            'description': _('Описание'),
+            'parent_group': _('Родительская группа'),
+        }
+
+
+class StudentForm(UserCreationForm):
+    class Meta:
+        model = Student
+        fields = ('username', 'first_name', 'group', 'password1', 'password2', 'email',)
+        labels = {
+            'username': _('Логин'),
+            'first_name': _('ФИО'),
+            'group': _('Группа'),
+            'password1': _('Пароль'),
+            'password2': _('Повтор пароля'),
+            'email': _('email'),
+        }
+
+
+class StudentEditForm(UserChangeForm):
+    class Meta:
+        model = Student
+        fields = ('username', 'first_name', 'group', 'email', 'password')
+        labels = {
+            'username': _('Логин'),
+            'first_name': _('ФИО'),
+            'group': _('Группа'),
+            'password': _('Пароль'),
+            'email': _('email'),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(StudentEditForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
+            if field_name == 'password':
+                field.widget = forms.HiddenInput()

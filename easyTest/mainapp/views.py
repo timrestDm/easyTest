@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from .models import *
 import datetime
 from django.core.exceptions import PermissionDenied
-from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet
+from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet, GroupForm, StudentForm, StudentEditForm
 
 
 class StaffPassesTestMixin(UserPassesTestMixin):
@@ -112,22 +112,27 @@ class TestCreate(StaffPassesTestMixin, CreateView):
     model = Test
     form_class = TestForm
 
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
-class TestEditView(StaffPassesTestMixin, UpdateView):
+
+class TestEdit(StaffPassesTestMixin, UpdateView):
     """Класс изменения теста"""
     form_class = TestForm
     model = Test
 
+
     def get_success_url(self):
         return reverse_lazy('mainapp:tests_staff')
 
-class TestDeleteView(StaffPassesTestMixin, DeleteView):
+
+class TestDelete(StaffPassesTestMixin, DeleteView):
     """Класс удаления теста"""
     model = Test
-    
+
+
     def get_success_url(self):
         if self.model.objects.filter(owner=self.request.user).count() == 1:
             return reverse_lazy('mainapp:main')
@@ -138,6 +143,7 @@ class TestDeleteView(StaffPassesTestMixin, DeleteView):
 class TestCategoryCreate(StaffPassesTestMixin, CreateView):
     model = TestCategory
     form_class = TestCategoryForm
+
 
     def get_success_url(self):
         return reverse_lazy('mainapp:testcategory_list')
@@ -325,4 +331,65 @@ class UserAnswerUpdate(UpdateView):
         return super().form_valid(form)
 
 
+class GroupList(StaffPassesTestMixin, ListView):
+    """docstring for Group ListView"""
+    model = Group
+    template_name = 'mainapp/group_list.html'
 
+
+class GroupCreate(StaffPassesTestMixin, CreateView):
+    """docstring for Group Create"""
+    model = Group
+    form_class = GroupForm
+
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:groups')
+
+
+class GroupUpdate(StaffPassesTestMixin, UpdateView):
+    """docstring for Group Update"""
+    model = Group
+    form_class = GroupForm
+
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:groups')
+
+
+class GroupDelete(StaffPassesTestMixin, DeleteView):
+    """docstring for Group Delete"""
+    model = Group
+    success_url = reverse_lazy('mainapp:groups')
+
+
+class StudentList(StaffPassesTestMixin, ListView):
+    """docstring for Group ListView"""
+    model = Student
+    template_name = 'mainapp/student_list.html'
+
+
+class StudentCreate(StaffPassesTestMixin, CreateView):
+    """docstring for Group Create"""
+    model = Student
+    form_class = StudentForm
+
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:students')
+
+
+class StudentUpdate(StaffPassesTestMixin, UpdateView):
+    """docstring for Group Update"""
+    model = Student
+    form_class = StudentEditForm
+
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:students')
+
+
+class StudentDelete(StaffPassesTestMixin, DeleteView):
+    """docstring for Group Delete"""
+    model = Student
+    success_url = reverse_lazy('mainapp:students')

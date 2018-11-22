@@ -16,6 +16,12 @@
             <a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a>
             <a href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
         </div>
+        {% if user.is_staff %}
+            <div class="button_row">
+                <a href="{% url 'mainapp:groups' %}">{% trans 'Группы' %}</a>
+                <a href="{% url 'mainapp:students' %}">{% trans 'Студенты' %}</a>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock content %}

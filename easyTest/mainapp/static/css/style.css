@@ -108,6 +108,7 @@ body {
     display: flex;
     justify-content: space-around;
     width: 380px;
+    margin-bottom: 10px;
 }
 
 .button_row a {
@@ -134,9 +135,7 @@ body {
 } 
 
 
-.button_row:first-child {
-    margin-bottom: 10px;
-}
+
 
 
 .user_log {

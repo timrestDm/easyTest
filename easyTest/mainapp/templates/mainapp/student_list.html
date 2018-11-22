@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+<title>{% trans 'Студенты' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+<div class="center_full">
+    {% if object_list %}
+    <div class="list_container">
+        {% for object in object_list %}
+        <div class="iter_list">
+            <p class="list_title">{{ object.first_name }}</p>
+            <a href="{% url 'mainapp:student_update' object.pk %}" class="base_link">{% trans 'Изменить' %}</a>
+            <form method="post" action="{% url 'mainapp:student_delete' object.pk %}">
+                {% csrf_token %}
+                <button class="base_link" type="submit">
+                    {% trans 'Удалить' %}
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="test_welcome">{% trans 'Еще нет ни одного студента'|upper %}</p>
+    {% endif %}
+    <a class="btn btn-secondary" href="{% url 'mainapp:student_create' %}">{% trans 'Создать студента' %}</a>
+</div>
+
+{% endblock content %}
+

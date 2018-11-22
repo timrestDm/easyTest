@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+<title>{% trans 'Группы' %}</title>
+{% endblock title%}
+
+{% block content %}
+
+<div class="center_full">
+    {% if object_list %}
+    <div class="list_container">
+        {% for object in object_list %}
+        <div class="iter_list">
+            <p class="list_title">{{ object.title|upper }}</p>
+            <a href="{% url 'mainapp:group_update' object.pk %}" class="base_link">{% trans 'Изменить' %}</a>
+            <form method="post" action="{% url 'mainapp:group_delete' object.pk %}">
+                {% csrf_token %}
+                <button class="base_link" type="submit">
+                    {% trans 'Удалить' %}
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="test_welcome">{% trans 'Еще нет ни одной группы '|upper %}</p>
+    {% endif %}
+    <a class="btn btn-secondary" href="{% url 'mainapp:group_create' %}">{% trans 'Создать группу' %}</a>
+</div>
+
+{% endblock content %}
+

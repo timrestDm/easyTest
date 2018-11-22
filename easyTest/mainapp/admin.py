@@ -64,9 +64,21 @@ class UserAnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     list_display = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'sort', 'active', 'deleted')
 
 
+class GroupAdmin(EditDatabaseAdmin, admin.ModelAdmin):
+    fields = ('title', 'description',  'parent_group', 'active', 'sort', 'deleted')
+    list_display = ('title', 'parent_group', 'active', 'sort', 'deleted')
+
+
+class StudentAdmin(EditDatabaseAdmin, admin.ModelAdmin):
+    fields = ('username', 'first_name', 'password1', 'password2', 'email',)
+    list_display = ('username', 'first_name', 'email')
+
+
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)
 admin.site.register(Test, TestAdmin)
 admin.site.register(Result, ResultAdmin)
 admin.site.register(UserAnswer, UserAnswerAdmin)
 admin.site.register(TestCategory, TestCategoryAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(Student, StudentAdmin)
