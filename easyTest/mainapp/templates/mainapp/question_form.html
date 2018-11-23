@@ -18,16 +18,7 @@
             <h2>{% trans 'Здесь вы можете создать вопросы и присвоить им ответы'|upper %}</h2>
         </div>
 
-        {% if error_messages %}
-            <div class="error_messages">
-                <h3>{% trans 'Внимание!'|upper %}</h3>
-                {%  for msg in error_messages %}
-                    <p>- {{ msg }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <form class="question_create" action="#" method="post" enctype="multipart/form-data">
+        <form class="question_create" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="question_create_form">
                 <p>{% trans 'Загрузите JSON файл' %}</p>
@@ -35,6 +26,7 @@
             </div>
             <div class="answers_create">
                 {{ answers.management_form }}
+                {{ answers.non_form_errors }}
                 {% for form in answers|slice:':3' %}
                     <div class="answer_create">
                         {{ form.as_ul }}

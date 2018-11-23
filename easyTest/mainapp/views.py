@@ -85,29 +85,12 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
             return HttpResponseRedirect(self.get_success_url())
 
         else:
-            valid_question = form.cleaned_data.get('description')
-            valid_answer = [True for i in formset.cleaned_data if i.get('description')]
-            if form.instance.q_type == 'select':
-                valid_is_correct = [True for i in formset.cleaned_data if i.get('description') and i.get('is_correct')]
-            elif form.instance.q_type == 'sort':
-                order_numbers = [i['order_number'] for i in formset.cleaned_data if i.get('order_number') is not None]
-                valid_is_correct = True if len(valid_answer) == len(set(order_numbers)) else False
-            self.kwargs['error_messages'] = []
-
-            if not valid_question:
-                self.kwargs['error_messages'].append('Не введен вопрос.')
-            if not valid_answer:
-                self.kwargs['error_messages'].append('Ни одного ответа не задано.')
-            if not valid_is_correct:
-                if type(valid_is_correct) == list:
-                    self.kwargs['error_messages'].append('Не выбран правильный ответ.')
-                else:
-                    self.kwargs['error_messages'].append('Не определен порядок ответов.')
-            if self.kwargs.get('error_messages'):
+            if not formset.is_valid():
+                self.kwargs['error_messages'] = formset.non_form_errors
                 return self.form_invalid(form)
-
-            formset.instance = form.save()
-            return super().form_valid(formset)
+            else:
+                formset.instance = form.save()
+                return super().form_valid(formset)
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
