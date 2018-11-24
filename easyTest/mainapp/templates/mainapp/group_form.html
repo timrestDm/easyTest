@@ -11,7 +11,9 @@
     <form class="form_create" action="#" method="post">
         {% csrf_token %}
         {{ form }}
-        <input type="submit" name="#" value="{% trans 'Сохранить' %}">
+        <div class="center">
+      	  <input type="submit" name="#" value="{% trans 'Сохранить' %}">
+        </div>
     </form>
 </div>
 

@@ -11,8 +11,10 @@
 			<p>{% trans 'Загрузите JSON файл' %}</p>
             {% csrf_token %}
             {{ form }}
-            <div class="sub">
-                <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+            <div class="center">
+                <div class="sub">
+                    <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+                </div>
             </div>
         </form>
         
