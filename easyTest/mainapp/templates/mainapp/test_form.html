@@ -12,6 +12,25 @@
 
 {% block content %}
 
-{% include 'mainapp/includes/inc_create_form_content.html' %}
+    <div class="center_full">
+        <div class="welcome_admin">
+            <h2>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</h2>
+            <h2>{% trans 'Здесь вы можете создать тест' %}</h2>
+        </div>
+
+        <form class="form_create" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+			<p>{% trans 'Создайте тест, загрузив JSON файл либо заполнив поля ввода данными' %}</p>
+			<p>{% trans 'Пример json файла:' %}</p>
+            <p><a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a></p>
+
+            {{ form }}
+            <div class="center">
+                <div class="sub">
+                    <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+                </div>
+            </div>
+        </form>
+    </div>
 
 {% endblock content %}

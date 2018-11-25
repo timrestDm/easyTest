@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.db.models import Case, When
-from django.core.exceptions import ValidationError
 
 
 class CoreQuerySet(models.QuerySet):
@@ -91,8 +90,7 @@ class Question(Core):
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
-    
-    # test = models.ManyToManyField(Test, blank=True, related_name='questions')
+
     objects = QuestionManager()
 
     QUESTION_TYPE = (
@@ -130,7 +128,6 @@ class Answer(Core):
         verbose_name = _('Ответ')
         verbose_name_plural = _('Ответы')
 
-    # text = models.CharField(_('text'), max_length=250, blank=False)
     order_number = models.PositiveIntegerField(_('order'),  default=0, blank=False)
     is_correct = models.BooleanField(_('is correct'), default=False)
     question = models.ForeignKey(Question, null=True, blank=True, related_name='answers', on_delete=models.CASCADE)
@@ -185,7 +182,6 @@ class Test(Core):
 
     def get_absolute_url(self):
         return reverse_lazy('mainapp:tests_staff')
-
 
 
 class ResultManager(CoreManager):

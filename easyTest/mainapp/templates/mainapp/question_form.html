@@ -21,7 +21,6 @@
         <form class="question_create" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="question_create_form">
-                <p>{% trans 'Загрузите JSON файл' %}</p>
                 {{ form }}
             </div>
             <div class="answers_create">

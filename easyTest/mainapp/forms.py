@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from mainapp.models import Test, TestCategory, Question, Answer, Group, Student
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.db import transaction
+import commentjson
 
 
 class TestForm(forms.ModelForm):
@@ -21,18 +23,45 @@ class TestForm(forms.ModelForm):
             'questions': _('Вопросы'),
         }
 
-    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
+    file = forms.FileField(required=False, label=_('Загрузить json файл'), help_text='')
 
-    def clean(self):
+    def clean(self, request=None):
         """ Check for questions in Test """
         cleaned_data = super().clean()
         file = cleaned_data.get('file')
 
         if file:
-            if file.name.split('.')[-1] == 'json':
-                return self.cleaned_data
-            else:
-                raise ValidationError({'file': _('Загрузите файл в верном формате.')})
+            if request:
+                if file.name.split('.')[-1] == 'json':
+                    try:
+                        json_string = file.read().decode("utf-8")
+                        tests = commentjson.loads(json_string)
+                        question_model = self.Meta.model.questions.rel.model
+                        answer_model = question_model.answers.rel.related_model
+
+                        with transaction.atomic():
+                            for test in tests:
+                                questions = tests[test].pop('questions', None)
+                                instance = self.Meta.model.objects.get_or_create(title=tests[test]['title'],
+                                                                                 owner=request.user)[0]
+                                self.Meta.model.objects.filter(pk=instance.pk).update(**tests[test])
+                                instance.questions.clear()
+                                questions_list = []
+                                for question in questions:
+                                    answers = question.pop('answers', None)
+                                    obj = question_model.objects.get_or_create(**question)[0]
+                                    if answers:
+                                        obj.answers.all().hard_delete()
+                                        for answer in answers:
+                                            answer_model.objects.create(**answer, question=obj)
+                                    questions_list.append(obj)
+                                instance.questions.add(*questions_list)
+
+                    except Exception:
+                        self.add_error('file', _('Проверьте правильность ввода данных в json.'))
+                else:
+                    self.add_error('file', _('Файл должен быть в формате json.'))
+            return self.cleaned_data
 
         if cleaned_data.get('title') == '':
             self.add_error('title', _('Название теста не должно быть пустым.'))
@@ -67,7 +96,7 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ('file', 'description', 'q_type')
+        fields = ('description', 'q_type')
         labels = {
             'description': _('Вопрос'),
             'q_type': _('Тип вопроса'),
@@ -75,8 +104,6 @@ class QuestionForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'cols': 50, 'rows': 4, 'placeholder': _('Введите текст вопроса')}),
         }
-
-    file = forms.FileField(required=False, label=_('Выберите файл'), help_text='')
 
     def clean(self):
         """ Check for questions in QuestionForm """

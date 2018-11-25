@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
@@ -9,8 +7,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from .models import *
 import datetime
-import json
-from django.core.exceptions import PermissionDenied
 from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet, GroupForm, StudentForm, StudentEditForm
 
 
@@ -68,29 +64,13 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         formset = AnswerFormSet(self.request.POST)
-        file = self.request.FILES.get('file')
 
-        if file:
-            questions = json.load(file)
-            answer_model = self.model.answers.rel.related_model
-
-            with transaction.atomic():
-                for question in questions:
-                    answers = questions[question].pop('answers', None)
-                    instance = self.model.objects.create(**questions[question])
-                    if answers:
-                        for answer in answers:
-                            answer_model.objects.create(**answer, question=instance)
-                            
-            return HttpResponseRedirect(self.get_success_url())
-
+        if not formset.is_valid():
+            self.kwargs['error_messages'] = formset.non_form_errors
+            return self.form_invalid(form)
         else:
-            if not formset.is_valid():
-                self.kwargs['error_messages'] = formset.non_form_errors
-                return self.form_invalid(form)
-            else:
-                formset.instance = form.save()
-                return super().form_valid(formset)
+            formset.instance = form.save()
+            return super().form_valid(formset)
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
@@ -124,26 +104,11 @@ class TestCreate(StaffPassesTestMixin, CreateView):
         file = self.request.FILES.get('file')
 
         if file:
-            tests = json.load(file)
-            question_model = self.model.questions.rel.model
-            answer_model = question_model.answers.rel.related_model
-
-            with transaction.atomic():
-                for test in tests:
-                    questions = tests[test].pop('questions', None)
-                    instance = self.model.objects.create(**tests[test], owner=self.request.user)
-                    questions_list = []
-                    for question in questions:
-                        answers = question.pop('answers', None)
-                        obj = question_model.objects.create(**question)
-                        if answers:
-                            for answer in answers:
-                                answer_model.objects.create(**answer, question=obj)
-                        questions_list.append(obj)
-                    instance.questions.add(*questions_list)
-                            
-            return HttpResponseRedirect(self.model.get_absolute_url(self))
-
+            form.clean(self.request)
+            if not form.is_valid():
+                return super().form_invalid(form)
+            else:
+                return HttpResponseRedirect(self.model.get_absolute_url(self))
         else:
             form.instance.owner = self.request.user
             return super().form_valid(form)

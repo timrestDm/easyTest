@@ -29,7 +29,11 @@ class AnswerInline(admin.TabularInline):
 class QuestionAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('description', 'q_type', 'active', 'sort', 'deleted')
     inlines = [AnswerInline,]
-    list_display = ('description', 'q_type', 'active', 'sort', 'deleted')
+    list_display = ('description', 'q_type', 'active', 'sort', 'get_related_test', 'deleted')
+
+    def get_related_test(self, obj):
+        return f"{('; ').join([i.title for i in obj.tests.all()])}"
+    get_related_test.short_description = 'Тест'
 
 
 class AnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
