@@ -76,29 +76,26 @@ $(function() {
 });
 
 $(function() {
-    var bl_order_num = $('.answers_create input[type="number"]').closest('li');
-
-    document.getElementById('id_q_type').setAttribute("onChange", "Selected(this)");
-    for (var i = 0; i < bl_order_num.length; i++) {
-                bl_order_num[i].style.display='none';
-            }
+    Selected_q_type();
 });
 
-function Selected(target) {
-        var label = target.value;
-        var bl_is_correct = $('.answers_create input[type="checkbox"]').closest('li');
-        var bl_order_num = $('.answers_create input[type="number"]').closest('li');
+function Selected_q_type() {
+    select_q_type = document.getElementById('id_q_type');
+    select_q_type.setAttribute("onChange", "Selected_q_type(this)");
 
-        if (label == 'select') {
-            for (var i = 0; i < bl_is_correct.length; i++) {
+    var q_type = select_q_type.value
+    var bl_is_correct = $('.answers_create input[type="checkbox"]').closest('li');
+    var bl_order_num = $('.answers_create input[type="number"]').closest('li');
+
+    if (q_type == 'select') {
+        for (var i = 0; i < bl_order_num.length; i++) {
                 bl_is_correct[i].style.display='flex';
                 bl_order_num[i].style.display='none';
             }
-        } else if (label == 'sort') {
-            for (var i = 0; i < bl_is_correct.length; i++) {
+    } else if (q_type == 'sort') {
+        for (var i = 0; i < bl_order_num.length; i++) {
                 bl_is_correct[i].style.display='none';
                 bl_order_num[i].style.display='flex';
             }
-        }
-
+    }
 }
