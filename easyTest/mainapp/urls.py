@@ -11,12 +11,15 @@ urlpatterns = [
 
     path('test/create/', mainapp.TestCreate.as_view(), name='test_create'),
     path('test/edit/<int:pk>', mainapp.TestEdit.as_view(), name='test_edit'),
-    path('question_create', mainapp.QuestionCreate.as_view(), name='question_create'),
     path('test/<int:pk>', mainapp.QuestionList.as_view(), name='test'),
     path('test/<int:pk>/delete/', mainapp.TestDelete.as_view(), name='test_delete'),
-
     path('tests/', mainapp.TestList.as_view(), name='tests'),
     path('tests/staff/', mainapp.StaffTestList.as_view(), name='tests_staff'),
+
+    path('question_create/', mainapp.QuestionCreate.as_view(), name='question_create'),
+    path('question_edit/<int:pk>/', mainapp.QuestionUpdate.as_view(), name='question_edit'),
+    # path('question/<int:pk>/delete/', mainapp.QuestionDelete.as_view(), name='question_delete'),
+    path('question/staff/', mainapp.StaffQuestionList.as_view(), name='questions_staff'),
 
     path('result/', mainapp.ResultList.as_view(), name='results'),
     path('result/<int:test>/', mainapp.ResultDetail.as_view(), name='result'),

@@ -73,6 +73,9 @@ class Keyword(Core):
 class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
+    def get_questions(self, request):
+        return self.filter(tests__owner=request.user)
+
     def get_test_questions(self, request, pk):
         test = Test.objects.get(pk=pk)
         response = test.questions.filter(user_answers__owner=request.user, user_answers__result__test=pk)

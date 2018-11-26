@@ -9,7 +9,7 @@ $(function() {
         sortable_height();
         sortable_move();
         passTimeToSession();
-    } else if (currenthref_part2 == 'question_create') {
+    } else if (currenthref_part2 == 'question_create' || 'currenthref_part2 == question_edit') {
         toggle_q_type();
         toggle_answers_forms();
     }

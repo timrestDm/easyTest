@@ -20,11 +20,14 @@
 
         <form class="form_create" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-			<p>{% trans 'Создайте тест, загрузив JSON файл либо заполнив поля ввода данными' %}</p>
-			<h2>{% trans 'Пример json файла:' %}</h2>
+            <p>{% trans 'Создайте тест, загрузив JSON файл либо заполнив поля ввода данными' %}</p>
+            <h2>{% trans 'Пример json файла:' %}</h2>
             <p><a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a></p>
 
             {{ form }}
+
+            <a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопрос' %}</a>
+            <a href="{% url 'mainapp:question_create' %}">{% trans 'Создать вопрос' %}</a>
             <div class="center">
                 <div class="sub">
                     <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">

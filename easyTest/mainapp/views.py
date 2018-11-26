@@ -49,6 +49,15 @@ class QuestionList(LoginRequiredMixin, ListView):
         return context
 
 
+class StaffQuestionList(StaffPassesTestMixin, ListView):
+    """Класс для просмотра всех созданных тестов пользователем"""
+    model = Question
+    template_name = 'mainapp/questions_staff_list.html'
+
+    def get_queryset(self):
+        return self.model.objects.get_questions(self.request)
+
+
 class QuestionCreate(StaffPassesTestMixin, CreateView):
     """Класс создания вопроса с ответами"""
     model = Question
@@ -74,6 +83,22 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('mainapp:main')
+
+
+class QuestionUpdate(StaffPassesTestMixin, UpdateView):
+    """Класс изменения вопроса"""
+    model = Question
+    form_class = QuestionForm
+    success_url = reverse_lazy('mainapp:questions_staff')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['answers'] = self.get_object().answers.all()
+        # context['answers'] = AnswerFormSet(self.get_object().answers.all())
+        context['error_messages'] = self.kwargs.get('error_messages')
+        if context['error_messages']:
+            context['answers'] = AnswerFormSet(self.request.POST)
+        return context
 
 
 class TestTimeIsOver(LoginRequiredMixin, ListView):
