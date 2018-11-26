@@ -82,7 +82,7 @@ function sortable_move() {
         if(numItems_2 > 0 && numItems_1 == 0) {
             toggle_bt_NextSkip($('#submit_b'), $('#submit_skip'))
             $('input[name="skip_question"]').val('False');
-        } else {
+        } else if (numItems_2 != 0 || numItems_1 != 0) {
             toggle_bt_NextSkip($('#submit_skip'), $('#submit_b'))
             $('input[name="skip_question"]').val('True');
         };
