@@ -7,7 +7,18 @@ from django.db import transaction
 import commentjson
 
 
-class TestForm(forms.ModelForm):
+class MutualWidget:
+    """Класс для добавления общих виджетов для форм"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.help_text = ''
+            if field_name != 'file':
+                field.widget.attrs['class'] = 'form-control'
+
+
+class TestForm(MutualWidget, forms.ModelForm):
     """Класс формы создания теста"""
 
     class Meta:
@@ -91,7 +102,7 @@ class TestCategoryForm(forms.ModelForm):
         }
 
 
-class QuestionForm(forms.ModelForm):
+class QuestionForm(MutualWidget, forms.ModelForm):
     """Класс формы создания вопроса"""
 
     class Meta:
@@ -113,7 +124,7 @@ class QuestionForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class AnswerForm(forms.ModelForm):
+class AnswerForm(MutualWidget, forms.ModelForm):
     """Класс формы создания ответа"""
 
     class Meta:
@@ -169,7 +180,7 @@ class GroupForm(forms.ModelForm):
         }
 
 
-class StudentForm(UserCreationForm):
+class StudentForm(MutualWidget, UserCreationForm):
     class Meta:
         model = Student
         fields = ('username', 'first_name', 'group', 'password1', 'password2', 'email',)
@@ -183,7 +194,7 @@ class StudentForm(UserCreationForm):
         }
 
 
-class StudentEditForm(UserChangeForm):
+class StudentEditForm(MutualWidget, UserChangeForm):
     class Meta:
         model = Student
         fields = ('username', 'first_name', 'group', 'email', 'password')
@@ -196,10 +207,6 @@ class StudentEditForm(UserChangeForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(StudentEditForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-            field.help_text = ''
-            if field_name == 'password':
-                field.widget = forms.HiddenInput()
+        super().__init__(*args, **kwargs)
+        self.fields['password'].widget = forms.HiddenInput()
 
