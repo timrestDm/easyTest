@@ -6,7 +6,8 @@
   align-items: center;
   justify-content: center;
 }
-.text-mixin {
+.text-mixin,
+h2 {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   color: #333333;
   font-weight: 900;
@@ -247,12 +248,6 @@ body {
   width: 100px;
   height: 40px;
   text-align: center;
-}
-.form_create p {
-  color: #4B0082;
-  align-self: center;
-  padding: 5px;
-  text-decoration: underline;
 }
 .form_create label {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);

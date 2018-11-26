@@ -12,7 +12,8 @@
 	justify-content: center;
 }
 
-.text-mixin {
+.text-mixin,
+h2{
 	text-shadow: @shadow;
 	color: @gray-color;
 	font-weight: 900;
@@ -275,13 +276,6 @@ body {
 
 	input[type="submit"] {
 		.submit-mixin()
-	}
-
-	p {
-		color: #4B0082;
-	    align-self: center;
-	    padding: 5px;
-	    text-decoration: underline;
 	}
 
 	label {

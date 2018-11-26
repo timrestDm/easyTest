@@ -21,7 +21,7 @@
         <form class="form_create" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 			<p>{% trans 'Создайте тест, загрузив JSON файл либо заполнив поля ввода данными' %}</p>
-			<p>{% trans 'Пример json файла:' %}</p>
+			<h2>{% trans 'Пример json файла:' %}</h2>
             <p><a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a></p>
 
             {{ form }}
