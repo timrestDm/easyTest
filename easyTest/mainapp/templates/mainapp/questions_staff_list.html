@@ -17,7 +17,7 @@
                         <th>№</th>
                         <th>{% trans 'Вопрос' %}</th>
                         <th>{% trans 'Используется в тестах' %}</th>
-                        <th>*удалить вопрос (появляется только если нет ни в одном тесте)*</th>
+                        <th></th>
                     </tr>
                     </thead>
 
@@ -27,27 +27,28 @@
                             <td>{{ forloop.counter }}</td>
                             <td><a href="{% url 'mainapp:question_edit' object.pk %}">{{ object.description }}</a></td>
                             <td>
-                                *К реализации*
+                                {{ object.get_related_tests }}
                             </td>
                             <td>
-                                <form method="post" action="{% url 'mainapp:question_delete' object.pk %}">
-                                    {% csrf_token %}
-                                    <button class="base_link" type="submit">
-                                        {% trans 'Удалить' %}
-                                    </button> *К реализации*
-                                </form>
+                                {% if object.get_related_tests == '-' %}
+                                    <form method="post" action="{% url 'mainapp:question_delete' object.pk %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-secondary" type="submit">
+                                            {% trans 'Удалить' %}
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <a href="{% url 'mainapp:question_create' %}">{% trans 'Создать вопрос' %}</a>
 
         {% else %}
             <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не создали ни одного вопроса '|upper %}</p>
-            <a class="btn btn-secondary" href="{% url 'mainapp:question_create' %}">{% trans 'Создать вопрос' %}</a>
         {% endif %}
+            <a href="{% url 'mainapp:question_create' %}" class="btn btn-secondary">{% trans 'Создать вопрос' %}</a>
     </div>
 
 {% endblock content %}

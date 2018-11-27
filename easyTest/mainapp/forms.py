@@ -23,7 +23,7 @@ class TestForm(MutualWidget, forms.ModelForm):
 
     class Meta:
         model = Test
-        fields = ('file', 'title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
+        fields = ('title', 'description', 'test_type', 'time', 'required_correct_answers', 'max_questions', 'questions')
         labels = {
             'title': _('Название теста'),
             'description': _('Описание теста'),
@@ -33,8 +33,11 @@ class TestForm(MutualWidget, forms.ModelForm):
             'max_questions': _('Макс. количество вопросов в тесте'),
             'questions': _('Вопросы'),
         }
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
 
-    file = forms.FileField(required=False, label=_('Загрузить json файл'), help_text='')
+    file = forms.FileField(required=False, label=_('Загрузить'), help_text='')
 
     def clean(self, request=None):
         """ Check for questions in Test """

@@ -225,6 +225,7 @@ body {
 }
 .errorlist {
   color: red;
+  padding-left: 20px;
 }
 .form_create {
   display: flex;
@@ -518,4 +519,26 @@ body {
   font-weight: 900;
   font-size: 18px;
   padding-right: 7px;
+}
+.bl_json_upload {
+  display: flex;
+  justify-content: space-between;
+}
+.bl_json_upload div {
+  display: flex;
+  flex-direction: column;
+}
+fieldset {
+  border: 2px solid #fff;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+fieldset legend {
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  color: #333333;
+  font-weight: 900;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 60%;
+  text-align: center;
 }

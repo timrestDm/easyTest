@@ -14,17 +14,35 @@
 
     <div class="center_full">
         <div class="welcome_admin">
-            <h2>{% trans 'Дорогой пользователь '|upper %}{{ user.username|upper }}</h2>
-            <h2>{% trans 'Здесь вы можете создать тест' %}</h2>
+            <h2>{% trans 'Создать тест' %}</h2>
         </div>
 
         <form class="form_create" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <p>{% trans 'Создайте тест, загрузив JSON файл либо заполнив поля ввода данными' %}</p>
-            <h2>{% trans 'Пример json файла:' %}</h2>
-            <p><a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a></p>
+            <fieldset>
+                <legend>{% trans 'Загрузив json файл' %}</legend>
+                <div class="bl_json_upload">
+                    <div>
+                        {{ form.file.label_tag }} {{ form.file.errors }} {{ form.file }}
+                    </div>
+                    <div>
+                        <h2>{% trans 'Пример файла:' %}</h2>
+                        <a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a>
+                    </div>
+                </div>
+            </fieldset>
 
-            {{ form }}
+            <fieldset>
+                <legend>Заполнив поля</legend>
+                {% for field in form %}
+                    {% if field.name != 'file' %}
+                        {{ field.label_tag }} {{ field.errors }} {{ field }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
 
             <a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопросы' %}</a>
             <div class="center">

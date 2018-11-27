@@ -74,7 +74,7 @@ class QuestionManager(CoreManager):
     """docstring for  QuestionManager"""
 
     def get_questions(self, request):
-        return self.filter(tests__owner=request.user)
+        return self.filter(owner=request.user)
 
     def get_test_questions(self, request, pk):
         test = Test.objects.get(pk=pk)
@@ -106,6 +106,9 @@ class Question(Core):
 
     def __str__(self):
         return f'{self.description}'
+
+    def get_related_tests(self):
+        return f"{('; ').join([i.title for i in self.tests.all()])}" or "-"
 
 
 class AnswerManager(CoreManager):

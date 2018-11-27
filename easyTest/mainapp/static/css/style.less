@@ -260,6 +260,7 @@ body {
 
 .errorlist {
 	color: red;
+    padding-left: 20px;
 }
 
 .form_create {
@@ -510,3 +511,21 @@ body {
 	}
 }
 
+.bl_json_upload{
+    display: flex;
+    justify-content: space-between;
+    div{
+        .flex-mixin();
+    }
+}
+
+fieldset{
+    border: 2px solid #fff;
+    margin-bottom: 20px;
+    padding: 20px;
+    legend{
+        .text-mixin();
+        width: 60%;
+        text-align: center;
+    }
+}
