@@ -5,6 +5,7 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.base import RedirectView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from .models import *
 import datetime
 from mainapp.forms import TestForm, TestCategoryForm, QuestionForm, AnswerFormSet, GroupForm, StudentForm, StudentEditForm
@@ -142,6 +143,11 @@ class TestCreate(StaffPassesTestMixin, CreateView):
     model = Test
     form_class = TestForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Создать тест')
+        return context
+
     def form_valid(self, form):
         file = self.request.FILES.get('file')
 
@@ -160,6 +166,11 @@ class TestEdit(StaffPassesTestMixin, UpdateView):
     """Класс изменения теста"""
     form_class = TestForm
     model = Test
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Изменить тест')
+        return context
 
     def get_success_url(self):
         return reverse_lazy('mainapp:tests_staff')
