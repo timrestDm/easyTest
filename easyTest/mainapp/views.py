@@ -74,6 +74,7 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
         return context
 
     def form_valid(self, form):
+        form.instance.owner = self.request.user
         formset = AnswerFormSet(self.request.POST)
 
         if not formset.is_valid():
