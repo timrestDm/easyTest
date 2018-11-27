@@ -94,6 +94,7 @@ class Question(Core):
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
 
+    owner = models.ForeignKey(User, null=False, blank=True, related_name='questions', on_delete=models.PROTECT)
     objects = QuestionManager()
 
     QUESTION_TYPE = (

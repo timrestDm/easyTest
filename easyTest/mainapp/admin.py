@@ -27,9 +27,9 @@ class AnswerInline(admin.TabularInline):
 
 
 class QuestionAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('description', 'q_type', 'active', 'sort', 'deleted')
+    fields = ('description', 'q_type', 'active', 'sort', 'owner', 'deleted')
     inlines = [AnswerInline,]
-    list_display = ('description', 'q_type', 'active', 'sort', 'get_related_test', 'deleted')
+    list_display = ('description', 'q_type', 'active', 'sort', 'get_related_test', 'owner', 'deleted')
 
     def get_related_test(self, obj):
         return f"{('; ').join([i.title for i in obj.tests.all()])}"
