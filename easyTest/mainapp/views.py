@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
@@ -186,6 +187,48 @@ class TestEdit(StaffPassesTestMixin, UpdateView):
                 return HttpResponseRedirect(self.model.get_absolute_url(self))
         else:
             return super().form_valid(form)
+
+
+class TestDetail(LoginRequiredMixin, DetailView):
+    """docstring for TestDetail"""
+    model = Test
+    slug_field = 'owner'
+    login_url = reverse_lazy('authapp:login')
+
+    def get_object(self):
+        self.kwargs[self.slug_url_kwarg] = self.request.user
+        response = super().get_object()
+        return response
+
+    def test_to_json(self):
+        dict_test = {}
+        test = self.get_object()
+        dict_test['title'] = test.title
+        dict_test['max_questions'] = test.max_questions
+        dict_test['required_correct_answers'] = test.required_correct_answers
+        dict_test['time'] = str(test.time)
+
+        dict_test['questions'] = []
+        for i, question in enumerate(test.questions.all()):
+            dict_test['questions'].append(dict(description=question.description,
+                                               q_type=question.q_type))
+            dict_test['questions'][i]['answers'] = []
+            for answer in question.answers.all():
+                if question.q_type == 'select':
+                    dict_test['questions'][i]['answers'].append(dict(description=answer.description,
+                                                                     is_correct=answer.is_correct))
+                elif question.q_type == 'sort':
+                    dict_test['questions'][i]['answers'].append(dict(description=answer.description,
+                                                                     order_number=answer.order_number))
+
+        json_test = json.dumps(dict_test, indent=4, separators=(',', ': '), ensure_ascii=False)
+        print(json_test)
+        return json_test
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['file'] = self.test_to_json()
+        return context
 
 
 class TestDelete(StaffPassesTestMixin, DeleteView):

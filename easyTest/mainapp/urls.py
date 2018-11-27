@@ -15,6 +15,7 @@ urlpatterns = [
     path('test/<int:pk>/delete/', mainapp.TestDelete.as_view(), name='test_delete'),
     path('tests/', mainapp.TestList.as_view(), name='tests'),
     path('tests/staff/', mainapp.StaffTestList.as_view(), name='tests_staff'),
+    path('test/<int:pk>/export/', mainapp.TestDetail.as_view(), name='test_export'),
 
     path('question_create/', mainapp.QuestionCreate.as_view(), name='question_create'),
     path('question_edit/<int:pk>/', mainapp.QuestionUpdate.as_view(), name='question_edit'),
@@ -43,5 +44,4 @@ urlpatterns = [
     path('student/<int:pk>', mainapp.StudentUpdate.as_view(), name='student_update'),
     path('student/<int:pk>/delete/', mainapp.StudentDelete.as_view(), name='student_delete'),
 
-    # path('questions/', QuestionListView.as_view(), name='questions'),
     ]
