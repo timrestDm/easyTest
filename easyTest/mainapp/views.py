@@ -175,6 +175,18 @@ class TestEdit(StaffPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('mainapp:tests_staff')
 
+    def form_valid(self, form):
+        file = self.request.FILES.get('file')
+
+        if file:
+            form.clean(self.request)
+            if not form.is_valid():
+                return super().form_invalid(form)
+            else:
+                return HttpResponseRedirect(self.model.get_absolute_url(self))
+        else:
+            return super().form_valid(form)
+
 
 class TestDelete(StaffPassesTestMixin, DeleteView):
     """Класс удаления теста"""
