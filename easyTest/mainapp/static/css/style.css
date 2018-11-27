@@ -381,25 +381,25 @@ body {
   margin: 5px;
 }
 .bl_result_info .result_info {
-  border-top: solid 1px  #c5c8d3;
-  border-bottom: solid 1px  #c5c8d3;
+  border-top: solid 1px #c5c8d3;
+  border-bottom: solid 1px #c5c8d3;
 }
-.bl_result_info .result_info .question {
+.bl_result_info .question {
   color: #485ca0;
   font-weight: 600;
 }
-.bl_result_info .result_info .answers_wrong {
+.bl_result_info .answers_wrong {
   font-weight: 600;
   margin-top: 20px;
 }
-.bl_result_info .result_info .answer_info {
+.bl_result_info .answer_info {
   font-size: 13px;
   color: #6c757d;
   margin-bottom: -2px;
 }
-.bl_result_info .result_info .answer {
+.bl_result_info .answer {
   padding-bottom: 15px;
-  border-bottom: solid 1px  #c5c8d3;
+  border-bottom: solid 1px #c5c8d3;
 }
 .question_create {
   display: flex;
