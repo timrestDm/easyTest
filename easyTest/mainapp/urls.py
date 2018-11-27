@@ -18,7 +18,7 @@ urlpatterns = [
 
     path('question_create/', mainapp.QuestionCreate.as_view(), name='question_create'),
     path('question_edit/<int:pk>/', mainapp.QuestionUpdate.as_view(), name='question_edit'),
-    # path('question/<int:pk>/delete/', mainapp.QuestionDelete.as_view(), name='question_delete'),
+    path('question/<int:pk>/delete/', mainapp.QuestionDelete.as_view(), name='question_delete'),
     path('question/staff/', mainapp.StaffQuestionList.as_view(), name='questions_staff'),
 
     path('result/', mainapp.ResultList.as_view(), name='results'),

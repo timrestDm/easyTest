@@ -68,7 +68,7 @@ class TestForm(MutualWidget, forms.ModelForm):
                                     questions_list.append(obj)
                                 instance.questions.add(*questions_list)
 
-                    except Exception:
+                    except:
                         self.add_error('file', _('Проверьте правильность ввода данных в json.'))
                 else:
                     self.add_error('file', _('Файл должен быть в формате json.'))

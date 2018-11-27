@@ -82,23 +82,40 @@ class QuestionCreate(StaffPassesTestMixin, CreateView):
             return super().form_valid(formset)
 
     def get_success_url(self):
-        return reverse_lazy('mainapp:main')
+        return reverse_lazy('mainapp:questions_staff')
 
 
 class QuestionUpdate(StaffPassesTestMixin, UpdateView):
     """Класс изменения вопроса"""
     model = Question
     form_class = QuestionForm
-    success_url = reverse_lazy('mainapp:questions_staff')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['answers'] = self.get_object().answers.all()
-        # context['answers'] = AnswerFormSet(self.get_object().answers.all())
+        context['answers'] = AnswerFormSet(instance=self.get_object())
         context['error_messages'] = self.kwargs.get('error_messages')
-        if context['error_messages']:
-            context['answers'] = AnswerFormSet(self.request.POST)
+        if self.request.POST:
+            context['answers'] = AnswerFormSet(self.request.POST, instance=self.get_object())
         return context
+
+    def form_valid(self, form):
+        formset = AnswerFormSet(self.request.POST, instance=self.get_object())
+
+        if not formset.is_valid():
+            self.kwargs['error_messages'] = formset.non_form_errors
+            return self.form_invalid(form)
+        else:
+            formset.instance = form.save()
+            return super().form_valid(formset)
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:questions_staff')
+
+
+class QuestionDelete(StaffPassesTestMixin, DeleteView):
+    """Класс удаления вопроса"""
+    model = Question
+    success_url = reverse_lazy('mainapp:questions_staff')
 
 
 class TestTimeIsOver(LoginRequiredMixin, ListView):
