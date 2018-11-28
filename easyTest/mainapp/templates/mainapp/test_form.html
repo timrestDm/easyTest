@@ -11,53 +11,58 @@
 {% endblock javascript %}
 
 {% block content %}
-{% with current_kwargs=request.resolver_match.kwargs.pk  %}
-    <div class="center_full">
-        <div class="welcome_admin">
-            <h2>{{ title }}</h2>
-        </div>
-
-        <form class="form_create" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if object %}
-                <div class="center">
-                    <a href="{% url 'mainapp:test_export' current_kwargs %}" class="btn btn-secondary">{% trans 'Экспорт теста в json' %}</a>
-                </div>
-                <br>
-            {% endif %}
-            <fieldset>
-                <legend>{% trans 'Загрузив json файл' %}</legend>
-                <div class="bl_json_upload">
-
-                    <div>
-                        {{ form.file.label_tag }} {{ form.file.errors }} {{ form.file }}
-                    </div>
-                    <div>
-                        <h2>{% trans 'Пример файла:' %}</h2>
-                        <a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Заполнив поля</legend>
-                {% for field in form %}
-                    {% if field.name != 'file' %}
-                        {{ field.label_tag }} {{ field.errors }} {{ field }}
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            </fieldset>
-
-            <a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопросы' %}</a>
-            <div class="center">
-                <div class="sub">
-                    <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
-                </div>
+    {% with current_kwargs=request.resolver_match.kwargs.pk  %}
+        <div class="center">
+            <div class="welcome_admin">
+                <h2>{{ title }}</h2>
             </div>
-        </form>
-    </div>
-{% endwith %}
+
+            <form class="form_create" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="menu center">
+                    <ul>
+                        <li class="create_input"><a href="#" class="link_active">{% trans 'Заполнив поля' %}</a></li>
+                        <li class="create_json"><a href="#">{% trans 'Загрузив json файл' %}</a></li>
+                    </ul>
+                </div>
+
+                <fieldset class="test_form_input">
+                    {% for field in form %}
+                        {% if field.name != 'file' %}
+                            {{ field.label_tag }} {{ field.errors }} {{ field }}
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="center"><a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопросы' %}</a></div>
+                </fieldset>
+
+                <fieldset class="test_form_json">
+                    {% if object %}
+                        <div class="center">
+                            <a href="{% url 'mainapp:test_export' current_kwargs %}" class="btn btn-secondary">{% trans 'Экспорт теста в json' %}</a>
+                        </div>
+                        <br>
+                    {% endif %}
+                    <div class="bl_json_upload">
+                        <div>
+                            {{ form.file.label_tag }} {{ form.file.errors }} {{ form.file }}
+                        </div>
+                        <div>
+                            <h2>{% trans 'Пример файла:' %}</h2>
+                            <a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <div class="center">
+                    <div class="sub">
+                        <input type="submit" class="btn btn-secondary" value="{% trans 'Сохранить' %}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endwith %}
 {% endblock content %}

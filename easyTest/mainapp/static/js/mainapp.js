@@ -1,14 +1,19 @@
 $(function() {
     var currenthref = window.location.href;
     var currenthref_part2 = currenthref.split('/')[3];
+    var currenthref_part3 = currenthref.split('/')[4];
 
     if (currenthref_part2 == 'test') {
+        if (currenthref_part3 == 'create'|| currenthref_part3 == 'edit') {
+            toggle_test_forms();
+        } else {
         makeDisable();
         testFunction();
         sortable_on();
         sortable_height();
         sortable_move();
         passTimeToSession();
+        }
     } else if (currenthref_part2 == 'question_create' || 'currenthref_part2 == question_edit') {
         toggle_q_type();
         toggle_answers_forms();
@@ -63,6 +68,27 @@ function toggle_answers_forms() {
     $('.hidden_answers_forms').hide();
     $('.more_answers p').click(function() {
         $('.hidden_answers_forms').toggle();
+    });
+};
+
+function toggle_test_forms() {
+    var form_input = $('.test_form_input')
+    var form_json = $('.test_form_json')
+    var bt_form_input = $('.create_input a')
+    var bt_form_json = $('.create_json a')
+
+    form_json.hide();
+    bt_form_input.click(function() {
+        form_input.show();
+        form_json.hide();
+        bt_form_input.addClass('link_active');
+        bt_form_json.removeClass('link_active');
+    });
+    bt_form_json.click(function() {
+        form_input.hide();
+        form_json.show();
+        bt_form_input.removeClass('link_active');
+        bt_form_json.addClass('link_active');
     });
 };
 
