@@ -222,8 +222,7 @@ class TestDetail(LoginRequiredMixin, DetailView):
                     dict_test['questions'][i]['answers'].append(dict(description=answer.description,
                                                                      order_number=answer.order_number))
 
-        json_test = json.dumps(dict_test, indent=4, separators=(',', ': '), ensure_ascii=False)
-        print(json_test)
+        json_test = json.dumps(dict_test, indent=2, separators=(',', ': '), ensure_ascii=False)
         return json_test
 
     def get_context_data(self, **kwargs):
