@@ -190,11 +190,17 @@ class TestEdit(StaffPassesTestMixin, UpdateView):
             return super().form_valid(form)
 
 
-class TestDetail(LoginRequiredMixin, DetailView):
+class TestDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     """docstring for TestDetail"""
     model = Test
     slug_field = 'owner'
     login_url = reverse_lazy('authapp:login')
+
+    def test_func(self):
+        return self.get_object().owner == self.request.user
+
+    def handle_no_permission(self):
+        return HttpResponseRedirect(reverse_lazy('mainapp:tests_staff'))
 
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
