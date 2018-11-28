@@ -164,33 +164,7 @@ class TestCreate(StaffPassesTestMixin, CreateView):
             return super().form_valid(form)
 
 
-class TestEdit(StaffPassesTestMixin, UpdateView):
-    """Класс изменения теста"""
-    form_class = TestForm
-    model = Test
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Изменить тест')
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('mainapp:tests_staff')
-
-    def form_valid(self, form):
-        file = self.request.FILES.get('file')
-
-        if file:
-            form.clean(self.request)
-            if not form.is_valid():
-                return super().form_invalid(form)
-            else:
-                return HttpResponseRedirect(self.model.get_absolute_url(self))
-        else:
-            return super().form_valid(form)
-
-
-class TestDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class TestDetail(LoginRequiredMixin, StaffPassesTestMixin, UserPassesTestMixin, DetailView):
     """docstring for TestDetail"""
     model = Test
     slug_field = 'owner'
@@ -201,6 +175,9 @@ class TestDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def handle_no_permission(self):
         return HttpResponseRedirect(reverse_lazy('mainapp:tests_staff'))
+
+    def get_success_url(self):
+        return reverse_lazy('mainapp:tests_staff')
 
     def get_object(self):
         self.kwargs[self.slug_url_kwarg] = self.request.user
@@ -237,15 +214,31 @@ class TestDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-class TestDelete(StaffPassesTestMixin, DeleteView):
-    """Класс удаления теста"""
-    model = Test
+class TestEdit(TestDetail, UpdateView):
+    """Класс изменения теста"""
+    form_class = TestForm
 
-    def get_success_url(self):
-        if self.model.objects.filter(owner=self.request.user).count() == 1:
-            return reverse_lazy('mainapp:main')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Изменить тест')
+        return context
+
+    def form_valid(self, form):
+        file = self.request.FILES.get('file')
+
+        if file:
+            form.clean(self.request)
+            if not form.is_valid():
+                return super().form_invalid(form)
+            else:
+                return HttpResponseRedirect(self.model.get_absolute_url(self))
         else:
-            return reverse_lazy('mainapp:tests_staff')
+            return super().form_valid(form)
+
+
+class TestDelete(TestDetail, DeleteView):
+    """Класс удаления теста"""
+    pass
 
 
 class TestCategoryCreate(StaffPassesTestMixin, CreateView):
