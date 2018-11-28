@@ -606,3 +606,6 @@ fieldset a {
 fieldset a:hover {
   color: #333333;
 }
+.test_form_json a {
+  text-transform: unset;
+}
