@@ -48,27 +48,31 @@ class TestForm(MutualWidget, forms.ModelForm):
             if request:
                 if file.name.split('.')[-1] == 'json':
                     try:
-                        json_string = file.read().decode("utf-8")
-                        test = commentjson.loads(json_string)
-                        question_model = self.Meta.model.questions.rel.model
-                        answer_model = question_model.answers.rel.related_model
+                        try:
+                            json_string = file.read().decode("utf-8-sig")
+                        except:
+                            self.add_error('file', _('Файл должен быть в кодировке UTF-8'))
+                        else:
+                            test = commentjson.loads(json_string)
+                            question_model = self.Meta.model.questions.rel.model
+                            answer_model = question_model.answers.rel.related_model
 
-                        with transaction.atomic():
-                                questions = test.pop('questions', None)
-                                instance = self.Meta.model.objects.get_or_create(title=test['title'],
-                                                                                 owner=request.user)[0]
-                                self.Meta.model.objects.filter(pk=instance.pk).update(**test)
-                                instance.questions.clear()
-                                questions_list = []
-                                for question in questions:
-                                    answers = question.pop('answers', None)
-                                    obj = question_model.objects.get_or_create(**question, owner=request.user)[0]
-                                    if answers:
-                                        obj.answers.all().hard_delete()
-                                        for answer in answers:
-                                            answer_model.objects.create(**answer, question=obj)
-                                    questions_list.append(obj)
-                                instance.questions.add(*questions_list)
+                            with transaction.atomic():
+                                    questions = test.pop('questions', None)
+                                    instance = self.Meta.model.objects.get_or_create(title=test['title'],
+                                                                                     owner=request.user)[0]
+                                    self.Meta.model.objects.filter(pk=instance.pk).update(**test)
+                                    instance.questions.clear()
+                                    questions_list = []
+                                    for question in questions:
+                                        answers = question.pop('answers', None)
+                                        obj = question_model.objects.get_or_create(**question, owner=request.user)[0]
+                                        if answers:
+                                            obj.answers.all().hard_delete()
+                                            for answer in answers:
+                                                answer_model.objects.create(**answer, question=obj)
+                                        questions_list.append(obj)
+                                    instance.questions.add(*questions_list)
 
                     except:
                         self.add_error('file', _('Проверьте правильность ввода данных в json.'))
