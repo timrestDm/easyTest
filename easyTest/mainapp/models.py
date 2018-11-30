@@ -1,4 +1,6 @@
 import datetime
+
+from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -201,8 +203,8 @@ class ResultManager(CoreManager):
     def get_queryset(self):
         return self.get_all_queryset()
 
-    def get_results(self, request):
-        return self.filter(owner=request.user, active=True)
+    def get_results(self, owner_pk):
+        return self.filter(owner=owner_pk, active=True)
 
 
 class Result(Core):
@@ -262,6 +264,13 @@ class UserAnswer(Core):
         return f'{self.owner.username}_{self.result.test.title}__{self.question.description}'
 
 
+class GroupManager(CoreManager):
+    """docstring for GroupManager"""
+
+    def get_groups(self, user):
+        return self.filter(owner=user)
+
+
 class Group(Core):
     """docstring for  Group"""
 
@@ -270,7 +279,19 @@ class Group(Core):
         verbose_name_plural = _('Группы')
 
     parent_group = models.ForeignKey('self', null=True, blank=True, related_name='child_groups', on_delete=models.CASCADE)
-    objects = CoreManager()
+    owner = models.ForeignKey(User, null=False, blank=True, on_delete=models.PROTECT)
+    tests = models.ManyToManyField(Test, blank=True, related_name='groups')
+    objects = GroupManager()
+
+
+class StudentManager(BaseUserManager):
+    """docstring for  StudentManager"""
+
+    def get_group(self, pk):
+        return self.filter(in_groups=pk)
+
+    def get_students(self, pk):
+        return self.filter(teacher=pk)
 
 
 class Student(User):
@@ -280,4 +301,7 @@ class Student(User):
         verbose_name = _('Студент')
         verbose_name_plural = _('Студенты')
 
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='students', on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, null=False, blank=True, related_name='students', on_delete=models.CASCADE)
+    in_groups = models.ManyToManyField(Group, blank=True, related_name='students')
+    objects = StudentManager()
+
