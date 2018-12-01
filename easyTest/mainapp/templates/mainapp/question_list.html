@@ -70,7 +70,7 @@
                             <input type="hidden" name="href_current" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.number }}">
                             <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
                         {% else %}
-                            <input type="hidden" name="href" value="{% url 'mainapp:result' current_kwargs %}">
+                            <input type="hidden" name="href" value="{% url 'mainapp:result' user.id current_kwargs %}">
                         {% endif %}
 
                         <div class="timer_box">

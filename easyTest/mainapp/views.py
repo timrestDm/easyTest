@@ -31,7 +31,11 @@ class UsersRedirectView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         slug = self.kwargs['slug']
-        user = authenticate(username=slug, password=slug)
+        slug_pass = slug
+        students = ['Student_1', 'Student_2']
+        if slug in students:
+            slug_pass = 'studentpass1234'
+        user = authenticate(username=slug, password=slug_pass)
         login(self.request, user)
         return super().get_redirect_url()
 
@@ -129,6 +133,16 @@ class TestTimeIsOver(LoginRequiredMixin, ListView):
 class TestList(LoginRequiredMixin, ListView):
     model = Test
     login_url = reverse_lazy('authapp:login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tests_without_result'] = []
+        for result in Result.objects.get_results(self.request.user):
+            context['tests_without_result'].append(result.test)
+        return context
+
+    def get_queryset(self):
+        return self.model.objects.get_tests_by_group(self.request)
 
 
 class StaffTestList(StaffPassesTestMixin, ListView):
@@ -279,7 +293,7 @@ class ResultCreate(CreateView):
         return reverse_lazy('mainapp:test', kwargs={'pk': self.kwargs['test']})
 
     def form_valid(self, form):
-        Result.objects.get_result_test_queryset(self.request, self.kwargs['test']).hard_delete()
+        Result.objects.get_result_test_queryset(self.request.user, self.kwargs['test']).hard_delete()
         self.request.session['test_time_begin'] = datetime.datetime.now().timestamp()
         
         form.instance.owner = self.request.user
@@ -299,8 +313,20 @@ class ResultList(LoginRequiredMixin, ListView):
     model = Result
     login_url = reverse_lazy('authapp:login')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['student'] = self.kwargs.get('student')
+        return context
+
     def get_queryset(self):
-        return self.model.objects.get_results(self.request)
+        user = self.request.user
+        pk = self.kwargs.pop('pk')
+        if user.is_staff is True and int(pk) != user.id:
+            student = user.students.get_student(pk, user)
+            if student:
+                user = student
+                self.kwargs['student'] = student
+        return self.model.objects.get_results(user)
 
 
 class ResultDetail(LoginRequiredMixin, DetailView):
@@ -310,8 +336,16 @@ class ResultDetail(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('authapp:login')
 
     def get_object(self):
-        self.kwargs[self.slug_url_kwarg] = self.request.user
-        que = Result.objects.get_result_test_queryset(self.request, self.kwargs['test'])
+        user = self.request.user
+        if self.request.resolver_match.url_name != 'result_update':
+            pk = self.kwargs.pop('pk')
+            if user.is_staff is True and int(pk) != user.id:
+                student = user.students.get_student(pk, user)
+                if student:
+                    user = student
+
+        self.kwargs[self.slug_url_kwarg] = user
+        que = Result.objects.get_result_test_queryset(user, self.kwargs['test'])
         response = super().get_object(queryset=que)
         return response
 
@@ -438,6 +472,9 @@ class GroupList(StaffPassesTestMixin, ListView):
     """docstring for Group ListView"""
     model = Group
 
+    def get_queryset(self):
+        return self.model.objects.get_groups(self.request.user)
+
 
 class GroupCreate(StaffPassesTestMixin, CreateView):
     """docstring for Group Create"""
@@ -447,11 +484,27 @@ class GroupCreate(StaffPassesTestMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('mainapp:groups')
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-class GroupUpdate(StaffPassesTestMixin, UpdateView):
-    """docstring for Group Update"""
+
+class GroupDetail(LoginRequiredMixin, StaffPassesTestMixin, DetailView):
+    """docstring for GroupDetail"""
     model = Group
+    login_url = reverse_lazy('authapp:login')
+    template_name = 'mainapp/student_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = self.get_object().students.all()
+        return context
+
+
+class GroupUpdate(GroupDetail, UpdateView):
+    """docstring for Group Update"""
     form_class = GroupForm
+    template_name = 'mainapp/group_form.html'
 
     def get_success_url(self):
         return reverse_lazy('mainapp:groups')
@@ -467,6 +520,9 @@ class StudentList(StaffPassesTestMixin, ListView):
     """docstring for Group ListView"""
     model = Student
 
+    def get_queryset(self):
+        return self.model.objects.get_students(self.request.user)
+
 
 class StudentCreate(StaffPassesTestMixin, CreateView):
     """docstring for Group Create"""
@@ -475,6 +531,10 @@ class StudentCreate(StaffPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('mainapp:students')
+
+    def form_valid(self, form):
+        form.instance.teacher = self.request.user
+        return super().form_valid(form)
 
 
 class StudentUpdate(StaffPassesTestMixin, UpdateView):

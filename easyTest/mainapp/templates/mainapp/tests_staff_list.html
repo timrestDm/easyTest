@@ -8,15 +8,35 @@
 {% block content %}
 
     <div class="center_full">
-    {% if object_list %}
-        <p class="test_welcome">{% trans 'Ваши тесты, пользователь '|upper %}{{ user.username|upper }}</p>
-        <div class="list_container">
-            {% include 'mainapp/includes/inc_tests_staff_list.html' %}
-        </div>
-    {% else %}
-        <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не создали ни одного теста '|upper %}</p>
+        {% if object_list %}
+            <h2>{% trans 'Ваши тесты, '|upper %}{{ user.first_name|default:user.username }}</h2>
+
+            <div class="list_container">
+                {% for object in object_list %}
+                    <div class="iter_list">
+
+                        <form action="{% url 'mainapp:result_create' object.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" name="test_name" value="{{ object.title }}" class="input_as_a">
+                        </form>
+
+                        <a href="{% url 'mainapp:test_edit' object.pk %}" class="a_button">{% trans 'Изменить' %}</a>
+
+                        <form method="post" action="{% url 'mainapp:test_delete' object.pk %}">
+                            {% csrf_token %}
+                            <button class="base_link" type="submit">
+                                {% trans 'Удалить' %}
+                            </button>
+                        </form>
+
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <h2>{{ user.first_name|default:user.username }}, {% trans ' Вы пока не создали ни одного теста ' %}</h2>
+        {% endif %}
         <a class="btn btn-secondary" href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a>
-    {% endif %}
     </div>
 
 {% endblock content %}

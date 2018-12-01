@@ -6,35 +6,55 @@
 {% endblock title%}
 
 {% block content %}
+    {% with current_kwargs=request.resolver_match.kwargs.pk  %}
+        <div class="center_full">
 
-        {% if object_list %}
-            <b>{% trans 'Выберите тест, чтобы посмотреть результаты подробнее:' %}</b></p>
-            <table class="table table_result">
-                <thead>
-                <tr>
-                    <th>№</th>
-                    <th>{% trans 'Тест' %}</th>
-                    <th>{% trans 'Результат' %}</th>
-                </tr>
-                </thead>
+            {% if object_list %}
+                {% if student %}
+                    <h2>{% trans 'Результаты студента ' %}{{ student.first_name|default:student.username|title }}</h2>
+                {% endif %}
 
-                <tbody>
-                {% for object in object_list %}
+                <b>{% trans 'Выберите тест, чтобы посмотреть результаты подробнее:' %}</b></p>
+                <table class="table table_result">
+                    <thead>
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'mainapp:result' object.test.pk %}">{{ object.test.title }}</a></td>
-                        <td>
-                            {% if object.is_test_passed %}<span class="text-success">{% trans 'Пройден' %}</span>
-                            {% else %}<span class="text-danger">{% trans 'Не пройден' %}</span>{% endif %}
-                        </td>
+                        <th>№</th>
+                        <th>{% trans 'Тест' %}</th>
+                        <th>{% trans 'Правильных ответов' %}</th>
+                        <th>{% trans 'Время' %}</th>
+                        <th>{% trans 'Результат' %}</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
 
-        {% else %}
-            <p class="test_welcome">{{ user.username|upper }}, {% trans 'Вы пока не прошли ни один тест' %}</p>
-            <a class="btn btn-secondary" href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
-        {% endif %}
+                    <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'mainapp:result' current_kwargs object.test.pk %}">{{ object.test.title }}</a></td>
+                            <td>{{ object.right_answers_count }}/{{ object.question_count }}</td>
+                            <td>{{ object.time|date:"G:i:s" }}</td>
+                            <td>
+                                {% if object.is_test_passed %}<span class="text-success">{% trans 'Пройден' %}</span>
+                                {% else %}<span class="text-danger">{% trans 'Не пройден' %}</span>{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
+            {% elif current_kwargs == user.id %}
+                <h2>{{ user.first_name|default:user.username }}, {% trans 'Вы пока не прошли ни один тест' %}</h2>
+
+                {% if user.is_staff %}
+                    <a href="{% url 'mainapp:tests_staff' %}" class="btn btn-secondary">{% trans 'Пройти тест' %}</a>
+                {% else %}
+                    <a href="{% url 'mainapp:tests' %}" class="btn btn-secondary">{% trans 'Пройти тест' %}</a>
+                {% endif %}
+
+            {% else %}
+                <h2>{{ student.first_name|default:student.username|title }} {% trans 'пока не прошел ни одного теста' %}</h2>
+            {% endif %}
+
+        </div>
+    {% endwith %}
 {% endblock content %}

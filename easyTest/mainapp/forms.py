@@ -178,22 +178,23 @@ AnswerFormSet = forms.inlineformset_factory(Question, Answer, form=AnswerForm, f
 class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
-        fields = ('title', 'description', 'parent_group',)
+        fields = ('title', 'parent_group', 'description', 'tests')
         labels = {
             'title': _('Название группы'),
             'description': _('Описание'),
             'parent_group': _('Родительская группа'),
+            'tests': _('Выберите тесты'),
         }
 
 
 class StudentForm(MutualWidget, UserCreationForm):
     class Meta:
         model = Student
-        fields = ('username', 'first_name', 'group', 'password1', 'password2', 'email',)
+        fields = ('username', 'first_name', 'in_groups', 'password1', 'password2', 'email',)
         labels = {
             'username': _('Логин'),
             'first_name': _('ФИО'),
-            'group': _('Группа'),
+            'in_groups': _('Группа'),
             'password1': _('Пароль'),
             'password2': _('Повтор пароля'),
             'email': _('email'),
@@ -203,11 +204,11 @@ class StudentForm(MutualWidget, UserCreationForm):
 class StudentEditForm(MutualWidget, UserChangeForm):
     class Meta:
         model = Student
-        fields = ('username', 'first_name', 'group', 'email', 'password')
+        fields = ('username', 'first_name', 'in_groups', 'email', 'password')
         labels = {
             'username': _('Логин'),
             'first_name': _('ФИО'),
-            'group': _('Группа'),
+            'in_groups': _('Группа'),
             'password': _('Пароль'),
             'email': _('email'),
         }

@@ -6,39 +6,39 @@
 {% endblock title%}
 
 {% block content %}
-        {% if object %}
-            <p><b>Тест "{{ object.test.title }}"</b></p>
+    {% if object %}
+        <p><b>Тест "{{ object.test.title }}"</b></p>
 
-                {% if object.is_test_passed %}
-                    <p class="font-weight-bold text-success">Тест пройден</p>
-                {% else %}
-                    <p class="font-weight-bold text-danger">Тест не пройден</p>
-                    <p>Количество правильных ответов для успешного прохождения теста: {{ object.test.required_correct_answers }}</p>
-                {% endif %}
-
-                <div class="bl_result_info">
-                    <div class="result_info">
-                        <p class="font-weight-bold">Ваш результат, {{ object.owner.username|title }}: </p>
-                        <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
-                        <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
-                        <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>
-                    </div>
-
-                    {% if object.wrong_answers_count %}
-                        <p class="answers_wrong">{% trans 'Неправильные ответы:' %}</p>
-                        {% for object in user_incorrect_answers %}
-                            <p class="question">{{ object.question }}</p>
-                            <p class="answer_info">Ваш ответ:</p>
-                            <p class="answer">{{ object.user_answer }}</p>
-
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-            {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=object.test.id %}
-
+        {% if object.is_test_passed %}
+            <p class="font-weight-bold text-success">Тест пройден</p>
         {% else %}
-            <p><b>Нет результатов по тесту</b></p>
+            <p class="font-weight-bold text-danger">Тест не пройден</p>
+            <p>Количество правильных ответов для успешного прохождения теста: {{ object.test.required_correct_answers }}</p>
         {% endif %}
+
+        <div class="bl_result_info">
+            <div class="result_info">
+                <p class="font-weight-bold">{% if user.is_staff %}Результаты студента {% else %}Ваш результат, {% endif %}{{ object.owner.first_name|default:object.owner.username|title }}: </p>
+                <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
+                <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
+                <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>
+            </div>
+
+            {% if object.wrong_answers_count %}
+                <p class="answers_wrong">{% trans 'Неправильные ответы:' %}</p>
+                {% for object in user_incorrect_answers %}
+                    <p class="question">{{ object.question }}</p>
+                    <p class="answer_info">Ваш ответ:</p>
+                    <p class="answer">{{ object.user_answer }}</p>
+
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=object.test.id %}
+
+    {% else %}
+        <p><b>Нет результатов по тесту</b></p>
+    {% endif %}
 {% endblock content %}
 

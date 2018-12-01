@@ -22,8 +22,8 @@ urlpatterns = [
     path('question/<int:pk>/delete/', mainapp.QuestionDelete.as_view(), name='question_delete'),
     path('question/staff/', mainapp.StaffQuestionList.as_view(), name='questions_staff'),
 
-    path('result/', mainapp.ResultList.as_view(), name='results'),
-    path('result/<int:test>/', mainapp.ResultDetail.as_view(), name='result'),
+    path('results/<int:pk>/', mainapp.ResultList.as_view(), name='results'),
+    path('result/<int:pk>/test_<int:test>', mainapp.ResultDetail.as_view(), name='result'),
     path('result/create/<int:test>/', mainapp.ResultCreate.as_view(), name='result_create'),
     path('result/edit/<int:test>/', mainapp.ResultUpdate.as_view(), name='result_update'),
 
@@ -36,8 +36,9 @@ urlpatterns = [
 
     path('groups/', mainapp.GroupList.as_view(), name='groups'),
     path('group/create/', mainapp.GroupCreate.as_view(), name='group_create'),
-    path('group/<int:pk>', mainapp.GroupUpdate.as_view(), name='group_update'),
+    path('group/edit/<int:pk>/', mainapp.GroupUpdate.as_view(), name='group_update'),
     path('group/<int:pk>/delete/', mainapp.GroupDelete.as_view(), name='group_delete'),
+    path('group/<int:pk>/', mainapp.GroupDetail.as_view(), name='group'),
 
     path('students/', mainapp.StudentList.as_view(), name='students'),
     path('student/create/', mainapp.StudentCreate.as_view(), name='student_create'),

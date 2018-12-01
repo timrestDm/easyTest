@@ -163,6 +163,9 @@ class TestManager(CoreManager):
     def get_tests(self, request):
         return self.filter(owner=request.user)
 
+    def get_tests_by_group(self, request):
+        return self.filter(groups__students=request.user)
+
 
 class Test(Core):
     """ docstring for Test"""
@@ -196,9 +199,9 @@ class Test(Core):
 class ResultManager(CoreManager):
     """docstring for  ResultManager"""
 
-    def get_result_test_queryset(self, request, pk):
+    def get_result_test_queryset(self, owner_pk, pk):
         """получаем результат по тесту пользователя queryset'ом для ResultCreate (hard_delete) и для ResultDetail"""
-        return self.filter(owner=request.user, test_id=pk)
+        return self.filter(owner=owner_pk, test_id=pk)
 
     def get_queryset(self):
         return self.get_all_queryset()
@@ -224,6 +227,9 @@ class Result(Core):
 
     def __str__(self):
         return f'{self.owner.username}_{self.test.title}'
+
+    def question_count(self):
+        return self.right_answers_count + self.wrong_answers_count
 
 
 class UserAnswerManager(CoreManager):
@@ -270,6 +276,9 @@ class GroupManager(CoreManager):
     def get_groups(self, user):
         return self.filter(owner=user)
 
+    def get_students(self, pk):
+        return self.filter(students__in_groups=pk)
+
 
 class Group(Core):
     """docstring for  Group"""
@@ -279,7 +288,7 @@ class Group(Core):
         verbose_name_plural = _('Группы')
 
     parent_group = models.ForeignKey('self', null=True, blank=True, related_name='child_groups', on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, null=False, blank=True, on_delete=models.PROTECT)
+    owner = models.ForeignKey(User, null=False, blank=True, related_name='related_groups', on_delete=models.PROTECT)
     tests = models.ManyToManyField(Test, blank=True, related_name='groups')
     objects = GroupManager()
 
@@ -287,11 +296,16 @@ class Group(Core):
 class StudentManager(BaseUserManager):
     """docstring for  StudentManager"""
 
-    def get_group(self, pk):
-        return self.filter(in_groups=pk)
-
     def get_students(self, pk):
         return self.filter(teacher=pk)
+
+    def get_student(self, student_pk, teacher_pk):
+        """для вывода преподавателю результатов студента, если он является его студентом
+        (запрет просмотра гет-запросом другими преподавателями результатов чужих студентов)"""
+        student = self.filter(pk=student_pk, teacher=teacher_pk)
+        if student:
+            student = student.first()
+        return student
 
 
 class Student(User):

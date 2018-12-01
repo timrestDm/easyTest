@@ -2,32 +2,34 @@
 {% load static i18n %}
 
 {% block title %}
-<title>{% trans 'Студенты' %}</title>
+    <title>{% trans 'Студенты' %}</title>
 {% endblock title%}
 
 {% block content %}
 
-<div class="center_full">
-    {% if object_list %}
-    <div class="list_container">
-        {% for object in object_list %}
-        <div class="iter_list">
-            <p class="list_title">{{ object.first_name }}</p>
-            <a href="{% url 'mainapp:student_update' object.pk %}" class="base_link">{% trans 'Изменить' %}</a>
-            <form method="post" action="{% url 'mainapp:student_delete' object.pk %}">
-                {% csrf_token %}
-                <button class="base_link" type="submit">
-                    {% trans 'Удалить' %}
-                </button>
-            </form>
-        </div>
-        {% endfor %}
+    <div class="center_full">
+        {% if object_list %}
+            <h2>{% trans 'Выберите студента для просмотра результатов' %}</h2>
+
+            <div class="list_container">
+                {% for object in object_list %}
+                    <div class="iter_list">
+                        <a href="{% url 'mainapp:results' object.pk %}">{{ object.first_name }}</a>
+                        <a href="{% url 'mainapp:student_update' object.pk %}" class="a_button">{% trans 'Изменить' %}</a>
+                        <form method="post" action="{% url 'mainapp:student_delete' object.pk %}">
+                            {% csrf_token %}
+                            <button class="base_link" type="submit">
+                                {% trans 'Удалить' %}
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h2>{% trans 'Еще нет ни одного студента' %}</h2>
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'mainapp:student_create' %}">{% trans 'Создать студента' %}</a>
     </div>
-    {% else %}
-    <p class="test_welcome">{% trans 'Еще нет ни одного студента'|upper %}</p>
-    {% endif %}
-    <a class="btn btn-secondary" href="{% url 'mainapp:student_create' %}">{% trans 'Создать студента' %}</a>
-</div>
 
 {% endblock content %}
 

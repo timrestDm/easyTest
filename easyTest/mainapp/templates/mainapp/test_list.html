@@ -8,17 +8,45 @@
 {% block content %}
 
     <div class="center_full">
-        <ul><b>{% trans 'Выберите тест для прохождения' %}</b></p>
-            {% for object in object_list %}
-                <li>
-                    <form action="{% url 'mainapp:result_create' object.pk %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" name="test_name" value="{{ object.title }}" class="btn btn-link">
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
+        {% if object_list %}
+            <h2>{% trans 'Выберите тест для прохождения' %}</h2>
+
+            <table class="table table_test">
+                <tbody>
+                {% for group in user.student.in_groups.all %}
+                    <th>{{ group.title }}</th>
+
+                    {% for object in group.tests.all %}
+                        <tr>
+                            <td>
+                                <form action="{% url 'mainapp:result_create' object.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="submit" name="test_name" value="{{ object.title }}" class="btn btn-link">
+                                </form>
+                            </td>
+
+                            {% if object in tests_without_result %}
+                                {% for result in user.results.all %}
+                                    {% if result.test == object %}
+                                        {% if result.is_test_passed %}<td class="text-success">{% trans 'Пройден' %}</td>
+                                        {% else %}<td class="text-danger">{% trans 'Не пройден' %}</td>{% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <td class="text-danger">{% trans 'Не пройден' %}</td>
+                            {% endif %}
+
+                        </tr>
+                    {% endfor %}
+
+                {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <h2>{% trans 'Вам пока недоступны тесты для прохождения' %}</h2>
+            <h2>{% trans 'Свяжитесь с преподавателем' %}</h2>
+        {% endif %}
     </div>
 
 {% endblock content %}
-

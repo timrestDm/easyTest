@@ -68,14 +68,14 @@ class UserAnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     list_display = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'sort', 'active', 'deleted')
 
 
-class GroupAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('title', 'description',  'parent_group', 'active', 'sort', 'deleted')
-    list_display = ('title', 'parent_group', 'active', 'sort', 'deleted')
+class GroupAdmin(admin.ModelAdmin):
+    fields = ('title', 'owner', 'description',  'parent_group', 'active', 'sort', 'deleted')
+    list_display = ('title', 'owner', 'parent_group', 'active', 'sort', 'deleted')
 
 
-class StudentAdmin(EditDatabaseAdmin, admin.ModelAdmin):
-    fields = ('username', 'first_name', 'password1', 'password2', 'email',)
-    list_display = ('username', 'first_name', 'email')
+class StudentAdmin(admin.ModelAdmin):
+    fields = ('username', 'first_name', 'teacher', 'in_groups', 'email',)
+    list_display = ('username', 'first_name', 'teacher', 'email')
 
 
 admin.site.register(Question, QuestionAdmin)

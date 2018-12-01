@@ -53,6 +53,10 @@ class CreateProfile(SuccessMessageMixin, CreateView):
         context['title'] = _('Register')
         return context
 
+    def form_valid(self, form):
+        form.instance.is_staff = True
+        return super().form_valid(form)
+
 
 class EditProfile(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """docstring for EditProfile"""

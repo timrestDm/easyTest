@@ -16,12 +16,13 @@
         <link rel="stylesheet" href= "{% static 'css/style.css' %}?v={{ VERSION }}" >
     {% endblock styles %}
 
+    <link rel="shortcut icon" href="/media/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
     {% block javascript %}
     {% endblock javascript %}
-    
+
 </head>
 
 <body>
@@ -34,26 +35,46 @@
 
         <div class="menu">
             <ul>
-                <li><a href="{% url 'mainapp:main' %}">{% trans 'На главную'|upper %}</a></li>
-                <li><a href="{% url 'mainapp:tests' %}">{% trans 'Тесты'|upper %}</a></li>
-                <li><a href="#">{% trans 'КОНТАКТЫ' %}</a></li>
+                <li><a href="{% url 'mainapp:main' %}">{% trans 'На главную' %}</a></li>
+                <li><a href="{% if user.is_staff %}#{% else %}{% url 'mainapp:tests' %}{% endif %}">{% trans 'Тесты' %}</a>
+                    {% if user.is_staff %}
+                        <ul>
+                            <li><a href="{% url 'mainapp:tests_staff' %}">{% trans 'Мои тесты' %}</a></li>
+                            <li><a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a></li>
+                        </ul>
+                    {% endif %}
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% if user.is_staff %}#{% else %}{% url 'mainapp:results' user.id %}{% endif %}">{% trans 'Результаты' %}</a>
+                        {% if user.is_staff %}
+                            <ul>
+                                <li><a href="{% url 'mainapp:results' user.id %}">{% trans 'Мои' %}</a>
+                                <li><a href="{% url 'mainapp:groups' %}">{% trans 'Студентов' %}</a></li>
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endif %}
+
+                {% if user.is_staff %}
+                    <li><a href="{% url 'mainapp:groups' %}">{% trans 'Группы' %}</a></li>
+                    <li><a href="{% url 'mainapp:students' %}">{% trans 'Студенты' %}</a></li>
+                {% endif %}
+
+                <li><a href="#">{% trans 'Контакты' %}</a></li>
             </ul>
         </div>
 
         <div class="menu">
             <ul>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, '|upper %}{{ user.first_name|default:user.username|upper }}</a></li>
-                    <li><a href="{% url 'mainapp:results' %}">{% trans 'Результаты'|upper %}</a></li>
+                    <li><a href="{% url 'auth:edit' %}">{% trans 'Привет, ' %}{{ user.first_name|default:user.username }}</a></li>
                     {% if user.is_staff %}
-                        <li><a href="{% url 'mainapp:tests_staff' %}">{% trans 'Мои тесты'|upper %}</a></li>
-                        <li><a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест'|upper %}</a></li>
-                        <li><a href="{% url 'mainapp:question_create' %}">{% trans 'Создать вопрос'|upper %}</a></li>
-                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel'|upper %}</a></li>
+                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin panel' %}</a></li>
                     {% endif %}
-                    <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти'|upper %}</a></li>
+                    <li><a href="{% url 'auth:logout' %}">{% trans 'Выйти' %}</a></li>
                 {% else %}
-                    <li><a href="{% url 'auth:login' %}">{% trans 'Войти'|upper %}</a></li>
+                    <li><a href="{% url 'auth:login' %}">{% trans 'Войти' %}</a></li>
                 {% endif %}
             </ul>
         </div>

@@ -9,19 +9,23 @@
 
     <div class="center_full">
         <div class="button_row">
-            <a href="{% url 'mainapp:redirect' 'test' %}">{% trans 'Войти пользователем' %}</a>
-            <a href="{% url 'mainapp:redirect' 'admin' %}">{% trans 'Войти админом' %}</a>
+        {% if user.is_staff %}
+            <a href="{% url 'mainapp:tests_staff' %}">{% trans 'Пройти тест' %}</a>
+        {% else %}
+            <a href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
+        {% endif %}
+            {% if user.is_staff %}
+                <a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a>
+            {% endif %}
+        </div>
+
+        <div class="button_row">
+            <a href="{% url 'mainapp:redirect' 'Student_1' %}">{% trans 'Войти как студент №1' %}</a>
+            <a href="{% url 'mainapp:redirect' 'Student_2' %}">{% trans 'Войти как студент №2' %}</a>
         </div>
         <div class="button_row">
-            <a href="{% url 'mainapp:test_create' %}">{% trans 'Создать тест' %}</a>
-            <a href="{% url 'mainapp:tests' %}">{% trans 'Пройти тест' %}</a>
+            <a href="{% url 'mainapp:redirect' 'admin' %}">{% trans 'Войти преподавателем' %}</a>
         </div>
-        {% if user.is_staff %}
-            <div class="button_row">
-                <a href="{% url 'mainapp:groups' %}">{% trans 'Группы' %}</a>
-                <a href="{% url 'mainapp:students' %}">{% trans 'Студенты' %}</a>
-            </div>
-        {% endif %}
     </div>
 
 {% endblock content %}
