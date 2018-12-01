@@ -356,6 +356,28 @@ body {
 	label {
 		.text-mixin();
 	}
+	
+	.selects {
+		display: flex;
+		justify-content: space-between;
+
+		option {
+			white-space: normal;
+
+			&:hover {
+				color: white;
+				background: #0074E8;				
+			}
+		}
+
+		.select_all {
+			margin-right: 5px;
+		}
+
+		.select_add {
+			margin-left: 5px;
+		}
+	}	
 }
 
 .denied {

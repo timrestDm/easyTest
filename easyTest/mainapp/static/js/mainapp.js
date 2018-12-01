@@ -6,6 +6,11 @@ $(function() {
     if (currenthref_part2 == 'test') {
         if (currenthref_part3 == 'create'|| currenthref_part3 == 'edit') {
             toggle_test_forms();
+            addQuestions();
+            removeQuestions();
+            removeOptions();
+            pushButton();
+            addBlock();
         } else {
         makeDisable();
         testFunction();
@@ -141,3 +146,56 @@ function toggle_q_type() {
         }
     }
 }
+
+function addQuestions() {
+    $('#id_questions > option').click( function () {
+        var value = $(this).val();
+        var arr = new Array();
+        $( '#id_test_questions option' ).each( function () {
+            arr.push($(this).val());
+        });
+        if (!arr.includes(value)) {
+            $(this).prop({'selected':false}).clone().appendTo($('#id_test_questions'));
+        } else {
+            $(this).prop({'selected':false});
+        };
+    });
+};
+
+function removeQuestions() {
+    $(document).on('click', '#id_test_questions > option', function () {
+        $(this).remove();
+    });
+};
+
+function removeOptions() {
+    $('#id_test_questions > option').remove();
+    $('#id_questions > option').each( function () {
+        if ($(this).attr('selected') == 'selected') {
+            $(this).clone().prop({'selected':false}).appendTo($('#id_test_questions'));
+            $(this).prop({'selected':false});
+        };
+    });
+};
+
+function pushButton() {
+    $(document).on('click', '.btn', function () {
+        $('#id_test_questions > option').prop({'selected':'selected'});
+    });
+};
+
+function addBlock() {
+    $('<div class="selects">').insertBefore('label[for="id_questions"]');
+
+    $('.selects').append($('<div class="select_all">'))
+    $('.selects').append($('<div class="select_add">'))
+
+    $('.select_all').append($('label[for="id_questions"]'));
+    $('.select_all').append($('#id_questions'));
+    
+    $('.select_add').append($('label[for="id_test_questions"]'));
+    $('.select_add').append($('#id_test_questions'));
+
+    $('#id_questions').css({'width':300, 'height':150});
+    $('#id_test_questions').css({'width':300, 'height':150});
+};

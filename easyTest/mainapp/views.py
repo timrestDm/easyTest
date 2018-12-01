@@ -164,6 +164,11 @@ class TestCreate(StaffPassesTestMixin, CreateView):
         context['title'] = _('Создать тест')
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request':self.request})
+        return kwargs
+
     def form_valid(self, form):
         file = self.request.FILES.get('file')
 
@@ -175,7 +180,9 @@ class TestCreate(StaffPassesTestMixin, CreateView):
                 return HttpResponseRedirect(self.model.get_absolute_url(self))
         else:
             form.instance.owner = self.request.user
-            return super().form_valid(form)
+            response = super().form_valid(form)
+            self.object.questions.add(*self.request.POST.getlist('test_questions'))
+            return response
 
 
 class TestDetail(LoginRequiredMixin, StaffPassesTestMixin, UserPassesTestMixin, DetailView):
@@ -237,6 +244,11 @@ class TestEdit(TestDetail, UpdateView):
         context['title'] = _('Изменить тест')
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request':self.request})
+        return kwargs
+
     def form_valid(self, form):
         file = self.request.FILES.get('file')
 
@@ -247,7 +259,9 @@ class TestEdit(TestDetail, UpdateView):
             else:
                 return HttpResponseRedirect(self.model.get_absolute_url(self))
         else:
-            return super().form_valid(form)
+            response = super().form_valid(form)
+            self.object.questions.add(*self.request.POST.getlist('test_questions'))
+            return response
 
 
 class TestDelete(TestDetail, DeleteView):

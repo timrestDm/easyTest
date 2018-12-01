@@ -38,6 +38,13 @@ class TestForm(MutualWidget, forms.ModelForm):
         }
 
     file = forms.FileField(required=False, label=_('Загрузить'), help_text='')
+    test_questions = forms.ModelMultipleChoiceField(queryset=None, label=_('Добавленные вопросы'), required=False)
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+        queryset = type(self).Meta.model.questions.rel.model.objects.get_questions(request)
+        [setattr(self.fields[field], 'queryset', queryset) for field in self.fields if field in ('questions', 'test_questions')]
 
     def clean(self, request=None):
         """ Check for questions in Test """
@@ -89,8 +96,8 @@ class TestForm(MutualWidget, forms.ModelForm):
             self.add_error('required_correct_answers', _('Необходимо задать количество правильных ответов для сдачи.'))
         if cleaned_data.get('max_questions', 0) < 1:
             self.add_error('max_questions', _('Необходимо задать максимальное количество ответов.'))
-        if not cleaned_data.get('questions'):
-            self.add_error('questions', _('Необходимо задать минимум один вопрос для теста.'))
+        if not cleaned_data.get('test_questions'):
+            self.add_error('test_questions', _('Необходимо задать минимум один вопрос для теста.'))
 
         return self.cleaned_data
 
