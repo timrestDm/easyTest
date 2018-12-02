@@ -181,7 +181,7 @@ class TestCreate(StaffPassesTestMixin, CreateView):
         else:
             form.instance.owner = self.request.user
             response = super().form_valid(form)
-            self.object.questions.add(*self.request.POST.getlist('test_questions'))
+            self.object.questions.set(self.request.POST.getlist('test_questions'))
             return response
 
 
@@ -250,18 +250,7 @@ class TestEdit(TestDetail, UpdateView):
         return kwargs
 
     def form_valid(self, form):
-        file = self.request.FILES.get('file')
-
-        if file:
-            form.clean(self.request)
-            if not form.is_valid():
-                return super().form_invalid(form)
-            else:
-                return HttpResponseRedirect(self.model.get_absolute_url(self))
-        else:
-            response = super().form_valid(form)
-            self.object.questions.add(*self.request.POST.getlist('test_questions'))
-            return response
+        return TestCreate(request=self.request, args=self.args, kwargs=self.kwargs).form_valid(form)
 
 
 class TestDelete(TestDetail, DeleteView):
