@@ -165,6 +165,7 @@ body {
 .menu ul {
   display: flex;
   list-style-type: none;
+  margin: auto;
 }
 .menu ul li {
   padding: 0 5px;
