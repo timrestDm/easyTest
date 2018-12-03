@@ -79,21 +79,21 @@ function toggle_answers_forms() {
 function toggle_test_forms() {
     var form_input = $('.test_form_input')
     var form_json = $('.test_form_json')
-    var bt_form_input = $('.create_input a')
-    var bt_form_json = $('.create_json a')
+    var bt_form_input = $('.create_input')
+    var bt_form_json = $('.create_json')
 
     form_json.hide();
     bt_form_input.click(function() {
         form_input.show();
         form_json.hide();
-        bt_form_input.addClass('link_active');
-        bt_form_json.removeClass('link_active');
+        bt_form_input.addClass('tab_active');
+        bt_form_json.removeClass('tab_active');
     });
     bt_form_json.click(function() {
         form_input.hide();
         form_json.show();
-        bt_form_input.removeClass('link_active');
-        bt_form_json.addClass('link_active');
+        bt_form_input.removeClass('tab_active');
+        bt_form_json.addClass('tab_active');
     });
 };
 

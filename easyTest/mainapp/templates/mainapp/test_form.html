@@ -13,18 +13,17 @@
 {% block content %}
     {% with current_kwargs=request.resolver_match.kwargs.pk  %}
         <div class="center">
-            <div class="welcome_admin">
-                <h2>{{ title }}</h2>
-            </div>
+            <h1>{{ title }}</h1>
 
             <form class="form_create" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="menu center">
+                <div class="tab-link">
                     <ul>
-                        <li class="create_input"><a href="#" class="link_active">{% trans 'Заполнив поля' %}</a></li>
+                        <li class="create_input tab_active"><a href="#">{% trans 'Заполнив поля' %}</a></li>
                         <li class="create_json"><a href="#">{% trans 'Загрузив json файл' %}</a></li>
                     </ul>
                 </div>
+
 
                 <fieldset class="test_form_input">
                     {% for field in form %}
