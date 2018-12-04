@@ -68,7 +68,7 @@ class UserAnswerAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     list_display = ('owner', 'result', 'question', 'right_answer', 'user_answer', 'is_correct', 'sort', 'active', 'deleted')
 
 
-class GroupAdmin(admin.ModelAdmin):
+class GroupAdmin(EditDatabaseAdmin, admin.ModelAdmin):
     fields = ('title', 'owner', 'description',  'parent_group', 'active', 'sort', 'deleted')
     list_display = ('title', 'owner', 'parent_group', 'active', 'sort', 'deleted')
 
