@@ -893,6 +893,22 @@ fieldset .selector p input {
   padding-left: 5px;
   padding-right: 5px;
 }
+fieldset .selector #change {
+  border-radius: 0;
+}
+fieldset .selector #change a {
+  text-shadow: none;
+  color: #333333;
+  padding: 0px;
+}
+fieldset .selector #change a:hover {
+  color: #847f7f;
+  border-bottom: none;
+  padding: 0px;
+}
+fieldset .selector .selector-chosen {
+  align-self: flex-end;
+}
 .test_form_json a {
   text-transform: unset;
 }

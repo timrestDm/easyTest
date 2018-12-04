@@ -34,10 +34,11 @@
                     {% endif %}
                 {% endfor %}
                 {{ form.media }}
+                <div id="change" class="center form-control">
+                    <a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопросы' %}</a>
+                </div>
             </fieldset>
 
-            <div class="center"><a href="{% url 'mainapp:questions_staff' %}">{% trans 'Изменить вопросы' %}</a></div>
-            
             <fieldset class="test_form_json">
                 {% if object %}
                     <div class="center">

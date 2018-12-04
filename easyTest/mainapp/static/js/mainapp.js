@@ -6,6 +6,7 @@ $(function() {
     if (currenthref_part2 == 'test') {
         if (currenthref_part3 == 'create'|| currenthref_part3 == 'edit') {
             toggle_test_forms();
+            changeQuestions();
         } else {
         makeDisable();
         testFunction();
@@ -141,3 +142,8 @@ function toggle_q_type() {
         }
     }
 }
+
+function changeQuestions() {
+    $('#id_questions_filter').wrap("<div class='around_p'></div>");
+    $('.around_p').append($('#change'));
+};
