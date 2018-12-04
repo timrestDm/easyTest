@@ -304,7 +304,7 @@ class ResultCreate(CreateView):
         response = super().form_valid(form)
 
         self.request.session['test_time'] = datetime.time.strftime(self.object.test.time, '%M:%S')
-        for question in self.object.test.questions.all():
+        for question in self.object.test.questions.get_questions_by_limit(self.kwargs['test']):
             self.kwargs['question'] = question
             self.kwargs['result'] = self.object
             UserAnswerCreate.as_view()(self.request, *self.args, **self.kwargs)
