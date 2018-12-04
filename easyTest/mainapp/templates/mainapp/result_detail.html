@@ -18,7 +18,7 @@
 
         <div class="bl_result_info">
             <div class="result_info">
-                <p class="font-weight-bold">{% if user.is_staff %}Результаты студента {% else %}Ваш результат, {% endif %}{{ object.owner.first_name|default:object.owner.username|title }}: </p>
+                <p class="font-weight-bold">{% if user.is_staff and url_kwargs.pk != user.id %}Результаты студента {% else %}Ваш результат, {% endif %}{{ object.owner.first_name|default:object.owner.username|title }}: </p>
                 <p>Количество правильных ответов: {{ object.right_answers_count }}</p>
                 <p>Количество неправильных ответов: {{ object.wrong_answers_count }}</p>
                 <p>Затраченное время: {{ object.time|date:"G:i:s" }}</p>

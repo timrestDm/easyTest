@@ -95,7 +95,7 @@ class TestForm(MutualWidget, forms.ModelForm):
         if cleaned_data.get('required_correct_answers', 0) < 1:
             self.add_error('required_correct_answers', _('Необходимо задать количество правильных ответов для сдачи.'))
         if cleaned_data.get('max_questions', 0) < 1:
-            self.add_error('max_questions', _('Необходимо задать максимальное количество ответов.'))
+            self.add_error('max_questions', _('Необходимо задать максимальное количество вопросов.'))
         if not cleaned_data.get('test_questions'):
             self.add_error('test_questions', _('Необходимо задать минимум один вопрос для теста.'))
 
