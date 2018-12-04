@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from mainapp.models import Test, TestCategory, Question, Answer, Group, Student
 from django.core.exceptions import ValidationError
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 import commentjson
@@ -31,20 +32,24 @@ class TestForm(MutualWidget, forms.ModelForm):
             'time': _('Время теста'),
             'required_correct_answers': _('Правильных ответов для сдачи'),
             'max_questions': _('Макс. количество вопросов в тесте'),
-            'questions': _('Вопросы'),
+            'questions': _('Добавьте вопросы в тест'),
         }
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
+            'questions': FilteredSelectMultiple(verbose_name=None, is_stacked=False),
         }
 
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
     file = forms.FileField(required=False, label=_('Загрузить'), help_text='')
-    test_questions = forms.ModelMultipleChoiceField(queryset=None, label=_('Добавленные вопросы'), required=False)
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         queryset = type(self).Meta.model.questions.rel.model.objects.get_questions(request)
-        [setattr(self.fields[field], 'queryset', queryset) for field in self.fields if field in ('questions', 'test_questions')]
+        setattr(self.fields['questions'], 'queryset', queryset)
 
     def clean(self, request=None):
         """ Check for questions in Test """
@@ -98,8 +103,8 @@ class TestForm(MutualWidget, forms.ModelForm):
             self.add_error('required_correct_answers', _('Не должно быть больше максимального количества вопросов'))
         if cleaned_data.get('max_questions', 0) < 1:
             self.add_error('max_questions', _('Необходимо задать максимальное количество вопросов.'))
-        if not cleaned_data.get('test_questions'):
-            self.add_error('test_questions', _('Необходимо задать минимум один вопрос для теста.'))
+        if not cleaned_data.get('questions'):
+            self.add_error('questions', _('Необходимо задать минимум один вопрос для теста.'))
 
         return self.cleaned_data
 

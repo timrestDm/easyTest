@@ -181,7 +181,6 @@ class TestCreate(StaffPassesTestMixin, CreateView):
         else:
             form.instance.owner = self.request.user
             response = super().form_valid(form)
-            self.object.questions.set(self.request.POST.getlist('test_questions'))
             return response
 
 
