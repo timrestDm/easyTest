@@ -871,8 +871,7 @@ fieldset .selector ul {
 fieldset .selector ul a:hover {
   border-bottom: none;
 }
-fieldset .selector div h2,
-fieldset .selector div a {
+fieldset .selector div h2 {
   display: none;
 }
 fieldset .selector p {
