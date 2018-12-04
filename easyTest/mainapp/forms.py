@@ -94,6 +94,8 @@ class TestForm(MutualWidget, forms.ModelForm):
             self.add_error('time', _('Необходимо задать время для прохождения теста.'))
         if cleaned_data.get('required_correct_answers', 0) < 1:
             self.add_error('required_correct_answers', _('Необходимо задать количество правильных ответов для сдачи.'))
+        if cleaned_data.get('required_correct_answers', 0) > cleaned_data.get('max_questions', 0):
+            self.add_error('required_correct_answers', _('Не должно быть больше максимального количества вопросов'))
         if cleaned_data.get('max_questions', 0) < 1:
             self.add_error('max_questions', _('Необходимо задать максимальное количество вопросов.'))
         if not cleaned_data.get('test_questions'):
