@@ -12,7 +12,7 @@
             <p>Время прохождения теста вышло.</p>
         </div>
 
-        {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=request.resolver_match.kwargs.test %}
+        {% include 'mainapp/includes/inc_btns_test_repeat.html' with pk=url_kwargs.test %}
 
     </div>
 

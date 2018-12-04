@@ -1,17 +1,16 @@
-{% with current_kwargs=request.resolver_match.kwargs.pk  %}
-    <div class="bl_result_info">
-        <div class="nav">
-            {% if current_kwargs != user.id %}
-                <a href="{% url 'mainapp:groups' %}" class="btn btn-secondary">Результаты студентов</a>
-            {% else %}
-                <form action="{% url 'mainapp:result_create' pk %}" method="post">
-                    {% csrf_token %}
-                    <input type="submit" name="test_name" value="Пересдать тест" class="btn btn-secondary btn_repeat">
-                </form>
-                <a href="{% url 'mainapp:results' user.id %}" class="btn btn-secondary">Результаты</a>
-            {% endif %}
+<div class="bl_result_info">
+    <div class="nav">
+        {% if url_kwargs.pk != user.id %}
+            <a href="{% url 'mainapp:groups' %}" class="btn btn-secondary">Результаты студентов</a>
+        {% else %}
+            <form action="{% url 'mainapp:result_create' pk %}" method="post">
+                {% csrf_token %}
+                <input type="submit" name="test_name" value="Пересдать тест" class="btn btn-secondary btn_repeat">
+            </form>
+            <a href="{% url 'mainapp:results' user.id %}" class="btn btn-secondary">Результаты</a>
+        {% endif %}
 
-            <a href="{% url 'mainapp:main' %}" class="btn btn-secondary">На главную</a>
-        </div>
+        <a href="{% url 'mainapp:main' %}" class="btn btn-secondary">На главную</a>
     </div>
-{% endwith %}
+</div>
+

@@ -21,70 +21,70 @@
 {% endblock javascript %}
 
 {% block content %}
-    {% with current_kwargs=request.resolver_match.kwargs.pk  %}
-        <div class="center_full">
-            {% for object in object_list %}
-                <p><b>Тест "{{ test_title }}"</b></p>
 
-                <div class="answer_list center"><b>{{ object.description }}</b><br>
-                    <form action="{% url 'mainapp:result_update' current_kwargs %}" method="post">
-                        {% csrf_token %}
+    <div class="center_full">
+        {% for object in object_list %}
+            <p><b>Тест "{{ test_title }}"</b></p>
 
-                        <div class="answer_box">
-                            {% if object.q_type == 'select' %}
-                                {% with object.answers.get_correct_answer.count as count_correct %}
-                                    {% for answer in object.answers.all %}
-                                        <div class="custom-control {% if count_correct == 1 %}custom-Radio{% else %}custom-checkbox{% endif %}">
-                                            <input type="{% if count_correct == 1 %}Radio{% else %}checkbox{% endif %}"
-                                                   onchange="input_answer(this);return false;"
-                                                   name="answer_id"
-                                                   value="{{ answer.pk }}" id="select_{{ forloop.counter }}" class="custom-control-input">
-                                            <label class="custom-control-label" for="select_{{ forloop.counter }}">{{ answer }}</label>
-                                        </div>
-                                    {% endfor %}
-                                {% endwith %}
+            <div class="answer_list center"><b>{{ object.description }}</b><br>
+                <form action="{% url 'mainapp:result_update' url_kwargs.pk %}" method="post">
+                    {% csrf_token %}
 
-                            {% elif object.q_type == 'sort' %}
-                                <div class="row row_width_400">
-                                    <input type="hidden" name="skip_question" value="True">
-                                    <div class="col-sm-6" >
-                                        <ul id="sortable1" class="connectedSortable col d-flex flex-column">
-                                            {% for answer in object.answers.all %}
-                                                <li class="ui-state-highlight">{{answer.description }}<input type="hidden" id="slider_input" name="answer_id" value="{{ answer.pk }}" /></li>
-                                            {% endfor %}
-                                        </ul>
+                    <div class="answer_box">
+                        {% if object.q_type == 'select' %}
+                            {% with object.answers.get_correct_answer.count as count_correct %}
+                                {% for answer in object.answers.all %}
+                                    <div class="custom-control {% if count_correct == 1 %}custom-Radio{% else %}custom-checkbox{% endif %}">
+                                        <input type="{% if count_correct == 1 %}Radio{% else %}checkbox{% endif %}"
+                                               onchange="input_answer(this);return false;"
+                                               name="answer_id"
+                                               value="{{ answer.pk }}" id="select_{{ forloop.counter }}" class="custom-control-input">
+                                        <label class="custom-control-label" for="select_{{ forloop.counter }}">{{ answer }}</label>
                                     </div>
-                                    <div class="col-sm-6" >
-                                        <ul id="sortable2" class="connectedSortable w-90 d-flex flex-column green_background">
-                                        </ul>
-                                    </div>
+                                {% endfor %}
+                            {% endwith %}
+
+                        {% elif object.q_type == 'sort' %}
+                            <div class="row row_width_400">
+                                <input type="hidden" name="skip_question" value="True">
+                                <div class="col-sm-6" >
+                                    <ul id="sortable1" class="connectedSortable col d-flex flex-column">
+                                        {% for answer in object.answers.all %}
+                                            <li class="ui-state-highlight">{{answer.description }}<input type="hidden" id="slider_input" name="answer_id" value="{{ answer.pk }}" /></li>
+                                        {% endfor %}
+                                    </ul>
                                 </div>
-                            {% endif %}
-                        </div>
-
-                        <input type="hidden" name="question_id" value="{{ object.pk }}">
-                        <input type="hidden" id="left_time" name="left_time" value="">
-
-                        {% if page_obj.has_next %}
-                            <input type="hidden" name="href" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.next_page_number }}">
-                            <input type="hidden" name="href_current" value="{% url 'mainapp:test' current_kwargs %}?page={{ page_obj.number }}">
-                            <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
-                        {% else %}
-                            <input type="hidden" name="href" value="{% url 'mainapp:result' user.id current_kwargs %}">
-                        {% endif %}
-
-                        <div class="timer_box">
-                            <p id="timer">{{ request.session.test_time }}</p>
-                            <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>
-                            <div class="sub">
-                                <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                                <div class="col-sm-6" >
+                                    <ul id="sortable2" class="connectedSortable w-90 d-flex flex-column green_background">
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
+                        {% endif %}
+                    </div>
 
-            {% endfor %}
-        </div>
-    {% endwith %}
+                    <input type="hidden" name="question_id" value="{{ object.pk }}">
+                    <input type="hidden" id="left_time" name="left_time" value="">
+
+                    {% if page_obj.has_next %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:test' url_kwargs.pk %}?page={{ page_obj.next_page_number }}">
+                        <input type="hidden" name="href_current" value="{% url 'mainapp:test' url_kwargs.pk %}?page={{ page_obj.number }}">
+                        <span class="center"><input type="submit" id="submit_skip" class="btn btn-secondary" value="Ответить позже"></span>
+                    {% else %}
+                        <input type="hidden" name="href" value="{% url 'mainapp:result' user.id url_kwargs.pk %}">
+                    {% endif %}
+
+                    <div class="timer_box">
+                        <p id="timer">{{ request.session.test_time }}</p>
+                        <p class="timer_pages">{{  page_obj.number }} / {{ paginator.num_pages }}</p>
+                        <div class="sub">
+                            <input type="submit" id="submit_b" class="btn btn-secondary" value="Далее">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        {% endfor %}
+    </div>
+
 {% endblock content %}
 

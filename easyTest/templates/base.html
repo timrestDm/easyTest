@@ -26,6 +26,7 @@
 </head>
 
 <body>
+{% with request.resolver_match.kwargs as url_kwargs %}
 <div class="header">
     <div class="center_content_header">
         <div class="logo">
@@ -88,6 +89,7 @@
 <div class="footer">
     <p>GeekUniversity Python 10/06/18</p>
 </div>
+{% endwith %}
 </body>
 
 </html>
