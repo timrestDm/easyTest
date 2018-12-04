@@ -74,8 +74,8 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class StudentAdmin(admin.ModelAdmin):
-    fields = ('username', 'first_name', 'teacher', 'in_groups', 'email',)
-    list_display = ('username', 'first_name', 'teacher', 'email')
+    fields = ('username', 'first_name', 'teacher', 'in_groups', 'email', 'is_active')
+    list_display = ('username', 'first_name', 'teacher', 'email', 'is_active')
 
 
 admin.site.register(Question, QuestionAdmin)

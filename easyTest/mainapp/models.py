@@ -300,12 +300,12 @@ class StudentManager(BaseUserManager):
     """docstring for  StudentManager"""
 
     def get_students(self, pk):
-        return self.filter(teacher=pk)
+        return self.filter(teacher=pk, is_active=True)
 
     def get_student(self, student_pk, teacher_pk):
         """для вывода преподавателю результатов студента, если он является его студентом
         (запрет просмотра гет-запросом другими преподавателями результатов чужих студентов)"""
-        student = self.filter(pk=student_pk, teacher=teacher_pk)
+        student = self.filter(pk=student_pk, teacher=teacher_pk, is_active=True)
         if student:
             student = student.first()
         return student

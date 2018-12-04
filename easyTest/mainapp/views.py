@@ -553,3 +553,10 @@ class StudentDelete(StaffPassesTestMixin, DeleteView):
     """docstring for Group Delete"""
     model = Student
     success_url = reverse_lazy('mainapp:students')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
