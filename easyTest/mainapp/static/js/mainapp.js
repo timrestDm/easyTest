@@ -144,6 +144,13 @@ function toggle_q_type() {
 }
 
 function changeQuestions() {
-    $('#id_questions_filter').wrap("<div class='around_p'></div>");
-    $('.around_p').append($('#change'));
+    var find_loop = setInterval(function(){
+        var q_filter = $('#id_questions_filter');
+
+        if (q_filter.length > 0) {
+            q_filter.wrap("<div class='around_p'></div>");
+            $('.around_p').append($('#change'));
+            clearInterval(find_loop);
+        }
+    }, 50);
 };
