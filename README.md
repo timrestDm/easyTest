@@ -2,7 +2,6 @@ EasyTest
 ===============
 
 
-<<<<<<< HEAD
 Django 2.1 quiz application. 
 
 Удобное джанго приложение для развертывания системы тестирования, создания групп, студентов и отслеживания результатов.  
@@ -12,14 +11,6 @@ Easy quiz platform is aimed at helping teachers or school administration in depl
 
 
 ![Order type Question](https://imgur.com/fWxWuAA "Question picture hosted by Imgur")
-=======
-Django 2.1 quiz application
-Configure your quizez and assign students to the groups.
-Easy quiz platform is aimed at helping teachers or school administration in deploying groups, creating and assigning quizzez, and checking student results.
-
-
-![Order type Question](https://i.imgur.com/2r1CsfZ.jpg "Question picture hosted by Imgur")
->>>>>>> 230a2f88153cc89a672dbbf683a3df6f8b3ae983
 
 
 Current features
@@ -37,7 +28,6 @@ Current features
 
 
 
-<<<<<<< HEAD
 ![Result page](https://imgur.com/9PZ0nSY "Result picture hosted by Imgur")
 
 Requirements
@@ -47,17 +37,6 @@ python 3.6 or above
 Django==2.1.2  
 pytz==2018.5  
 commentjson==0.7.1  
-=======
-![Result page](https://i.imgur.com/9PZ0nSY.jpg "Result picture hosted by Imgur")
-
-Requirements
-------------
-python 3.6 or above
-
-Django==2.1.2
-pytz==2018.5
-commentjson==0.7.1
->>>>>>> 230a2f88153cc89a672dbbf683a3df6f8b3ae983
 
 Installation
 ------------
@@ -79,10 +58,3 @@ Collaborators
 * [https://github.com/ESm1th](https://github.com/ESm1th)
 * [https://github.com/timrestDm](https://github.com/timrestDm)
 * [https://github.com/ziphead](https://github.com/ziphead)
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 230a2f88153cc89a672dbbf683a3df6f8b3ae983
