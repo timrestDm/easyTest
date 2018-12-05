@@ -151,9 +151,6 @@ function changeQuestions() {
             clearInterval(find_loop);
             q_filter.wrap("<div class='around_p'></div>");
             $('.around_p').append($('#change'));
-
-            $('#questions_old').css({'height':350});
-            $('#id_questions_to').css({'height':350});
         }
     }, 50);
 };

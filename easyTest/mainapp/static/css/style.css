@@ -865,6 +865,10 @@ fieldset .selector {
   align-items: center;
   justify-content: center;
 }
+fieldset .selector #questions_old,
+fieldset .selector #id_questions_to {
+  height: 350px !important;
+}
 fieldset .selector ul {
   margin: 0px 5px 0px 5px !important;
 }
@@ -912,3 +916,4 @@ fieldset .selector .selector-chosen {
 .test_form_json a {
   text-transform: unset;
 }
+/*# sourceMappingURL=style.css.map */
