@@ -1,0 +1,14 @@
+{% load static i18n %}
+
+{% for object in object_list %}
+	<div class="iter_test">
+		<p class="test_title">{{ object.title|upper }}</p>
+		<a href="#" class="base_link">{% trans 'Изменить' %}</a>
+		<form method="post" action="{% url 'mainapp:test_delete' object.pk %}">
+			{% csrf_token %}
+    		<button class="base_link" type="submit">
+    			{% trans 'Удалить' %}
+    		</button>
+		</form>
+	</div>
+{% endfor %}
