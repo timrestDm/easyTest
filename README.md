@@ -10,7 +10,7 @@ Configure your quizez and assign students to the groups.
 Easy quiz platform is aimed at helping teachers or school administration in deploying groups, creating and assigning quizzez, and checking student results.
 
 
-![Order type Question](https://imgur.com/fWxWuAA "Question picture hosted by Imgur")
+![Order type Question](https://i.imgur.com/2r1CsfZ.jpg "Question picture hosted by Imgur")
 
 
 Current features
@@ -28,7 +28,7 @@ Current features
 
 
 
-![Result page](https://imgur.com/9PZ0nSY "Result picture hosted by Imgur")
+![Result page](https://i.imgur.com/9PZ0nSY.jpg "Result picture hosted by Imgur")
 
 Requirements
 ------------
