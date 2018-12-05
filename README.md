@@ -6,7 +6,7 @@ Django 2.1 quiz application.
 
 Удобное джанго приложение для развертывания системы тестирования, создания групп, студентов и отслеживания результатов.  
 
-Configure your quizez and assign students to the groups.  
+Configure your quizzez and assign students to the groups.  
 Easy quiz platform is aimed at helping teachers or school administration in deploying groups, creating and assigning quizzez, and checking student results.
 
 
