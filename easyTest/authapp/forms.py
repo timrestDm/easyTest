@@ -15,19 +15,19 @@ class MutualWidget:
             field.help_text = ''
 
 
-class UserLoginForm(AuthenticationForm):
+class UserLoginForm(MutualWidget, AuthenticationForm):
     class Meta:
         model = User
         fields = '__all__'
 
 
-class UserRegisterForm(UserCreationForm):
+class UserRegisterForm(MutualWidget, UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'password1', 'password2', 'email',)
 
 
-class UserEditForm(UserChangeForm):
+class UserEditForm(MutualWidget, UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'email', 'password')
