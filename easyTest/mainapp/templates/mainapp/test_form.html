@@ -7,6 +7,7 @@
 
 {% block javascript %}
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-filestyle.min.js' %}"></script>
     <script src="{% static 'js/mainapp.js' %}"></script>
 {% endblock javascript %}
 
@@ -51,7 +52,7 @@
                         {{ form.file.label_tag }} {{ form.file.errors }} {{ form.file }}
                     </div>
                     <div>
-                        <h2>{% trans 'Пример файла:' %}</h2>
+                        <label>{% trans 'Пример файла:' %}</label>
                         <a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a>
                     </div>
                 </div>

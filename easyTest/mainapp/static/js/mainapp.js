@@ -7,6 +7,7 @@ $(function() {
         if (currenthref_part3 == 'create'|| currenthref_part3 == 'edit') {
             toggle_test_forms();
             changeQuestions();
+            change_style_file();
         } else {
         makeDisable();
         testFunction();
@@ -153,4 +154,10 @@ function changeQuestions() {
             $('.around_p').append($('#change'));
         }
     }, 50);
+};
+
+function change_style_file() {
+    $(':file').filestyle({buttonBefore: true});
+    $('.buttonText').text("Выбрать файл");
+    $('.bootstrap-filestyle').removeClass('input-group')
 };
