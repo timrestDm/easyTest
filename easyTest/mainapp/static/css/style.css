@@ -913,14 +913,22 @@ fieldset .selector #change a:hover {
 fieldset .selector .selector-chosen {
   align-self: flex-end;
 }
+.test_form_json .center a,
 .test_form_json .buttonText {
   color: #fff;
   font-weight: 400;
   font-size: 1rem;
+  text-transform: initial;
 }
-.test_form_json a,
-.test_form_json .buttonText {
-  text-transform: none;
+.test_form_json .center a:hover,
+.test_form_json .buttonText:hover {
+  color: #fff;
+}
+.test_form_json .center a {
+  margin: auto;
+}
+.test_form_json .bl_json_upload a {
+  text-transform: initial;
 }
 .test_form_json input[type="text"] {
   margin: 10px 0;

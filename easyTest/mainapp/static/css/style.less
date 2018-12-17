@@ -741,14 +741,21 @@ fieldset{
 }
 
 .test_form_json{
+	.center a,
 	.buttonText{
 		color: #fff;
 		font-weight: 400;
 		font-size: 1rem;
+		text-transform: initial;
+		&:hover{
+			color: #fff;
+		}
 	}
-	a,
-	.buttonText{
-		text-transform: none;
+	 .center a {
+		margin: auto;
+	}
+	.bl_json_upload  a{
+		text-transform: initial;
 	}
 	input[type="text"]{
 		margin: 10px 0;
