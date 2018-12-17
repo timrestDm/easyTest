@@ -53,7 +53,7 @@
                     </div>
                     <div>
                         <label>{% trans 'Пример файла:' %}</label>
-                        <a href="/media/files/template_create_test.json" class="btn btn-secondary">{% trans 'Скачать' %}</a>
+                        <a href="{% url 'mainapp:test_export' 0 %}" class="btn btn-secondary">{% trans 'Скачать' %}</a>
                     </div>
                 </div>
             </fieldset>

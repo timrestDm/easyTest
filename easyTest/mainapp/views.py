@@ -1,5 +1,6 @@
 import json
-from django.http import HttpResponseRedirect
+from io import StringIO
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView
 from django.views.generic.edit import DeleteView
@@ -184,6 +185,22 @@ class TestCreate(StaffPassesTestMixin, CreateView):
             return response
 
 
+def download_file(request, data=None, format='json', file_name=None):
+    """скачивание данных в виде файла (test_create_template и test_export)"""
+    if file_name:
+        file_path = './media/files/' + file_name
+        with open(file_path, "rb") as f:
+            data_file = f.read()
+    else:
+        buffer = StringIO()
+        buffer.write(data)
+        data_file = buffer.getvalue()
+        file_name = f'{request.user.username}_{datetime.datetime.now()}.{format}'
+    response = HttpResponse(data_file)
+    response['Content-Disposition'] = f'attachment; filename={file_name}'
+    return response
+
+
 class TestDetail(LoginRequiredMixin, StaffPassesTestMixin, UserPassesTestMixin, DetailView):
     """docstring for TestDetail"""
     model = Test
@@ -191,7 +208,10 @@ class TestDetail(LoginRequiredMixin, StaffPassesTestMixin, UserPassesTestMixin, 
     login_url = reverse_lazy('authapp:login')
 
     def test_func(self):
-        return self.get_object().owner == self.request.user
+        if self.kwargs['pk'] == 0 and self.request.user.is_staff:
+            return True
+        else:
+            return self.get_object().owner == self.request.user
 
     def handle_no_permission(self):
         return HttpResponseRedirect(reverse_lazy('mainapp:tests_staff'))
@@ -228,10 +248,14 @@ class TestDetail(LoginRequiredMixin, StaffPassesTestMixin, UserPassesTestMixin, 
         json_test = json.dumps(dict_test, indent=2, separators=(',', ': '), ensure_ascii=False)
         return json_test
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['file'] = self.test_to_json()
-        return context
+    def get(self, request, *args, **kwargs):
+        if request.path_info == reverse_lazy('mainapp:test_export', kwargs={'pk': self.kwargs.get('pk')}):
+            if self.kwargs['pk'] == 0:
+                return download_file(request, file_name='template_create_test.json')
+            else:
+                return download_file(request, data=self.test_to_json())
+        else:
+            return super().get(request, *args, **kwargs)
 
 
 class TestEdit(TestDetail, UpdateView):
