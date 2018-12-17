@@ -7,6 +7,7 @@ $(function() {
         if (currenthref_part3 == 'create'|| currenthref_part3 == 'edit') {
             toggle_test_forms();
             changeQuestions();
+            change_style_file();
         } else {
         makeDisable();
         testFunction();
@@ -144,6 +145,19 @@ function toggle_q_type() {
 }
 
 function changeQuestions() {
-    $('#id_questions_filter').wrap("<div class='around_p'></div>");
-    $('.around_p').append($('#change'));
+    var find_loop = setInterval(function(){
+        var q_filter = $('#id_questions_filter');
+
+        if (q_filter.length > 0) {
+            clearInterval(find_loop);
+            q_filter.wrap("<div class='around_p'></div>");
+            $('.around_p').append($('#change'));
+        }
+    }, 50);
+};
+
+function change_style_file() {
+    $(':file').filestyle({buttonBefore: true});
+    $('.buttonText').text("Выбрать файл");
+    $('.bootstrap-filestyle').removeClass('input-group')
 };
